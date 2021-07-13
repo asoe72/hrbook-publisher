@@ -1,0 +1,7 @@
+*.zip
+*.pdf
+backup/
+_raw/
+_test/
+out/
+node_modules/
