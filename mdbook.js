@@ -1,19 +1,33 @@
-const unified = require("unified");
-const markdown = require("remark-parse");
-const remark2rehype	= require("remark-rehype");
-const html = require("rehype-stringify");
+const fs = require('fs');
+const md2html = require("./md2html");
+const util = require("./util");
 
 
-const mdText = `
-# Our Project
+//console.log(html_text.toString());
 
-Hello, **Markdown!**.
-`;
+const path_parent = "D:/git_repo/";
+const folder_name = "doc-hrscript";
+const rpath = "basic-syntax/";
 
-const html_text = unified()
-	.use(markdown)
-	.use(remark2rehype)
-	.use(html)
-	.processSync(mdText);
+const folder_name_out = folder_name + "_out";
+//const ftitle = "statements";
 
-console.log(html_text.toString());
+const path_md = path_parent + folder_name + '/' + rpath;
+const path_html = path_parent + folder_name_out + '/' + rpath;
+
+util.mkdir(path_html);
+
+const fnames = fs.readdirSync(path_md);
+
+for(let fname of fnames) {
+	const ftitle = util.ftitleFromFName(fname);
+	console.log(fname + ', ' + ftitle);
+
+	if(ftitle == fname) continue;	// directory
+	
+	const pathname_md = path_md + ftitle + ".md";
+	const pathname_html = path_html + ftitle + ".html";
+	md2html.convFile_Md2Html(pathname_md, pathname_html);
+
+	//console.log(file);
+}
