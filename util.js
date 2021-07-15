@@ -19,3 +19,14 @@ exports.ftitleFromFName = (fname) => {
     if(res.length < 2) return "";	// default
     return res[1];
 }
+
+
+///@param[in]	eg. "help_proc_ko.json"
+///@return      eg. "json"
+exports.extFromFName = (fname) => {
+    var len = fname.length;
+    var idx = fname.lastIndexOf('.');
+ 
+    var ext = fname.substring(idx+1, len).toLowerCase();
+    return ext;
+}

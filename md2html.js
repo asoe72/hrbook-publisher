@@ -7,7 +7,7 @@ const rehype_stringify = require("rehype-stringify");
 
 
 ///@param[in]	pathfile_md		markdown file
-exports.convFile_Md2Html = function(pathfile_md, pathfile_html)
+exports.convFile = function(pathfile_md, pathfile_html)
 {
 	const md_text = fs.readFileSync(pathfile_md, 'utf8');
 	const html_text = getHtmlFromMd(md_text);
