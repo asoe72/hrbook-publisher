@@ -3,6 +3,7 @@ const path = require('path');
 
 const md2html = require("./md2html");
 const util = require("./util");
+const bookbind = require("./bookbind");
 const { mainModule } = require('process');
 
 
@@ -15,10 +16,12 @@ const folder_name_out = folder_name + "_out";
 
 const path_md = path.join(path_parent, folder_name);
 const path_html = path.join(path_parent, folder_name_out);
+const pathfile_toc = path.join(path_md, "SUMMARY.md");
 
 
 // main routine
 convDir_Md2Html(path_md, path_html);
+bookbind.bind(pathfile_toc);
 
 
 ///@param[in]	path_md
