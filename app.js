@@ -21,7 +21,7 @@ const pathfile_toc = path.join(path_md, "SUMMARY.md");
 
 // main routine
 convDir_Md2Html(path_md, path_html);
-bookbind.bind(pathfile_toc);
+bookbind.bind(path_html, path_html, pathfile_toc);
 
 
 ///@param[in]	path_md
@@ -50,7 +50,7 @@ function convDir_Md2Html(path_md, path_html)
 			var path_md2 = pathname_md;
 			var path_html2 = path.join(path_html, fname);
 
-			console.log(`convDir_Md2Html(${path_md2}, ${path_html2}`);
+			console.log(`convDir_Md2Html(${path_md2}, ${path_html2})`);
 			convDir_Md2Html(path_md2, path_html2);
 		}
 		else {

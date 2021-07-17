@@ -1,11 +1,37 @@
 const fs = require('fs');
+const path = require('path');
 const md_it = require("markdown-it");
 
 
 ///@param[in]	pathfile_toc		
-exports.bind = function(pathfile_toc)
+exports.bind = function(path_out, path_in, pathfile_toc)
 {
 	const toc = read_toc(pathfile_toc);
+	bind_html_with_toc(path_out, path_in, toc);
+}
+
+
+///@param[in]	path_out
+///@param[in]	path_in
+///@param[in]	toc
+function bind_html_with_toc(path_out, path_in, toc)
+{
+	var pathfile_out = path.join(path_out, "book.html");
+	var str_all = "";
+	
+	for(var i=0; i<toc.length; i++)
+	{
+		var item = toc[i];
+		const pathname_html = path.join(path_out, item.link);
+
+		var str_html = fs.readFileSync(pathname_html, 'utf8');
+
+		str_html = replace_html_hd(str_html, item.level);
+
+		str_all += str_html;
+	}
+
+	fs.writeFileSync(pathfile_out, str_all);
 }
 
 
@@ -35,7 +61,9 @@ function arr_item_from_arr_token(arr_token)
 		if(token.level < 3) continue;
 
 		const arr_tc = token.children;
-		item.link = arr_tc[0].attrs[0][1];
+		const link_md = arr_tc[0].attrs[0][1];
+		item.link = link_md.replace(".md", ".html");
+		item.link = remove_folder_trailing_dot(item.link);
 		item.title = arr_tc[1].content;
 		item.level = (token.level-1)/2;
 		
@@ -45,4 +73,29 @@ function arr_item_from_arr_token(arr_token)
 	}
 
 	return arr_item;
+}
+
+
+///@param[in]	str	"flowcontrol-subprogram/3.2./README.md"
+///@return		"flowcontrol-subprogram/3.2/README.md"
+function remove_folder_trailing_dot(str)
+{
+    var re = /\.\//g;
+	return str.replace(re, '/');
+}
+
+
+///@param[in]	str_body	"<h1>introduction</h1>"
+///@param[in]	level		1~6
+///@return		"<h2>introduction</h2>"
+function replace_html_hd(str_body, level)
+{
+	if(level==1) return str_body;
+
+	var hd_open = `<h${level}>`;
+	var hd_close = `</h${level}>`;
+	str_body = str_body.replace('<h1>', hd_open);
+	str_body = str_body.replace('</h1>', hd_close);
+
+	return str_body;
 }
