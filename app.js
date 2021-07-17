@@ -1,8 +1,9 @@
-const { doesNotMatch } = require('assert');
 const fs = require('fs');
 const path = require('path');
+
 const md2html = require("./md2html");
 const util = require("./util");
+const { mainModule } = require('process');
 
 
 //console.log(html_text.toString());
@@ -12,11 +13,11 @@ const folder_name = "doc-hrscript";
 
 const folder_name_out = folder_name + "_out";
 
-const path_md = path_parent + folder_name;
-const path_html = path_parent + folder_name_out;
+const path_md = path.join(path_parent, folder_name);
+const path_html = path.join(path_parent, folder_name_out);
 
 
-
+// main routine
 convDir_Md2Html(path_md, path_html);
 
 

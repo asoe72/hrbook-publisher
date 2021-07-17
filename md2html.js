@@ -1,30 +1,25 @@
 const fs = require('fs');
-
-const unified = require("unified");
-const markdown = require("remark-parse");
-const remark2rehype	= require("remark-rehype");
-const rehype_stringify = require("rehype-stringify");
+const md_it = require("markdown-it");
 
 
 ///@param[in]	pathfile_md		markdown file
 exports.convFile = function(pathfile_md, pathfile_html)
 {
-	const md_text = fs.readFileSync(pathfile_md, 'utf8');
-	const html_text = getHtmlFromMd(md_text);
+	const str_md = fs.readFileSync(pathfile_md, 'utf8');
+	const str_body = getHtmlFromMd(str_md);
 	
-	fs.writeFileSync(pathfile_html, html_text);
+	fs.writeFileSync(pathfile_html, str_body);
 }
 
 
-///@param[in]	md_txt		markdown text
+///@param[in]	str_md		markdown text
 ///@return		html text
-function getHtmlFromMd(md_text)
+function getHtmlFromMd(str_md)
 {
-	const html = unified()
-		.use(markdown)
-		.use(remark2rehype)
-		.use(rehype_stringify)
-		.processSync(md_text);
+	const md = md_it({
+		html: true
+	});
+	const str_body = md.render(str_md);
 
-	return html.toString();
+	return str_body;
 }
