@@ -1,0 +1,35 @@
+﻿<!--
+    @date: 	2021-07-18
+    @author: Hyundai Robototics Co., Ltd. choi, won-hyuk (asoe72@hyundai-robotics.com)
+    @brief: hr-mdbook.js
+-->
+
+<!DOCTYPE html:5>
+<html>
+<head>
+    <title>hr-mdbook.js</title>
+    <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+
+    <link rel="stylesheet" href="css/style.css" type=text/css rel=stylesheet >
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/mdbook.js"></script>
+	<script>
+        $(document).ready(function() {
+			initMdBook();
+        });
+    </script>
+    
+</head>
+<body>
+	<div id="main">
+		<div id="titlebar"></div>
+		<div id="client-area" style="margin-left: 2em;">
+			<h1 style='font-size:5em;'><b>hr-mdbook.js</b></h1>
+			<br><br>
+			<button type="button" id="bind-book" class="btn btn-default"><span class="glyphicon glyphicon-book"></span>bind-book</button>
+		</div>
+    </div>
+</body>
+</html>

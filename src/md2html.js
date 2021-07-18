@@ -1,32 +1,23 @@
 const fs = require('fs');
 const path = require('path');
+const md_it = require("markdown-it");
 
-const md2html = require("./md2html");
 const util = require("./util");
-const bookbind = require("./bookbind");
-const { mainModule } = require('process');
 
 
-//console.log(html_text.toString());
-
-const path_parent = "D:/git_repo/";
-const folder_name = "doc-hrscript";
-
-const folder_name_out = folder_name + "_out";
-
-const path_md = path.join(path_parent, folder_name);
-const path_html = path.join(path_parent, folder_name_out);
-const pathfile_toc = path.join(path_md, "SUMMARY.md");
-
-
-// main routine
-convDir_Md2Html(path_md, path_html);
-bookbind.bind(path_html, path_html, pathfile_toc);
+///@param[in]	pathfile_md		markdown file
+exports.convFile = function(pathfile_md, pathfile_html)
+{
+	const str_md = fs.readFileSync(pathfile_md, 'utf8');
+	const str_body = getHtmlFromMd(str_md);
+	
+	fs.writeFileSync(pathfile_html, str_body);
+}
 
 
 ///@param[in]	path_md
 ///@param[in]	path_html
-function convDir_Md2Html(path_md, path_html)
+exports.convDir = function(path_md, path_html)
 {
 	if(path_md.length > 0) {
 		if(path_md[0] == '.') return -1;
@@ -50,12 +41,12 @@ function convDir_Md2Html(path_md, path_html)
 			var path_md2 = pathname_md;
 			var path_html2 = path.join(path_html, fname);
 
-			console.log(`convDir_Md2Html(${path_md2}, ${path_html2})`);
-			convDir_Md2Html(path_md2, path_html2);
+			console.log(`convDir(${path_md2}, ${path_html2})`);
+			module.exports.convDir(path_md2, path_html2);
 		}
 		else {
-			console.log(`convFile_Md2Html(${path_md}, ${path_html}, ${fname})`);
-			convFile_Md2Html(path_md, path_html, fname);
+			console.log(`convFileSub(${path_md}, ${path_html}, ${fname})`);
+			convFileSub(path_md, path_html, fname);
 		}
 	};
 
@@ -69,7 +60,7 @@ function convDir_Md2Html(path_md, path_html)
 ///@return
 ///		-	0	ok
 ///		-	-1	ng. not .md
-function convFile_Md2Html(path_md, path_html, fname)
+function convFileSub(path_md, path_html, fname)
 {
 	const ftitle = util.ftitleFromFName(fname);
 	const ext = util.extFromFName(fname);
@@ -82,8 +73,21 @@ function convFile_Md2Html(path_md, path_html, fname)
 	const pathname_md = path.join(path_md, fname);
 	const pathname_html = path.join(path_html, ftitle) + ".html";
 
-	console.log(`md2html.convFile(${pathname_md}, ${pathname_html}`);
-	md2html.convFile(pathname_md, pathname_html);
+	console.log(`convFile(${pathname_md}, ${pathname_html}`);
+	module.exports.convFile(pathname_md, pathname_html);
 
 	return 0;
+}
+
+
+///@param[in]	str_md		markdown text
+///@return		html text
+function getHtmlFromMd(str_md)
+{
+	const md = md_it({
+		html: true
+	});
+	const str_body = md.render(str_md);
+
+	return str_body;
 }
