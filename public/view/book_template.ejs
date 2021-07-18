@@ -4,14 +4,13 @@
     <head>
         <title><%= bookinfo.title %></title>
         <meta http-equiv=Content-Type content="text/html; charset=utf-8">
-        <link href="../../../css/style.css" type=text/css rel=stylesheet >
-        <link href="../../../css/book.css" type=text/css rel=stylesheet >
-		<link href="../css/book_sub.css" type=text/css rel=stylesheet >
-        <link href="../../../css/interface.css" type=text/css rel=stylesheet >
-        <link href="../../../css/toc.css" type=text/css rel=stylesheet >
+        <link href="../css/style.css" type=text/css rel=stylesheet >
+        <link href="../css/book.css" type=text/css rel=stylesheet >
+        <link href="../css/interface.css" type=text/css rel=stylesheet >
+        <link href="../css/toc.css" type=text/css rel=stylesheet >
         
-        <script src="../../../js/paged.polyfill.js"></script>
-        <script src="../../../js/toc.js"></script>
+        <script src="../js/paged.polyfill.js"></script>
+        <script src="../js/toc.js"></script>
 
 		<script>
             class handlers extends Paged.Handler {
@@ -32,6 +31,11 @@
         </script>
     </head>
     <body>
+
+        <p class="toc-title">목차</p>
+        <hr><br>
+        <div id="toc"></div>
+
 		<%- merged_in_body %>
     </body>
 </html>

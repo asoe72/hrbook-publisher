@@ -26,25 +26,13 @@ app.post('/bind-book', function(req, res) {
     })
 });
 
-app.post('/view-book', function(req, res) {
-	console.log('bind-book');
-
-
-    res.send({
-        message: 'bind-book ok',
-        data: {}
-    })
-});
-
 
 // ----------------------------------------------
 const path_parent = "D:/git_repo/";
 const folder_name = "doc-hrscript";
 
-const folder_name_out = folder_name + "_out";
-
 const path_md = path.join(path_parent, folder_name);
-const path_html = path.join(path_parent, folder_name_out);
+const path_html = 'public/out/';
 const pathfile_toc = path.join(path_md, "SUMMARY.md");
 
 

@@ -10,13 +10,13 @@ function initMdBook() {
 	});
 	
 	$('#print-book').click(function(){
-        //printBook(form);
-        //this.blur();
+        printBook();
+        this.blur();
     });
 }
 
 
-///@brief	서버에 bind 요청 송신
+///@brief	서버에 bind-book 요청 송신
 function bindBook() {
     $.ajax({
         url: '/bind-book',
@@ -27,4 +27,11 @@ function bindBook() {
             alert('bind-book completed!');
         }
     })
+}
+
+
+///@brief	서버에 print-book 요청 송신
+function printBook() {
+    var win = window.open('out/book.html', '_blank');
+	win.focus();
 }

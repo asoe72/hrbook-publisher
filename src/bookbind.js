@@ -1,4 +1,5 @@
 const fs = require('fs');
+const ejs = require('ejs');
 const path = require('path');
 const md_it = require("markdown-it");
 
@@ -30,6 +31,14 @@ function bind_html_with_toc(path_out, path_in, toc)
 
 		str_all += str_html;
 	}
+	
+	var bookinfo =
+	{
+		title: "abc",
+		tocTitleElements: "[ \"h1\", \"h2\" ]"
+	};
+
+	str_all = getHtmlFromMergedInBody(bookinfo, str_all);
 
 	fs.writeFileSync(pathfile_out, str_all);
 }
@@ -98,4 +107,21 @@ function replace_html_hd(str_body, level)
 	str_body = str_body.replace('</h1>', hd_close);
 
 	return str_body;
+}
+
+
+///@param[in]   bookinfo
+///@param[in]   merged_in_body		article들이 병합된 in_body 문자열
+///@return      완전한 html 문서의 문자열
+///@brief		template html의 in-body 표식을 merged_in_body로 대체하여
+///				head까지 갖춘 완전한 html 문서의 문자열을 리턴한다.
+function getHtmlFromMergedInBody(bookinfo, merged_in_body)
+{
+	const rpathname = 'public/view/book_template.ejs';
+	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	const data = { bookinfo: bookinfo, merged_in_body: merged_in_body };
+	const tmpl_rendered = ejs.render(book_tmpl_ejs, data
+		, { views : [ 'public/view/' ] } );	// for include in .ejs
+
+	return tmpl_rendered;
 }
