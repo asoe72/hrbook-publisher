@@ -38,7 +38,10 @@ function bindHtmlWithToc(path_out, path_in, toc)
 		tocTitleElements: "[ \"h1\", \"h2\" ]"
 	};
 
-	str_all = getHtmlFromMergedInBody(bookinfo, str_all);
+	var str_book_cover_front = getHtmlBookCoverFront(bookinfo);
+	var str_book_cover_back = getHtmlBookCoverBack();
+
+	str_all = getHtmlFromMergedInBody(bookinfo, str_all, str_book_cover_front, str_book_cover_back);
 
 	fs.writeFileSync(pathfile_out, str_all);
 }
@@ -110,18 +113,62 @@ function replaceHtml_hd(str_body, level)
 }
 
 
+///@param[in]   rel_pathname    상대 경로파일명
+///@return      pathname 파일 내의 <body>...</body>의 ... 부분의 문자열
+function getInBodyFromHtmlFile(pathname)
+{
+    const text = fs.readFileSync(pathname, 'utf8');
+
+    const idxSt = text.indexOf('<body>') + '<body>'.length;
+    const idxEn = text.lastIndexOf('</body>');
+    
+    var in_body = text.substring(idxSt, idxEn);
+
+    return in_body;
+}
+
+
 ///@param[in]   bookinfo
 ///@param[in]   merged_in_body		article들이 병합된 in_body 문자열
+///@param[in]   book_tail			책 뒷 표지 html
 ///@return      완전한 html 문서의 문자열
 ///@brief		template html의 in-body 표식을 merged_in_body로 대체하여
 ///				head까지 갖춘 완전한 html 문서의 문자열을 리턴한다.
-function getHtmlFromMergedInBody(bookinfo, merged_in_body)
+function getHtmlFromMergedInBody(bookinfo, merged_in_body, str_book_cover_front, str_book_cover_back)
 {
 	const rpathname = 'public/view/book_template.ejs';
 	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
-	const data = { bookinfo: bookinfo, merged_in_body: merged_in_body };
+	const data = { 
+		bookinfo: bookinfo, 
+		merged_in_body: merged_in_body,
+		str_book_cover_front: str_book_cover_front,
+		str_book_cover_back: str_book_cover_back
+	};
 	const tmpl_rendered = ejs.render(book_tmpl_ejs, data
 		, { views : [ 'public/view/' ] } );	// for include in .ejs
 
 	return tmpl_rendered;
+}
+
+
+///@param[in]   bookinfo
+///@return      책 앞 표지 html 문서의 문자열
+function getHtmlBookCoverFront(bookinfo)
+{
+	const rpathname = 'public/view/book_cover_front.ejs';
+	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	const data = { bookinfo: bookinfo };
+	const tmpl_rendered = ejs.render(book_tmpl_ejs, data
+		, { views : [ 'public/view/' ] } );	// for include in .ejs
+
+	return tmpl_rendered;
+}
+
+
+///@return      책 뒷 표지 html 문서의 문자열
+function getHtmlBookCoverBack()
+{
+	var pathname_book_cover_back = 'public/view/book_cover_back_ko.html';
+	var html = getInBodyFromHtmlFile(pathname_book_cover_back);
+	return html;
 }
