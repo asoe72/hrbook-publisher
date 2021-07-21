@@ -34,12 +34,13 @@ const folder_name = "doc-hrscript";
 const path_md = path.join(path_parent, folder_name);
 const path_html = 'public/out/';
 const pathfile_toc = path.join(path_md, "SUMMARY.md");
+const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
 
 
 function bindBook()
 {
     md2html.convDir(path_md, path_html);
-    bookbind.bind(path_html, path_html, pathfile_toc);
+    bookbind.bind(path_html, path_html, pathfile_toc, pathfile_bookinfo);
 }
 
 

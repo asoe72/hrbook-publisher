@@ -5,17 +5,20 @@ const md_it = require("markdown-it");
 
 
 ///@param[in]	pathfile_toc		
-exports.bind = function(path_out, path_in, pathfile_toc)
+exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo)
 {
+	const str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');
+	const bookinfo = JSON.parse(str_bookinfo);
+
 	const toc = readToc(pathfile_toc);
-	bindHtmlWithToc(path_out, path_in, toc);
+	bindHtmlWithToc(path_out, path_in, toc, bookinfo);
 }
 
 
 ///@param[in]	path_out
 ///@param[in]	path_in
 ///@param[in]	toc
-function bindHtmlWithToc(path_out, path_in, toc)
+function bindHtmlWithToc(path_out, path_in, toc, bookinfo)
 {
 	var pathfile_out = path.join(path_out, "book.html");
 	var str_all = "";
@@ -31,12 +34,6 @@ function bindHtmlWithToc(path_out, path_in, toc)
 
 		str_all += str_html;
 	}
-	
-	var bookinfo =
-	{
-		title: "abc",
-		tocTitleElements: "[ \"h1\", \"h2\" ]"
-	};
 
 	var str_book_cover_front = getHtmlBookCoverFront(bookinfo);
 	var str_book_cover_back = getHtmlBookCoverBack();

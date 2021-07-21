@@ -89,14 +89,14 @@
 
 .book-series {
     padding-top: 2.6cm;
-	padding-left: 2cm;
+	padding-left: 0.1cm;
 	line-height: 0.5em;
     color: rgb(0,176,80);
     font-size: 20pt;
 }
 
 .book-title {
-    padding-left: 2cm;
+    padding-left: 0.1cm;
     line-height: 0.75em;
     font-size: 30pt;
     font-weight: 600;
