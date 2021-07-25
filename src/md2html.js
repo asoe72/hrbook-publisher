@@ -81,12 +81,34 @@ function convFileSub(path_md, path_html, fname)
 }
 
 
-///@param[in]	str_md		markdown text
+///@param[in]	str
 ///@return		preprocessed md text
-function preprocMd(str_md)
+function preprocMd(str)
+{
+	var str = preprocMd_assetPath(str);
+	str = preprocMd_hintStyle(str);
+	return str;
+}
+
+
+function preprocMd_assetPath(str)
 {
 	var re = /\.gitbook\/assets\//g;
-	var str = str_md.replace(re, "_assets/");
+	var str = str.replace(re, "_assets/");
+	return str;
+}
+
+
+function preprocMd_hintStyle(str)
+{
+	//str_md = '{% hint style="warning" %}';	// test
+
+	var re = /{% hint style="warning" %}/g;
+	var str = str.replace(re, "<div class='warning-box'>");
+
+	var re2 = /{% endhint %}/g;
+	var str = str.replace(re2, "</div>");
+
 	return str;
 }
 
