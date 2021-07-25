@@ -19,7 +19,7 @@ app.post('/bind-book', function(req, res) {
 	console.log('bind-book');
 
     //work.saveFileToWork(req.body.form, req.body.fname, req.body.content);
-    bindBook();
+    bindBook(req.body.path_md);
 
     res.send({
         message: 'bind-book ok',
@@ -29,17 +29,14 @@ app.post('/bind-book', function(req, res) {
 
 
 // ----------------------------------------------
-const path_parent = "D:/git_repo/";
-const folder_name = "doc-hrscript";
-
-const path_md = path.join(path_parent, folder_name);
-const path_html = 'public/out/';
-const pathfile_toc = path.join(path_md, "SUMMARY.md");
-const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
 
 
-function bindBook()
+function bindBook(path_md)
 {
+    const pathfile_toc = path.join(path_md, "SUMMARY.md");
+    const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
+    const path_html = 'public/out/';
+
     fs.rmdirSync(path_html, { recursive: true });
     md2html.convDir(path_md, path_html);
     bookbind.bind(path_html, path_md, pathfile_toc, pathfile_bookinfo);
