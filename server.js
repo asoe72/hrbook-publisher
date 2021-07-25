@@ -18,28 +18,54 @@ app.use(bodyParser.urlencoded({
 app.post('/bind-book', function(req, res) {
 	console.log('bind-book');
 
-    //work.saveFileToWork(req.body.form, req.body.fname, req.body.content);
-    bindBook(req.body.path_md);
+    var result = {};
+    var iret = bindBook(req.body.path_md, result);
+    var msg;
+    if(iret==0) {
+        msg = 'bind-book ok';
+    }
+    else if(iret==-1 || iret==-2) {
+        msg = result.msg;
+    }
+    else {
+        msg = 'error code=' + iret;
+    }
 
     res.send({
-        message: 'bind-book ok',
-        data: {}
+        message: msg,
+        data: {
+            code: iret
+        }
     })
 });
 
 
 // ----------------------------------------------
 
-
-function bindBook(path_md)
+///@return
+///     -   0       ok
+///     -   -1      SUMMARY.md (TOC) not found
+///     -   -2      bookinfo.json found
+function bindBook(path_md, result)
 {
     const pathfile_toc = path.join(path_md, "SUMMARY.md");
     const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
     const path_html = 'public/out/';
 
+    if(fs.existsSync( pathfile_toc )==false) {
+        result.msg = pathfile_toc + ' not found.';
+        return -1;
+    }
+    if(fs.existsSync( pathfile_bookinfo )==false) {
+        result.msg = pathfile_bookinfo + ' not found.';
+        return -2;
+    }
+
     fs.rmdirSync(path_html, { recursive: true });
     md2html.convDir(path_md, path_html);
     bookbind.bind(path_html, path_md, pathfile_toc, pathfile_bookinfo);
+
+    return 0;
 }
 
 

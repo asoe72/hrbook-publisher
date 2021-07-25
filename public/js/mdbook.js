@@ -29,8 +29,13 @@ function bindBook(path_md) {
         data: {
             path_md: path_md
 		},
-        success: function(data) {
-            alert('bind-book completed!');
+        success: function(res) {
+            if(res.data.code==0) {
+                alert('bind-book completed!');
+            }
+            else {
+                alert(res.message);
+            }
         }
     })
 }
