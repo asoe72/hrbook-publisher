@@ -32,8 +32,7 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 
 		var str_html = fs.readFileSync(pathname_html, 'utf8');
 
-		str_html = replaceHtml_hd(str_html, item.level);
-		str_html = adjustAssetPathTo1Level(str_html);
+		str_html = preprocHtml(str_html, item);
 
 		str_all += str_html;
 	}
@@ -107,19 +106,23 @@ function removeFolderTrailingDot(str)
 }
 
 
-///@param[in]	str	"../../../_assets/image33.png"
-///@return		"_assets/image33.png"
-function adjustAssetPathTo1Level(str)
+///@param[in]	str
+///@param[in]	item
+///@return		preprocessed html text
+function preprocHtml(str, item)
 {
-    var re = /(\.\.\/)+_assets/g;
-	return str.replace(re, '_assets');
+	var str = preprocHtml_hdLevel(str, item.level);
+	str = preprocHtml_assetPathTo1Level(str);
+	str = preprocHtml_preCodeStyle(str);
+	
+	return str;
 }
 
 
 ///@param[in]	str_body	"<h1>introduction</h1>"
 ///@param[in]	level		1~6
 ///@return		"<h2>introduction</h2>"
-function replaceHtml_hd(str_body, level)
+function preprocHtml_hdLevel(str_body, level)
 {
 	if(level==1) return str_body;
 
@@ -129,6 +132,24 @@ function replaceHtml_hd(str_body, level)
 	str_body = str_body.replace('</h1>', hd_close);
 
 	return str_body;
+}
+
+
+///@param[in]	str	"../../../_assets/image33.png"
+///@return		"_assets/image33.png"
+function preprocHtml_assetPathTo1Level(str)
+{
+    var re = /(\.\.\/)+_assets/g;
+	return str.replace(re, '_assets');
+}
+
+
+///@param[in]	str		'<pre><code'
+///@return		'<pre class="codebox"><code'
+function preprocHtml_preCodeStyle(str)
+{
+    var re = /<pre><code/g;
+	return str.replace(re, '<pre class="codebox"><code');
 }
 
 
