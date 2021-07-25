@@ -1,4 +1,5 @@
 const fs = require('fs');
+const fse = require('fs-extra');
 const ejs = require('ejs');
 const path = require('path');
 const md_it = require("markdown-it");
@@ -11,14 +12,15 @@ exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo)
 	const bookinfo = JSON.parse(str_bookinfo);
 
 	const toc = readToc(pathfile_toc);
-	bindHtmlWithToc(path_out, path_in, toc, bookinfo);
+	bindHtmlWithToc(path_out, toc, bookinfo);
+	copyAssets(path_out, path_in);
 }
 
 
 ///@param[in]	path_out
-///@param[in]	path_in
 ///@param[in]	toc
-function bindHtmlWithToc(path_out, path_in, toc, bookinfo)
+///@param[in]	bookinfo
+function bindHtmlWithToc(path_out, toc, bookinfo)
 {
 	var pathfile_out = path.join(path_out, "book.html");
 	var str_all = "";
@@ -31,6 +33,7 @@ function bindHtmlWithToc(path_out, path_in, toc, bookinfo)
 		var str_html = fs.readFileSync(pathname_html, 'utf8');
 
 		str_html = replaceHtml_hd(str_html, item.level);
+		str_html = adjustAssetPathTo1Level(str_html);
 
 		str_all += str_html;
 	}
@@ -41,6 +44,16 @@ function bindHtmlWithToc(path_out, path_in, toc, bookinfo)
 	str_all = getHtmlFromMergedInBody(bookinfo, str_all, str_book_cover_front, str_book_cover_back);
 
 	fs.writeFileSync(pathfile_out, str_all);
+}
+
+
+///@param[in]	path_out
+///@param[in]	path_in
+function copyAssets(path_out, path_in)
+{
+	const pathname_src = path.join(path_in, '.gitbook/assets');
+	const pathname_dst = path.join(path_out, '_assets');
+	fse.copySync(pathname_src, pathname_dst);
 }
 
 
@@ -91,6 +104,15 @@ function removeFolderTrailingDot(str)
 {
     var re = /\.\//g;
 	return str.replace(re, '/');
+}
+
+
+///@param[in]	str	"../../../_assets/image33.png"
+///@return		"_assets/image33.png"
+function adjustAssetPathTo1Level(str)
+{
+    var re = /(\.\.\/)+_assets/g;
+	return str.replace(re, '_assets');
 }
 
 

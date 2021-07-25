@@ -1,6 +1,7 @@
+const fs = require('fs');
 const path = require('path');
-var express = require('express');
-var bodyParser = require('body-parser');
+const express = require('express');
+const bodyParser = require('body-parser');
 
 const md2html = require("./src/md2html");
 const bookbind = require("./src/bookbind");
@@ -39,8 +40,9 @@ const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
 
 function bindBook()
 {
+    fs.rmdirSync(path_html, { recursive: true });
     md2html.convDir(path_md, path_html);
-    bookbind.bind(path_html, path_html, pathfile_toc, pathfile_bookinfo);
+    bookbind.bind(path_html, path_md, pathfile_toc, pathfile_bookinfo);
 }
 
 

@@ -8,7 +8,8 @@ const util = require("./util");
 ///@param[in]	pathfile_md		markdown file
 exports.convFile = function(pathfile_md, pathfile_html)
 {
-	const str_md = fs.readFileSync(pathfile_md, 'utf8');
+	var str_md = fs.readFileSync(pathfile_md, 'utf8');
+	str_md = preprocMd(str_md);
 	const str_body = getHtmlFromMd(str_md);
 	
 	fs.writeFileSync(pathfile_html, str_body);
@@ -77,6 +78,16 @@ function convFileSub(path_md, path_html, fname)
 	module.exports.convFile(pathname_md, pathname_html);
 
 	return 0;
+}
+
+
+///@param[in]	str_md		markdown text
+///@return		preprocessed md text
+function preprocMd(str_md)
+{
+	var re = /\.gitbook\/assets\//g;
+	var str = str_md.replace(re, "_assets/");
+	return str;
 }
 
 
