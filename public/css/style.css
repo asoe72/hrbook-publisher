@@ -104,6 +104,7 @@ body {
 
 .codebox {
     color: #111;
+    font-size: 1.2em;
     border: 1px solid darkgray;
     background-color: rgb(245, 245, 245);
     line-height: 1.4em;
@@ -137,8 +138,8 @@ table {
 }
 
 th {
-    font-size: 0.8em;
     height: 2em;
+    min-width: 4em;
     border: 1px solid #999999;
     color: white;
     background-color: rgb(73, 178, 141);
@@ -149,6 +150,7 @@ tr {
 }
 
 td {
+    min-width: 4em;
     border: 1px solid #999999;
     font-size: 1em;
 }
