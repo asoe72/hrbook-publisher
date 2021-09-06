@@ -114,6 +114,7 @@ function preprocHtml(str, item)
 	var str = preprocHtml_hdLevel(str, item.level);
 	str = preprocHtml_assetPathTo1Level(str);
 	str = preprocHtml_preCodeStyle(str);
+	str = preprocHtml_removeEmpty_thead(str);
 	
 	return str;
 }
@@ -150,6 +151,22 @@ function preprocHtml_preCodeStyle(str)
 {
     var re = /<pre><code/g;
 	return str.replace(re, '<pre class="codebox"><code');
+}
+
+
+///@brief		빈 table header 삭제 (gitbook은 thead를 무조건 만드므로, 빈 것은 제거해줘야 한다.)
+/*
+	<thead>
+		<tr>
+			<th style="text-align:left"></th>
+			<th style="text-align:left"></th>
+		</tr>
+	</thead>
+*/
+function preprocHtml_removeEmpty_thead(str)
+{
+	var re = /<thead>\s*<tr>\s*(<th.*?><\/th>\s*)+<\/tr>\s*<\/thead>\s*/gm;
+	return str.replace(re, '');
 }
 
 
