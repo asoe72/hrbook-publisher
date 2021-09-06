@@ -38,7 +38,7 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 	}
 
 	var str_book_cover_front = getHtmlBookCoverFront(bookinfo);
-	var str_book_cover_back = getHtmlBookCoverBack();
+	var str_book_cover_back = getHtmlBookCoverBack(bookinfo);
 
 	str_all = getHtmlFromMergedInBody(bookinfo, str_all, str_book_cover_front, str_book_cover_back);
 
@@ -205,10 +205,11 @@ function getHtmlBookCoverFront(bookinfo)
 }
 
 
+///@param[in]   bookinfo
 ///@return      책 뒷 표지 html 문서의 문자열
-function getHtmlBookCoverBack()
+function getHtmlBookCoverBack(bookinfo)
 {
-	var pathname_book_cover_back = 'public/view/book_cover_back_ko.html';
+	var pathname_book_cover_back = `public/view/book_cover_back_${bookinfo.langCode}.html`;
 	var html = getInBodyFromHtmlFile(pathname_book_cover_back);
 	return html;
 }
