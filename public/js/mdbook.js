@@ -4,6 +4,12 @@
 ///@brief		button-handler 연결
 function initMdBook() {
 
+    $('#adjust-md').click(function(){
+        const path_md = $("#path-md").val();
+        adjustMd(path_md);
+        this.blur();
+	});
+
     $('#bind-book').click(function(){
         const path_md = $("#path-md").val();
         bindBook(path_md);
@@ -14,6 +20,30 @@ function initMdBook() {
         printBook();
         this.blur();
     });
+}
+
+
+///@brief	서버에 adjust-md 요청 송신
+function adjustMd(path_md) {
+    if(path_md.trim() == "") {
+        alert('Please, set the source-path (.md files)');
+        return;
+    }
+    $.ajax({
+        url: '/adjust-md',
+        type: 'post',
+        data: {
+            path_md: path_md
+		},
+        success: function(res) {
+            if(res.data.code==0) {
+                alert('adjust-md completed!');
+            }
+            else {
+                alert(res.message);
+            }
+        }
+    })
 }
 
 

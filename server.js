@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const md_adjuster = require("./src/md_adjuster");
 const md2html = require("./src/md2html");
 const bookbind = require("./src/bookbind");
 
@@ -13,6 +14,31 @@ app.use(bodyParser.urlencoded({
     limit:"10mb",
     extended: false 
 }));
+
+
+app.post('/adjust-md', function(req, res) {
+	console.log('adjust-md');
+
+    var result = {};
+    var iret = adjustMd(req.body.path_md, result);
+    var msg;
+    if(iret==0) {
+        msg = 'adjust-md ok';
+    }
+    else if(iret==-1 || iret==-2) {
+        msg = result.msg;
+    }
+    else {
+        msg = 'error code=' + iret;
+    }
+
+    res.send({
+        message: msg,
+        data: {
+            code: iret
+        }
+    })
+});
 
 
 app.post('/bind-book', function(req, res) {
@@ -41,7 +67,31 @@ app.post('/bind-book', function(req, res) {
 
 
 // ----------------------------------------------
+///@return
+///     -   0       ok
+///     -   -1      SUMMARY.md (TOC) not found
+///     -   -2      bookinfo.json found
+function adjustMd(path_md, result)
+{
+    const pathfile_toc = path.join(path_md, "SUMMARY.md");
+    const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
+    
+    if(fs.existsSync( pathfile_toc )==false) {
+        result.msg = pathfile_toc + ' not found.';
+        return -1;
+    }
+    if(fs.existsSync( pathfile_bookinfo )==false) {
+        result.msg = pathfile_bookinfo + ' not found.';
+        return -2;
+    }
 
+    md_adjuster.adjustDir(path_md);
+
+    return 0;
+}
+
+
+// ----------------------------------------------
 ///@return
 ///     -   0       ok
 ///     -   -1      SUMMARY.md (TOC) not found
