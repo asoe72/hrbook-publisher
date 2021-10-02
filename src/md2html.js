@@ -104,11 +104,24 @@ function preprocMd_hintStyle(str)
 {
 	//str_md = '{% hint style="warning" %}';	// test
 
+	var re = /{% hint style="danger" %}/g;
+	var str = str.replace(re, 
+`<table class='hint-box'><tr>
+	<td class='danger-box-left'>
+		<img src="../view/image/warning.png"><br>Danger
+	</td><td class='hint-box-right'>`
+);
+
 	var re = /{% hint style="warning" %}/g;
-	var str = str.replace(re, "<div class='warning-box'>");
+	var str = str.replace(re, 
+`<table class='hint-box'><tr>
+	<td class='warning-box-left'>
+		<img src="../view/image/warning.png"><br>Warning
+	</td><td class='hint-box-right'>`
+);
 
 	var re2 = /{% endhint %}/g;
-	var str = str.replace(re2, "</div>");
+	var str = str.replace(re2, "</td></tr></table>");
 
 	return str;
 }
@@ -128,7 +141,7 @@ function getHtmlFromMd(str_md)
 		tabindex: false,
 		link: false
 	});
-	
+
 	const str_body = md.render(str_md);
 
 	return str_body;

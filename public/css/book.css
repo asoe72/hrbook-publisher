@@ -143,3 +143,31 @@ hr {
 img {
     max-width: 90%;
 }
+
+.hint-box {
+    margin: 1em 1em;
+    border-left: none;
+    border-right: none;
+    padding: 3em;
+}
+
+.danger-box-left .warning-box-left, .hint-box-right {
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-left: none;
+    border-right: none;
+    padding: 1em;
+}
+
+.danger-box-left {
+    padding-left: 5em;
+    text-align: center;
+    background-color: red;
+    padding: 0em 1.5em;
+}
+
+.warning-box-left {
+    text-align: center;
+    background-color: orange;
+    padding: 0em 1.5em;
+}

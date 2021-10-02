@@ -113,13 +113,6 @@ body {
     padding: 10px;
 }
 
-.warning-box {
-    border-left: 3px solid orange;
-    background-color: rgb(245, 245, 245);
-    margin: 2em 0px;  
-    padding: 10px;
-}
-
 .input-cell {
     color: #111;
     font-size: 0.9em;
