@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const md_it = require("markdown-it");
+const md_it_impl_fig = require("markdown-it-implicit-figures");
 
 const util = require("./util");
 
@@ -120,6 +121,14 @@ function getHtmlFromMd(str_md)
 	const md = md_it({
 		html: true
 	});
+
+	md.use(md_it_impl_fig, {
+		dataType: false,
+		figcaption: true,
+		tabindex: false,
+		link: false
+	});
+	
 	const str_body = md.render(str_md);
 
 	return str_body;
