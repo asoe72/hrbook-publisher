@@ -156,15 +156,6 @@ function preprocHtml_preCodeStyle(str)
 }
 
 
-///@brief		빈 table header 삭제 (gitbook은 thead를 무조건 만드므로, 빈 것은 제거해줘야 한다.)
-/*
-	<thead>
-		<tr>
-			<th style="text-align:left"></th>
-			<th style="text-align:left"></th>
-		</tr>
-	</thead>
-*/
 function preprocHtml_removeEmpty_thead(str)
 {
 	var re = /<thead>\s*<tr>\s*(<th.*?><\/th>\s*)+<\/tr>\s*<\/thead>\s*/gm;

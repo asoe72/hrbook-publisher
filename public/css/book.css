@@ -146,22 +146,26 @@ img {
     max-width: 90%;
 }
 
+th, td {
+    padding: 0.4em 0.3em;
+}
+
+th {
+    text-align: center !important;
+}
+
 .hint-box {
     margin: 1em 0em;
-    border-left: none;
-    border-right: none;
     padding: 3em;
 }
 
-.danger-box-left .warning-box-left, .hint-box-right {
+.danger-box-left, .warning-box-left, .hint-box-right {
     border-top: 1px solid;
-    border-bottom: 1px solid;
-    border-left: none;
+    border-bottom: 1px solid;    
     padding: 1em;
 }
 
 .danger-box-left {
-    padding-left: 5em;
     text-align: center;
     background-color: red;
     padding: 0em 1.5em;
