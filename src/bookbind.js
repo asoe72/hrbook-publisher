@@ -3,12 +3,14 @@ const fse = require('fs-extra');
 const ejs = require('ejs');
 const path = require('path');
 const md_it = require("markdown-it");
+const util = require("./util");
 
 
 ///@param[in]	pathfile_toc		
 exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo)
 {
-	const str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');
+	let str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
+	str_bookinfo = util.removeUtf16Bom(str_bookinfo);
 	const bookinfo = JSON.parse(str_bookinfo);
 
 	const toc = readToc(pathfile_toc);
@@ -50,7 +52,7 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 ///@param[in]	path_in
 function copyAssets(path_out, path_in)
 {
-	const pathname_src = path.join(path_in, '.gitbook/assets');
+	const pathname_src = path.join(path_in, '_assets');
 	const pathname_dst = path.join(path_out, '_assets');
 	fse.copySync(pathname_src, pathname_dst);
 }

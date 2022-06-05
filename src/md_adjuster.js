@@ -33,7 +33,8 @@ exports.adjustDir = function(path_md)
 		console.log('stat: pathname_md=' + pathname_md);
 
 		if(stats.isDirectory()) {
-			if(fname[0] == '.') continue;	// e.g. ".git", ".gitbook"
+			if(fname[0] == '.') continue;	// e.g. ".git"
+			if(fname == '_assets') continue;	// 그림 등
 
 			var path_md2 = pathname_md;
 

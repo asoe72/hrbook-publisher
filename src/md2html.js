@@ -9,7 +9,8 @@ const util = require("./util");
 ///@param[in]	pathfile_md		markdown file
 exports.convFile = function(pathfile_md, pathfile_html)
 {
-	var str_md = fs.readFileSync(pathfile_md, 'utf8');
+	var str_md = fs.readFileSync(pathfile_md, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
+	str_md = util.removeUtf16Bom(str_md);
 	str_md = preprocMd(str_md);
 	const str_body = getHtmlFromMd(str_md);
 	
@@ -38,7 +39,8 @@ exports.convDir = function(path_md, path_html)
 		console.log('stat: pathname_md=' + pathname_md);
 
 		if(stats.isDirectory()) {
-			if(fname[0] == '.') continue;	// e.g. ".git", ".gitbook"
+			if(fname[0] == '.') continue;	// e.g. ".git"
+			if(fname == '_assets') continue;	// 그림 등
 
 			var path_md2 = pathname_md;
 			var path_html2 = path.join(path_html, fname);
@@ -86,16 +88,7 @@ function convFileSub(path_md, path_html, fname)
 ///@return		preprocessed md text
 function preprocMd(str)
 {
-	var str = preprocMd_assetPath(str);
-	str = preprocMd_hintStyle(str);
-	return str;
-}
-
-
-function preprocMd_assetPath(str)
-{
-	var re = /\.gitbook\/assets\//g;
-	var str = str.replace(re, "_assets/");
+	var str = preprocMd_hintStyle(str);
 	return str;
 }
 

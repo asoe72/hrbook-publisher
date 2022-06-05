@@ -30,3 +30,17 @@ exports.extFromFName = (fname) => {
     var ext = fname.substring(idx+1, len).toLowerCase();
     return ext;
 }
+
+
+///@param[in]	str	string starts with utf-16 BOM
+///@return		string of utf-16
+exports.removeUtf16Bom = (str) => {
+	if(str.length < 1) return str;
+
+	let str_ret = str;
+	if(str.charCodeAt(0)==0xfeff) {
+		str_ret = str.substring(1);
+	}
+
+	return str_ret;
+}
