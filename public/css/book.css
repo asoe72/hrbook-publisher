@@ -123,13 +123,15 @@ h1 {
 
 h2 {
     color: rgb(0,176,80);
-    margin-bottom: 4px;
+    margin-top: 2.5em;
+    margin-bottom: 0.8em;
     font-size: 20pt;
 }
 
 h3 {
     color: rgb(0,176,80);
-    margin-bottom: 4px;
+    margin-top: 2em;
+    margin-bottom: 0.8em;
     font-size: 16pt;
 }
 
@@ -145,7 +147,7 @@ img {
 }
 
 .hint-box {
-    margin: 1em 1em;
+    margin: 1em 0em;
     border-left: none;
     border-right: none;
     padding: 3em;
@@ -155,7 +157,6 @@ img {
     border-top: 1px solid;
     border-bottom: 1px solid;
     border-left: none;
-    border-right: none;
     padding: 1em;
 }
 
