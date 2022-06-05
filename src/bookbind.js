@@ -31,6 +31,10 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 	{
 		var item = toc[i];
 		const pathname_html = path.join(path_out, item.link);
+		if(fs.existsSync( pathname_html )==false) {
+			console.log('file not found: ' + pathname_html);
+			continue;
+		}
 
 		var str_html = fs.readFileSync(pathname_html, 'utf8');
 
