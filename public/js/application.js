@@ -1,8 +1,8 @@
-///@author	Hyundai Robototics Co., Ltd. choi, won-hyuk (asoe72@hyundai-robotics.com)
+///@author	Hyundai Robototics. choi, won-hyuk (asoe72@hyundai-robotics.com)
 
 
 ///@brief		button-handler 연결
-function initMdBook() {
+function initApplication() {
 
     $('#adjust-md').click(function(){
         const path_md = $("#path-md").val();

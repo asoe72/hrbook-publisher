@@ -1,6 +1,6 @@
 {
-  "name": "hr-mdbook",
-  "version": "1.0.1",
+  "name": "hrbook2pdf",
+  "version": "1.0.3",
   "description": "",
   "main": "app.js",
   "directories": {
