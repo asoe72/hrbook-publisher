@@ -210,9 +210,10 @@ function getHtmlBookCoverFront(bookinfo)
 	const rpathname = 'public/view/book_cover_front.ejs';
 	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
 	const data = { bookinfo: bookinfo };
-	const tmpl_rendered = ejs.render(book_tmpl_ejs, data
+	let tmpl_rendered = ejs.render(book_tmpl_ejs, data
 		, { views : [ 'public/view/' ] } );	// for include in .ejs
 
+	tmpl_rendered = util.strInTag(tmpl_rendered, 'body', true);
 	return tmpl_rendered;
 }
 
