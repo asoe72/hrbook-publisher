@@ -4,6 +4,7 @@ const ejs = require('ejs');
 const path = require('path');
 const md_it = require("markdown-it");
 const util = require("./util");
+const helpsect = require("./helpsect");
 
 
 ///@param[in]	pathfile_toc		
@@ -41,6 +42,8 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 		str_html = preprocHtml(str_html, item);
 
 		str_all += str_html;
+
+		helpsect.makeWholeHtmlFromInBody(pathname_html, str_html);
 	}
 
 	var str_book_cover_front = getHtmlBookCoverFront(bookinfo);
@@ -171,14 +174,9 @@ function preprocHtml_removeEmpty_thead(str)
 ///@return      pathname 파일 내의 <body>...</body>의 ... 부분의 문자열
 function getInBodyFromHtmlFile(pathname)
 {
-    const text = fs.readFileSync(pathname, 'utf8');
-
-    const idxSt = text.indexOf('<body>') + '<body>'.length;
-    const idxEn = text.lastIndexOf('</body>');
-    
-    var in_body = text.substring(idxSt, idxEn);
-
-    return in_body;
+	const text = fs.readFileSync(pathname, 'utf8');
+	const in_body = util.strInTag(text, 'body', true);
+	return in_body;
 }
 
 
@@ -227,3 +225,4 @@ function getHtmlBookCoverBack(bookinfo)
 	var html = getInBodyFromHtmlFile(pathname_book_cover_back);
 	return html;
 }
+
