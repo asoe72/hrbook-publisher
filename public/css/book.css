@@ -71,8 +71,7 @@
 }
 
 @media print {
-    .page-break, h1 { page-break-before: always; }
-    h2 { string-set: h2-run content(text); }
+    .page-break, h1, h2 { page-break-before: always; }
 	#info-series { string-set: series-run content(text); }
 	#info-title { string-set: title-run content(text); }
     #info-publisher { string-set: publisher-run content(text); }
