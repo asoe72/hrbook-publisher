@@ -16,7 +16,7 @@ exports.makeWholeHtmlFromInBody = (pathname_out, in_body) =>
 	const href_css = findCssRelPathName(pathname_out, "css/book.css");
 
 	const html_out = getHtmlHelpSection(title, href_css, in_body);
-	fs.writeFileSync(pathname_out, html_out);
+	fs.writeFileSync(pathname_out, '\ufeff' + html_out, { encoding: 'utf8' });
 }
 
 

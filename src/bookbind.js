@@ -53,7 +53,7 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 
 	str_all = getHtmlFromMergedInBody(bookinfo, str_all, str_book_cover_front, str_book_cover_back);
 
-	fs.writeFileSync(pathfile_out, str_all);
+	fs.writeFileSync(pathfile_out, '\ufeff' + str_all, { encoding: 'utf8' });
 }
 
 
