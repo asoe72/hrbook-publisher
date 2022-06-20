@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const fse = require('fs-extra');
 const ejs = require('ejs');
 const path = require('path');

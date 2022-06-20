@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 const md_it = require("markdown-it");
 const md_it_impl_fig = require("markdown-it-implicit-figures");
