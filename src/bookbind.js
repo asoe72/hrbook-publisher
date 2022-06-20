@@ -4,6 +4,7 @@ const ejs = require('ejs');
 const path = require('path');
 const md_it = require("markdown-it");
 const util = require("./util");
+const helpsect = require("./helpsect");
 
 
 ///@param[in]	pathfile_toc		
@@ -41,6 +42,8 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 		str_html = preprocHtml(str_html, item);
 
 		str_all += str_html;
+
+		helpsect.makeWholeHtmlFromInBody(pathname_html, str_html);
 	}
 
 	var str_book_cover_front = getHtmlBookCoverFront(bookinfo);
@@ -171,14 +174,9 @@ function preprocHtml_removeEmpty_thead(str)
 ///@return      pathname 파일 내의 <body>...</body>의 ... 부분의 문자열
 function getInBodyFromHtmlFile(pathname)
 {
-    const text = fs.readFileSync(pathname, 'utf8');
-
-    const idxSt = text.indexOf('<body>') + '<body>'.length;
-    const idxEn = text.lastIndexOf('</body>');
-    
-    var in_body = text.substring(idxSt, idxEn);
-
-    return in_body;
+	const text = fs.readFileSync(pathname, 'utf8');
+	const in_body = util.strInTag(text, 'body', true);
+	return in_body;
 }
 
 
@@ -212,9 +210,10 @@ function getHtmlBookCoverFront(bookinfo)
 	const rpathname = 'public/view/book_cover_front.ejs';
 	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
 	const data = { bookinfo: bookinfo };
-	const tmpl_rendered = ejs.render(book_tmpl_ejs, data
+	let tmpl_rendered = ejs.render(book_tmpl_ejs, data
 		, { views : [ 'public/view/' ] } );	// for include in .ejs
 
+	tmpl_rendered = util.strInTag(tmpl_rendered, 'body', true);
 	return tmpl_rendered;
 }
 
@@ -227,3 +226,4 @@ function getHtmlBookCoverBack(bookinfo)
 	var html = getInBodyFromHtmlFile(pathname_book_cover_back);
 	return html;
 }
+
