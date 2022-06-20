@@ -75,7 +75,12 @@
 	#info-series { string-set: series-run content(text); }
 	#info-title { string-set: title-run content(text); }
     #info-publisher { string-set: publisher-run content(text); }
+    body { margin: 0px; }
 }   
+
+@media only screen {
+    body { margin: 10px 30px 20px 20px; }
+}
 
 .book-cover {
     position: absolute;
@@ -114,9 +119,6 @@
     line-height: 1.5em;
 }
 
-body {
-    margin: 0px;
-}
 
 /* title ---------------------------- */
 
