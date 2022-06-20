@@ -45,6 +45,8 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 
 		helpsect.makeWholeHtmlFromInBody(pathname_html, str_html);
 	}
+	
+	str_all = postprocHtml(str_all);
 
 	var str_book_cover_front = getHtmlBookCoverFront(bookinfo);
 	var str_book_cover_back = getHtmlBookCoverBack(bookinfo);
@@ -121,9 +123,18 @@ function removeFolderTrailingDot(str)
 function preprocHtml(str, item)
 {
 	var str = preprocHtml_hdLevel(str, item.level);
-	str = preprocHtml_assetPathTo1Level(str);
 	str = preprocHtml_preCodeStyle(str);
 	str = preprocHtml_removeEmpty_thead(str);
+	
+	return str;
+}
+
+
+///@param[in]	str
+///@return		postprocessed html text
+function postprocHtml(str)
+{
+	var str = preprocHtml_assetPathTo1Level(str);
 	
 	return str;
 }
