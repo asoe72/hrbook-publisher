@@ -97,26 +97,35 @@ function preprocMd_hintStyle(str)
 {
 	//str_md = '{% hint style="warning" %}';	// test
 
-	var re = /{% hint style="danger" %}/g;
-	var str = str.replace(re, 
-`<table class='hint-box'><tr>
-	<td class='danger-box-left'>
-		<img src="../view/image/warning.png"><br>Danger
-	</td><td class='hint-box-right'>`
-);
-
-	var re = /{% hint style="warning" %}/g;
-	var str = str.replace(re, 
-`<table class='hint-box'><tr>
-	<td class='warning-box-left'>
-		<img src="../view/image/warning.png"><br>Warning
-	</td><td class='hint-box-right'>`
-);
+	str = preprocMd_hintStyle_sub(str, 'danger');
+	str = preprocMd_hintStyle_sub(str, 'warning');
+	str = preprocMd_hintStyle_sub(str, 'info');
 
 	var re2 = /{% endhint %}/g;
-	var str = str.replace(re2, "</td></tr></table>");
+	str = str.replace(re2, "</td></tr></table>");
 
 	return str;
+}
+
+
+///@param[in]	str		
+///@param[in]	level		'danger', 'warning', 'info'
+function preprocMd_hintStyle_sub(str, level)
+{
+	let ftitle = (level == 'info') ? 'info' : 'caution';
+	let icon_url = `../view/image/${ftitle}.png`;
+	
+	//let re = RegExp(`{% hint style=&quot;${level}&quot; %}`, 'g');
+	let re = RegExp(`{% hint style="${level}" %}`, 'g');
+	
+	let str2 = str.replace(re, 
+`<table class='hint-box'><tr>
+	<td class='${level}-box-left'>
+		<img width='32' src="${icon_url}"><br>${level}
+	</td><td class='hint-box-right'>`
+	);
+
+	return str2;
 }
 
 

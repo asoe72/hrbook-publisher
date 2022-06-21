@@ -134,7 +134,7 @@ function preprocHtml(str, item)
 ///@return		postprocessed html text
 function postprocHtml(str)
 {
-	var str = preprocHtml_assetPathTo1Level(str);
+	var str = postprocHtml_assetPathTo1Level(str);
 	
 	return str;
 }
@@ -158,7 +158,7 @@ function preprocHtml_hdLevel(str_body, level)
 
 ///@param[in]	str	"../../../_assets/image33.png"
 ///@return		"_assets/image33.png"
-function preprocHtml_assetPathTo1Level(str)
+function postprocHtml_assetPathTo1Level(str)
 {
     var re = /(\.\.\/)+_assets/g;
 	return str.replace(re, '_assets');

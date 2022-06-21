@@ -212,6 +212,12 @@ th {
     padding: 0em 1.5em;
 }
 
+.info-box-left {
+    text-align: center;
+    background-color: lightblue;
+    padding: 0em 1.5em;
+}
+
 .codebox {
     color: #111;
     font-size: 1em;
