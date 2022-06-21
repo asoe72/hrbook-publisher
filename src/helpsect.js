@@ -13,10 +13,27 @@ exports.makeWholeHtmlFromInBody = (pathname_out, in_body) =>
 	if(title=="") title = util.strInTag(in_body, 'h2', false);
 	if(title=="") title = util.strInTag(in_body, 'h3', false);
 
+	in_body = replaceHintImgSrc(pathname_out, in_body);
+
 	const href_css = findCssRelPathName(pathname_out, "css/book.css");
 
 	const html_out = getHtmlHelpSection(title, href_css, in_body);
 	fs.writeFileSync(pathname_out, '\ufeff' + html_out, { encoding: 'utf8' });
+}
+
+
+function replaceHintImgSrc(pathname_out, str)
+{
+	const src_caution = findCssRelPathName(pathname_out, "image/caution.png");
+	const src_info = findCssRelPathName(pathname_out, "image/info.png");
+
+	let re = RegExp('src="../view/image/caution.png"', 'g');
+	str = str.replace(re, `src="${src_caution}"`);
+
+	let re2 = RegExp('src="../view/image/info.png"', 'g');
+	str = str.replace(re2, `src="${src_info}"`);
+
+	return str;
 }
 
 
