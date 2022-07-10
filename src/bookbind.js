@@ -40,10 +40,10 @@ function bindMdWithToc(path_in, path_out, toc)
 		if(ret == -1) continue;
 	}
 
-	let pathname_book_md = path.join(path_out, "book.md");
+	let pathname_book_md = path.join(path_in, "book.md");
 	util.writeFileSyncUtf8(pathname_book_md, binded.str_all);
 	
-	let pathname_index_json = path.join(path_out, "index.json");
+	let pathname_index_json = path.join(path_in, "index.json");
 	let str_index = JSON.stringify(binded.index, null, '\t');
 	util.writeFileSyncUtf8(pathname_index_json, str_index);
 }
