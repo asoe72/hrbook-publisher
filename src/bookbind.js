@@ -123,6 +123,7 @@ function copyAssets(path_out, path_in)
 {
 	const pathname_src = path.join(path_in, '_assets');
 	const pathname_dst = path.join(path_out, '_assets');
+	if(fs.existsSync( pathname_src )==false) return;
 	fse.copySync(pathname_src, pathname_dst);
 }
 
