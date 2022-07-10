@@ -15,8 +15,68 @@ exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo)
 	const bookinfo = JSON.parse(str_bookinfo);
 
 	const toc = readToc(pathfile_toc);
+	bindMdWithToc(path_in, path_out, toc);
 	bindHtmlWithToc(path_out, toc, bookinfo);
 	copyAssets(path_out, path_in);
+}
+
+
+///@param[in]	path_out
+///@param[in]	toc
+function bindMdWithToc(path_in, path_out, toc)
+{
+	let binded = {
+		str_all: '',
+		index: [],
+		char_ofs: 0,
+		byte_ofs: 0
+	};
+
+	for(let i=0; i<toc.length; i++)
+	{
+		let toc_item = toc[i];
+		const pathname_md = path.join(path_in, toc_item.link_md);
+		let ret = bindMdSub(pathname_md, toc_item, binded);
+		if(ret == -1) continue;
+	}
+
+	let pathname_book_md = path.join(path_out, "book.md");
+	util.writeFileSyncUtf8(pathname_book_md, binded.str_all);
+	
+	let pathname_index_json = path.join(path_out, "index.json");
+	let str_index = JSON.stringify(binded.index, null, '\t');
+	util.writeFileSyncUtf8(pathname_index_json, str_index);
+}
+
+
+///@param[in]		pathname_md
+///@param[in]		toc_item
+///@param[in,out]	binded
+function bindMdSub(pathname_md, toc_item, binded)
+{
+	if(fs.existsSync( pathname_md )==false) {
+		console.log('file not found: ' + pathname_md);
+		return -1;
+	}
+	
+	let str_md = fs.readFileSync(pathname_md, 'utf8');
+	str_md = str_md.replace('\ufeff', '');			// strip BOM
+	str_md = str_md.replace(/\r\n/g, '\n');		// 개행문자 \n로 변환
+	binded.str_all += str_md;
+
+	let idx_item = { link: toc_item.link_md, char_ofs: binded.char_ofs, byte_ofs: binded.byte_ofs };
+	binded.index.push(idx_item);
+
+	binded.char_ofs += str_md.length;
+
+	// if(str_md.length<12) {
+	// 	console.log(str_md.length);
+	// 	console.log(`[${str_md}]`);
+	// }
+	let stats = fs.statSync(pathname_md);
+	binded.byte_ofs += stats.size;
+
+	return 0;
 }
 
 
@@ -93,8 +153,8 @@ function arrItemFromArrToken(arr_token)
 		if(token.level < 3) continue;
 
 		const arr_tc = token.children;
-		const link_md = arr_tc[0].attrs[0][1];
-		item.link = link_md.replace(".md", ".html");
+		item.link_md = arr_tc[0].attrs[0][1];
+		item.link = item.link_md.replace(".md", ".html");
 		item.link = removeFolderTrailingDot(item.link);
 		item.title = arr_tc[1].content;
 		item.level = (token.level-1)/2;

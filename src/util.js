@@ -67,3 +67,11 @@ exports.strInTag = (str, tagname, bothside) =>
 
 	return in_tag;
 }
+
+///@param[in]	pathname    
+///@param[in]	str			write할 문자열
+///@return		0
+exports.writeFileSyncUtf8 = (pathname, str) =>
+{
+	fs.writeFileSync(pathname, '\ufeff' + str, { encoding: 'utf8' });
+}
