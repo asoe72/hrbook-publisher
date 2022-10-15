@@ -32,6 +32,7 @@ function bindMdWithToc(path_in, path_out, toc)
 		byte_ofs: 0
 	};
 
+	// 모든 toc 항목 처리
 	for(let i=0; i<toc.length; i++)
 	{
 		let toc_item = toc[i];
@@ -40,9 +41,11 @@ function bindMdWithToc(path_in, path_out, toc)
 		if(ret == -1) continue;
 	}
 
+	// 한 덩어리로 bind된 파일로 출력 (검색용 색인 역할도 함.)
 	let pathname_book_md = path.join(path_in, "book.md");
 	util.writeFileSyncUtf8(pathname_book_md, binded.str_all);
 	
+	// 검색용 색인 파일로 출력
 	let pathname_index_json = path.join(path_in, "index.json");
 	let str_index = JSON.stringify(binded.index, null, '\t');
 	util.writeFileSyncUtf8(pathname_index_json, str_index);
@@ -59,24 +62,35 @@ function bindMdSub(pathname_md, toc_item, binded)
 		return -1;
 	}
 	
+	// .md 파일을 한 덩어리로 bind
 	let str_md = fs.readFileSync(pathname_md, 'utf8');
 	str_md = str_md.replace('\ufeff', '');			// strip BOM
 	str_md = str_md.replace(/\r\n/g, '\n');		// 개행문자 \n로 변환
 	binded.str_all += str_md;
 
+	calcIndexForFind(pathname_md, str_md, toc_item, binded);
+
+	return 0;
+}
+
+
+///@param[in]		str_md
+///@param[in]		toc_item
+///@param[in,out]	binded
+///@brief 			검색용 색인 생성
+function calcIndexForFind(pathname_md, str_md, toc_item, binded)
+{
 	let idx_item = { link: toc_item.link_md, char_ofs: binded.char_ofs, byte_ofs: binded.byte_ofs };
 	binded.index.push(idx_item);
 
-	binded.char_ofs += str_md.length;
+	binded.char_ofs += str_md.length;	// 문자 단위 offset 계산
 
 	// if(str_md.length<12) {
 	// 	console.log(str_md.length);
 	// 	console.log(`[${str_md}]`);
 	// }
-	let stats = fs.statSync(pathname_md);
-	binded.byte_ofs += stats.size;
-
-	return 0;
+	let stats = fs.statSync(pathname_md);	// file size 얻기
+	binded.byte_ofs += stats.size;	// byte 단위 offset 계산
 }
 
 
@@ -90,20 +104,8 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 	
 	for(var i=0; i<toc.length; i++)
 	{
-		var item = toc[i];
-		const pathname_html = path.join(path_out, item.link);
-		if(fs.existsSync( pathname_html )==false) {
-			console.log('file not found: ' + pathname_html);
-			continue;
-		}
-
-		var str_html = fs.readFileSync(pathname_html, 'utf8');
-
-		str_html = preprocHtml(str_html, item);
-
+		let str_html = bindHtmlSub(path_out, toc[i]);
 		str_all += str_html;
-
-		helpsect.makeWholeHtmlFromInBody(pathname_html, str_html);
 	}
 	
 	str_all = postprocHtml(str_all);
@@ -114,6 +116,27 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 	str_all = getHtmlFromMergedInBody(bookinfo, str_all, str_book_cover_front, str_book_cover_back);
 
 	fs.writeFileSync(pathfile_out, '\ufeff' + str_all, { encoding: 'utf8' });
+}
+
+
+///@param[in]	path_out
+///@param[in]	item
+///@return		생성된 html 문자열. 실패하면 ""
+function bindHtmlSub(path_out, item)
+{
+	const pathname_html = path.join(path_out, item.link);
+	if(fs.existsSync( pathname_html )==false) {
+		console.log('file not found: ' + pathname_html);
+		return "";
+	}
+
+	var str_html = fs.readFileSync(pathname_html, 'utf8');
+
+	str_html = preprocHtml(str_html, item);
+
+	helpsect.makeWholeHtmlFromInBody(pathname_html, str_html);
+
+	return str_html;
 }
 
 
