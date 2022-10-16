@@ -45,7 +45,8 @@ app.post('/bind-book', function(req, res) {
 	console.log('bind-book');
 
     var result = {};
-    var iret = bindBook(req.body.path_md, result);
+    var toc_without_page = (req.body.toc_without_page==='true');
+    var iret = bindBook(req.body.path_md, toc_without_page, result);
     var msg;
     if(iret==0) {
         msg = 'bind-book ok';
@@ -96,7 +97,7 @@ function adjustMd(path_md, result)
 ///     -   0       ok
 ///     -   -1      SUMMARY.md (TOC) not found
 ///     -   -2      bookinfo.json found
-function bindBook(path_md, result)
+function bindBook(path_md, toc_without_page, result)
 {
     const pathfile_toc = path.join(path_md, "SUMMARY.md");
     const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
@@ -113,7 +114,7 @@ function bindBook(path_md, result)
 
     fs.rmdirSync(path_html, { recursive: true });
     md2html.convDir(path_md, path_html);
-    bookbind.bind(path_html, path_md, pathfile_toc, pathfile_bookinfo);
+    bookbind.bind(path_html, path_md, pathfile_toc, pathfile_bookinfo, toc_without_page);
 
     return 0;
 }

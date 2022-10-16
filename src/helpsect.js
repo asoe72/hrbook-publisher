@@ -1,4 +1,7 @@
-﻿const fs = require('fs');
+﻿// teach-pendant 등에 탑재할 off-line help의 구성 .html 파일들 생성.
+// 각각의 html이 개별적으로 browser에 render 될 수 있도록 css 경로 등 온전한 형태를 갖추게 한다.
+
+const fs = require('fs');
 const ejs = require('ejs');
 const path = require('path');
 const util = require("./util");

@@ -1,44 +1,54 @@
 <!DOCTYPE html:5>
 <html>
-    <head>
-        <title><%= bookinfo.title %></title>
-        <meta http-equiv=Content-Type content="text/html; charset=utf-8">
-        <link href="../css/book.css" type=text/css rel=stylesheet >
-        <link href="../css/interface.css" type=text/css rel=stylesheet >
-        <link href="../css/toc.css" type=text/css rel=stylesheet >
-        
-        <script src="../js/paged.polyfill.js"></script>
-        <script src="../js/toc.js"></script>
+<head>
+	<title><%= bookinfo.title %></title>
+	<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+	<link href="../css/book.css" type=text/css rel=stylesheet >
+	<link href="../css/interface.css" type=text/css rel=stylesheet >
+	<link href="../css/toc.css" type=text/css rel=stylesheet >
 
-		<script>
-            class handlers extends Paged.Handler {
-                constructor(chunker, polisher, caller) {
-                super(chunker, polisher, caller);
-            }
+	<script src="../js/paged.polyfill.js"></script>
 
-            beforeParsed(content){
+<%# paged.js에서 제공하는 TOC 기능 (최신 browser에서 1 page 이상 안 만들어지는 문제 있음.) %>
+<% if (bookinfo.toc_without_page==false) { %>
+	<script src="../js/toc.js"></script>
+	<script>
+		class handlers extends Paged.Handler {
+			constructor(chunker, polisher, caller) {
+				super(chunker, polisher, caller);
+			}
+
+			beforeParsed(content){
 				const tocTitleElements = JSON.parse('<%- bookinfo.tocTitleElements %>');	// (work-around for vscode)
-                createToc({
-                    content: content,
-                        tocElement: '#toc',
-                        titleElements: tocTitleElements
-                    });
-                }
-            }
-            Paged.registerHandlers(handlers);
-        </script>
-    </head>
-    <body>
-        <%- str_book_cover_front %>
+				createToc({
+					content: content,
+					tocElement: '#toc',
+					titleElements: tocTitleElements
+				});
+			}
+		}
+		Paged.registerHandlers(handlers);
+	</script>
+<% } %>
+</head>
+<body>
+	<%- str_book_cover_front %>
+	
+	<div class="page-break"></div>
 
-        <div class="page-break"></div>
-        
-        <p class="toc-title"><%= bookinfo.tocTitle %></p>
-        <hr><br>
-        <div id="toc"></div>
+	<p class="toc-title"><%= bookinfo.tocTitle %></p>
+	<hr><br>
+<%# paged.js에서 제공하는 TOC 기능 %>
+<% if (bookinfo.toc_without_page==false) { %>	
+	<div id="toc"></div>
+<%# 자체 구현한 TOC 기능 (page번호는 안 매겨지는 기능상 한계가 있다.) %>
+<% } else { %>
+	<%# <div id="list-toc-generated"> 다음 page로 안 넘어가는 문제 때문에 remark하고 toc.css측을 조정했다. %>
+<%- html_toc %>
+	<%#  </div> %>
+<% } %>
+	<%- merged_in_body %>
 
-		<%- merged_in_body %>
-
-        <%- str_book_cover_back %>
-    </body>
+	<%- str_book_cover_back %>
+</body>
 </html>
