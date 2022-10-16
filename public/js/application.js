@@ -12,7 +12,8 @@ function initApplication() {
 
     $('#bind-book').click(function(){
         const path_md = $("#path-md").val();
-        bindBook(path_md);
+        const toc_without_page = $("#toc-without-page").is(":checked");
+        bindBook(path_md, toc_without_page);
         this.blur();
 	});
 	
@@ -48,16 +49,18 @@ function adjustMd(path_md) {
 
 
 ///@brief	서버에 bind-book 요청 송신
-function bindBook(path_md) {
+function bindBook(path_md, toc_without_page) {
     if(path_md.trim() == "") {
         alert('Please, set the source-path (.md files)');
         return;
     }
+
     $.ajax({
         url: '/bind-book',
         type: 'post',
         data: {
-            path_md: path_md
+            path_md: path_md,
+            toc_without_page: toc_without_page
 		},
         success: function(res) {
             if(res.data.code==0) {

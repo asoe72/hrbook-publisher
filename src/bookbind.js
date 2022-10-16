@@ -9,11 +9,12 @@ const helpsect = require("./helpsect");
 
 
 ///@param[in]	pathfile_toc		
-exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo)
+exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo, toc_without_page)
 {
 	let str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
 	str_bookinfo = util.removeUtf16Bom(str_bookinfo);
-	const bookinfo = JSON.parse(str_bookinfo);
+	let bookinfo = JSON.parse(str_bookinfo);
+	bookinfo.toc_without_page = toc_without_page;
 
 	const toc = readToc(pathfile_toc);
 	bindMdWithToc(path_in, path_out, toc);
@@ -107,11 +108,17 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 	for(var i=0; i<toc.length; i++)
 	{
 		let str_html = bindHtmlSub(path_out, toc[i]);
-		let res = toc_ex.processTocItem(str_html, toc[i], bookinfo.tocTitleElements);
-		if(res==null) continue;
-		
-		str_all += res.str_html;
-		html_toc += res.toc_row;
+
+		if(bookinfo.toc_without_page) {
+			let res = toc_ex.processTocItem(str_html, toc[i], bookinfo.tocTitleElements);
+			if(res==null) continue;
+
+			str_all += res.str_html;
+			html_toc += res.toc_row;
+		}
+		else {
+			str_all += str_html;
+		}
 	}
 	
 	str_all = postprocHtml(str_all);
@@ -123,7 +130,6 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 
 	data.str_book_cover_front = getHtmlBookCoverFront(bookinfo);
 	data.str_book_cover_back = getHtmlBookCoverBack(bookinfo);
-	data.toc_without_page = true;
 	data.html_toc = html_toc;	// test
 
 	str_all = getHtmlFromMergedInBody(data);
