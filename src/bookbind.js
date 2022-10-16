@@ -3,6 +3,7 @@ const fse = require('fs-extra');
 const ejs = require('ejs');
 const path = require('path');
 const md_it = require("markdown-it");
+const toc_ex = require("./toc_ex");
 const util = require("./util");
 const helpsect = require("./helpsect");
 
@@ -101,19 +102,31 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 {
 	var pathfile_out = path.join(path_out, "book.html");
 	var str_all = "";
+	let html_toc = "";
 	
 	for(var i=0; i<toc.length; i++)
 	{
 		let str_html = bindHtmlSub(path_out, toc[i]);
-		str_all += str_html;
+		let res = toc_ex.processTocItem(str_html, toc[i], bookinfo.tocTitleElements);
+		if(res==null) continue;
+		
+		str_all += res.str_html;
+		html_toc += res.toc_row;
 	}
 	
 	str_all = postprocHtml(str_all);
 
-	var str_book_cover_front = getHtmlBookCoverFront(bookinfo);
-	var str_book_cover_back = getHtmlBookCoverBack(bookinfo);
+	let data = {
+		bookinfo: bookinfo,
+		merged_in_body: str_all		// article들이 병합된 in_body 문자열
+	};
 
-	str_all = getHtmlFromMergedInBody(bookinfo, str_all, str_book_cover_front, str_book_cover_back);
+	data.str_book_cover_front = getHtmlBookCoverFront(bookinfo);
+	data.str_book_cover_back = getHtmlBookCoverBack(bookinfo);
+	data.toc_without_page = true;
+	data.html_toc = html_toc;	// test
+
+	str_all = getHtmlFromMergedInBody(data);
 
 	fs.writeFileSync(pathfile_out, '\ufeff' + str_all, { encoding: 'utf8' });
 }
@@ -275,22 +288,19 @@ function getInBodyFromHtmlFile(pathname)
 }
 
 
-///@param[in]   bookinfo
-///@param[in]   merged_in_body		article들이 병합된 in_body 문자열
-///@param[in]   book_tail			책 뒷 표지 html
+///@param[in]   data
+///				-	bookinfo
+///				-	merged_in_body				article들이 병합된 in_body 문자열
+///				-	str_book_cover_front		책 앞 표지 html
+///				-	str_book_cover_back		책 뒷 표지 html
 ///@return      완전한 html 문서의 문자열
 ///@brief		template html의 in-body 표식을 merged_in_body로 대체하여
 ///				head까지 갖춘 완전한 html 문서의 문자열을 리턴한다.
-function getHtmlFromMergedInBody(bookinfo, merged_in_body, str_book_cover_front, str_book_cover_back)
+function getHtmlFromMergedInBody(data)
 {
 	const rpathname = 'public/view/book_template.ejs';
 	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
-	const data = { 
-		bookinfo: bookinfo, 
-		merged_in_body: merged_in_body,
-		str_book_cover_front: str_book_cover_front,
-		str_book_cover_back: str_book_cover_back
-	};
+
 	const tmpl_rendered = ejs.render(book_tmpl_ejs, data
 		, { views : [ 'public/view/' ] } );	// for include in .ejs
 
