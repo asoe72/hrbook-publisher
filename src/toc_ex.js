@@ -12,17 +12,20 @@
 ///@param[in]	tocTitleElements		목차에 포함시킬 element
 ///											(e.g. "[ \"h1\", \"h2\" ]")
 ///@return		{ toc_row: TOC 항목의 html 문법 행, str_html: h1, h2 에 id부여된 html }
-///				skip이면 null
-exports.processTocItem = function( str_html, item, tocTitleElements ) {
-	
-	let tag_name = 'h' + item.level;
-	if(tocTitleElements.includes(tag_name)==false) return null;
-
-	const id = makeIdFromItem(item, tocTitleElements);
-	
+exports.processTocItem = function( str_html, item, tocTitleElements )
+{
 	let res = {};
-	res.toc_row = makeTocItemHtml(id, item);
-	res.str_html = applyIdOnHeadingTag(str_html, tag_name, id);
+	let tag_name = 'h' + item.level;
+	if(tocTitleElements.includes(tag_name))
+	{
+		const id = makeIdFromItem(item, tocTitleElements);		
+		res.toc_row = makeTocItemHtml(id, item);
+		res.str_html = applyIdOnHeadingTag(str_html, tag_name, id);
+	}
+	else {
+		res.toc_row = "";		// toc 포함 대상 아니면 공문자열
+		res.str_html = str_html;
+	}
 
 	return res;
 }

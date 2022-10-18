@@ -111,8 +111,6 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 
 		if(bookinfo.toc_without_page) {
 			let res = toc_ex.processTocItem(str_html, toc[i], bookinfo.tocTitleElements);
-			if(res==null) continue;
-
 			str_all += res.str_html;
 			html_toc += res.toc_row;
 		}
