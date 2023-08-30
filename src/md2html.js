@@ -88,8 +88,9 @@ function convFileSub(path_md, path_html, fname)
 ///@return		preprocessed md text
 function preprocMd(str)
 {
-	var str = preprocMd_hintStyle(str);
-	return str;
+	let str2 = preprocMd_hyperLinkInTag(str);
+	str2 = preprocMd_hintStyle(str2);
+	return str2;
 }
 
 
@@ -125,6 +126,18 @@ function preprocMd_hintStyle_sub(str, level)
 	</td><td class='hint-box-right'>`
 	);
 
+	return str2;
+}
+
+
+///@param[in]	str		`<td>자세한 내용은 [Hi6 로봇제어기 조작설명서](https://hrbook-hrc.web.app/#/view/doc-hi6-operation/korean-tp630/)를 참조하세요.</td>`
+///@return		`<td>자세한 내용은 "<a href="https://hrbook-hrc.web.app/#/view/doc-hi6-operation/korean-tp630/">Hi6 로봇제어기 조작설명서</a>를 참조하세요.</td>`
+///@brief		html tag 내부의 link는 md->html 변환이 제대로 안 되므로, 이 함수로 전처리 수행함.
+function preprocMd_hyperLinkInTag(str)
+{
+	let re = /\[(.*?)]\((https:\/\/.*?)\)/g;
+
+	let str2 = str.replace(re, `<a href="$2">$1</a>`);
 	return str2;
 }
 
