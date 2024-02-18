@@ -4,6 +4,7 @@
 ///@brief		button-handler 연결
 function initApplication() {
 
+    // adjust-md button is not used for now.
     $('#adjust-md').click(function(){
         const path_md = $("#path-md").val();
         adjustMd(path_md);
