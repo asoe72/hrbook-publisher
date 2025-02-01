@@ -81,29 +81,70 @@
     body { margin: 10px 30px 20px 20px; }
 }
 
-.book-cover {
-    position: absolute;
-    max-width: 125%;
-    top: -20mm;
-    left: -20mm;
-    width: 21.5cm;    /* A4 */
-    height: 29.7cm;
-    z-index: -1;
+.book-header-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.book-hd-logo-box {
+    margin-top: 0cm;
+    padding-top: 0cm;
+}
+
+.book-manual-release-date {
+    margin-top: 0.2cm;
+    font-size: 14pt;
+    color: rgb(20,20,20);
+}
+
+.book-header-line {
+    width: 100%;
+    margin-top: 0.2cm;
+    border: 1px solid black;
 }
 
 .book-series {
-    padding-top: 2.6cm;
+    padding-top: 2.0cm;
 	padding-left: 0.1cm;
 	line-height: 0.5em;
-    color: rgb(0,176,80);
-    font-size: 20pt;
+    color: rgb(60,60,60);
+    font-size: 16pt;
 }
 
 .book-title {
+    margin-top: -0.2cm;
     padding-left: 0.1cm;
-    line-height: 0.75em;
-    font-size: 30pt;
+    line-height: 1.5em;
+    font-size: 22pt;
     font-weight: 600;
+    color: rgb(20,20,20);
+}
+
+.book-caution-title {
+    position: absolute;
+    top: 21.7cm;
+    left: 0cm;
+    font-size: 12pt;
+    font-weight: 600;
+}
+
+.book-caution-body {
+    position: absolute;
+    top: 22.2cm;
+    left: 0cm;
+    font-size: 8pt;
+    line-height: 1.8em;
+    color: rgb(140,140,140);
+}
+
+.book-copyright {
+    position: absolute;
+    top: 25.7cm;
+    left: 0cm;
+    font-size: 8pt;
+    color: rgb(140,140,140);
+    z-index: 5;
 }
 
 #toc li a::after{
@@ -113,7 +154,7 @@
 
 .book-tail-addr {
     position: absolute;
-    top: 15cm;
+    top: 13cm;
     font-size: 10pt;
     line-height: 1.5em;
 }
