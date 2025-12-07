@@ -17,7 +17,7 @@ exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo, toc_
 	bookinfo.toc_without_page = toc_without_page;
 
 	const toc = readToc(pathfile_toc);
-	bindMdWithToc(path_in, path_out, toc);
+	bindMdWithToc(path_in, path_out, toc, bookinfo);
 	bindHtmlWithToc(path_out, toc, bookinfo);
 	copyAssets(path_out, path_in);
 }
@@ -25,7 +25,7 @@ exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo, toc_
 
 ///@param[in]	path_out
 ///@param[in]	toc
-function bindMdWithToc(path_in, path_out, toc)
+function bindMdWithToc(path_in, path_out, toc, bookinfo)
 {
 	let binded = {
 		str_all: '',
@@ -39,7 +39,7 @@ function bindMdWithToc(path_in, path_out, toc)
 	{
 		let toc_item = toc[i];
 		const pathname_md = path.join(path_in, toc_item.link_md);
-		let ret = bindMdSub(pathname_md, toc_item, binded);
+		let ret = bindMdSub(pathname_md, toc_item, binded, bookinfo);
 		if(ret == -1) continue;
 	}
 
@@ -57,7 +57,7 @@ function bindMdWithToc(path_in, path_out, toc)
 ///@param[in]		pathname_md
 ///@param[in]		toc_item
 ///@param[in,out]	binded
-function bindMdSub(pathname_md, toc_item, binded)
+function bindMdSub(pathname_md, toc_item, binded, bookinfo)
 {
 	if(fs.existsSync( pathname_md )==false) {
 		console.log('file not found: ' + pathname_md);
@@ -68,11 +68,36 @@ function bindMdSub(pathname_md, toc_item, binded)
 	let str_md = fs.readFileSync(pathname_md, 'utf8');
 	str_md = str_md.replace('\ufeff', '');			// strip BOM
 	str_md = str_md.replace(/\r\n/g, '\n');		// 개행문자 \n로 변환
+	str_md = replaceVariablesToValues(str_md, bookinfo.variables);
 	binded.str_all += str_md;
 
 	calcIndexForFind(pathname_md, str_md, toc_item, binded);
 
 	return 0;
+}
+
+
+///@param[in]	str		e.g.
+function replaceVariablesToValues(str, vars)
+{
+	//console.log('replaceVariablesToValues');
+	//console.log(JSON.stringify(info.variables));
+	let modifiedStr = str;
+	for(const vname in vars) {
+		modifiedStr = replaceVariablesToValue(modifiedStr, vname, vars[vname]);
+	}
+	
+	return modifiedStr;
+}
+
+
+///@param[in]	str		e.g.
+///@param[in]	var_name		e.g. 'cont_model'
+///@param[in]	var_value		e.g. 'Hi7'
+function replaceVariablesToValue(str, var_name, var_value)
+{
+	const pattern = new RegExp(`\\$\\{${var_name}\\}`, 'g');
+	return str.replace(pattern, var_value);
 }
 
 
@@ -92,7 +117,7 @@ function calcIndexForFind(pathname_md, str_md, toc_item, binded)
 	// 	console.log(`[${str_md}]`);
 	// }
 	let stats = fs.statSync(pathname_md);	// file size 얻기
-	binded.byte_ofs += stats.size;	// byte 단위 offset 계산
+	binded.byte_ofs += stats.size;	// byte 단위 offset 계산 (사용 안 함.)
 }
 
 
@@ -113,12 +138,14 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 			let res = toc_ex.processTocItem(str_html, toc[i], bookinfo.tocTitleElements);
 			str_all += res.str_html;
 			html_toc += res.toc_row;
+			html_toc = replaceVariablesToValues(html_toc, bookinfo.variables);
 		}
 		else {
 			str_all += str_html;
 		}
 	}
 	
+	str_all = replaceVariablesToValues(str_all, bookinfo.variables);
 	str_all = postprocHtml(str_all);
 
 	let data = {
