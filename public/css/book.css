@@ -267,4 +267,8 @@ th {
     width: 100%;
     overflow: auto;
     padding: 10px;
+
+    /* 인쇄용이므로 줄 바꿈 */
+    white-space: pre-wrap;
+    word-break: break-all;
 }
