@@ -306,3 +306,8 @@ th {
     white-space: pre-wrap;
     word-break: break-all;
 }
+
+.customer-support-wrap {
+    display: flex;
+    gap: 4rem;             /* 텍스트와 QR 사이 간격 */
+}
