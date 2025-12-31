@@ -265,7 +265,6 @@ th {
     background-color: rgb(245, 245, 245);
     line-height: 1.2em;
     width: 100%;
-    overflow: auto;
     padding: 10px;
 
     /* 인쇄용이므로 줄 바꿈 */
