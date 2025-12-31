@@ -112,7 +112,7 @@ function bindBook(path_md, toc_without_page, result)
         return -2;
     }
 
-    fs.rmdirSync(path_html, { recursive: true });
+    fs.rmSync(path_html, { recursive: true, force: true });
     md2html.convDir(path_md, path_html);
     bookbind.bind(path_html, path_md, pathfile_toc, pathfile_bookinfo, toc_without_page);
 
