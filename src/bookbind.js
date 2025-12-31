@@ -10,12 +10,11 @@ const helpsect = require("./helpsect");
 
 
 ///@param[in]	pathfile_toc		
-exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo, toc_without_page)
+exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo)
 {
 	let str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
 	str_bookinfo = util.removeBom(str_bookinfo);
 	let bookinfo = JSON.parse(str_bookinfo);
-	bookinfo.toc_without_page = toc_without_page;
 
 	bookinfo.updatedDate = git_util.getCurrentCommitDate(path_in);
 	bookinfo.copyrightYear = makeCopyrightYear(path_in);
@@ -148,16 +147,7 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 	for(var i=0; i<toc.length; i++)
 	{
 		let str_html = bindHtmlSub(path_out, toc[i]);
-
-		if(bookinfo.toc_without_page) {
-			let res = toc_ex.processTocItem(str_html, toc[i], bookinfo.tocTitleElements);
-			str_all += res.str_html;
-			html_toc += res.toc_row;
-			html_toc = replaceVariablesToValues(html_toc, bookinfo.variables);
-		}
-		else {
-			str_all += str_html;
-		}
+		str_all += str_html;
 	}
 	
 	str_all = replaceVariablesToValues(str_all, bookinfo.variables);

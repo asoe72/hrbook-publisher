@@ -9,8 +9,7 @@
 
 	<script src="../js/paged.polyfill.js"></script>
 
-<%# paged.js에서 제공하는 TOC 기능 (최신 browser에서 1 page 이상 안 만들어지는 문제 있음.) %>
-<% if (bookinfo.toc_without_page==false) { %>
+	<%# paged.js에서 제공하는 TOC 기능 %>
 	<script src="../js/toc.js"></script>
 	<script>
 		class handlers extends Paged.Handler {
@@ -29,7 +28,6 @@
 		}
 		Paged.registerHandlers(handlers);
 	</script>
-<% } %>
 </head>
 <body>
 	<%- str_book_cover_front %>
@@ -39,15 +37,10 @@
 
 	<p class="toc-title"><%= bookinfo.tocTitle %></p>
 	<hr style="border:none; border-top: 0.25rem solid rgb(0,173,29)"><br>
-<%# paged.js에서 제공하는 TOC 기능 %>
-<% if (bookinfo.toc_without_page==false) { %>	
+
+	<%# paged.js에서 제공하는 TOC 기능 %>
 	<div id="toc"></div>
-<%# 자체 구현한 TOC 기능 (page번호는 안 매겨지는 기능상 한계가 있다.) %>
-<% } else { %>
-	<%# <div id="list-toc-generated"> 다음 page로 안 넘어가는 문제 때문에 remark하고 toc.css측을 조정했다. %>
-<%- html_toc %>
-	<%#  </div> %>
-<% } %>
+
 	<%- merged_in_body %>
 
 	<%- str_book_cover_back %>
