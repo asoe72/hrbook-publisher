@@ -89,28 +89,20 @@ ul[id="list-toc-generated"] {
 } */
 
 
-
-/* hack for leaders */
-
-#list-toc-generated{
-    overflow-x: hidden;
-}
-
 /* fake leading */
 #list-toc-generated .toc-element::after{
-    content: 
-        ".............................................."
-        ".............................................."
-        ".............................................."  
-        "........";
-    float: left;
+    content: "";
+    flex: 1;
     width: 0;
-    padding-left: 5px;
-    letter-spacing: 2px;
+    height: 0.8rem;
+    margin: 0 2rem;
+    float: left;
+    border-bottom: 0.2rem dotted #aaa;
 }
 
 #list-toc-generated .toc-element{
     display: flex; 
+    align-items: center;
 }
 
 #list-toc-generated .toc-element a::after{
@@ -118,8 +110,10 @@ ul[id="list-toc-generated"] {
     right: 0;
     background-color: white;
     padding-left: 6px;
+    color: #006;
 }
 
 #list-toc-generated .toc-element a{
     right: 0;
+    color: #006;
 }
