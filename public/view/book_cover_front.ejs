@@ -26,27 +26,7 @@
 		<%= bookinfo.title %>
 	</div><br>
 
-	<div class="book-caution-title">
-		<% if (bookinfo.langCode == "ko") { %>
-			주의사항
-		<% } else { %>
-			Caution
-		<% } %>
-	</div>
 
-	<div class="book-caution-body">
-		<ul>
-			<% if (bookinfo.langCode == "ko") { %>
-				<li>산업용 로봇 제품을 사용하기 전, 관련된 매뉴얼을 숙지하시기 바랍니다.</li>
-				<li>로봇을 보전, 보수, 조작하는 작업자는 반드시 적절한 교육 과정을 이수한 후에 로봇을 취급할 수 있도록 하여 주십시오.</li>
-				<li>산업용 로봇의 사용자는 해당 국가에서 적용되는 로봇과 관계된 안전관련 법규를 확실히 파악하여 준수하여야 할 책임과 로봇 시스템에서 일하는 작업자를 보호하기 위한 안전장치를 제대로 설계, 설치, 운용할 책임이 있습니다.</li>
-			<% } else { %>
-				<li>Please be familiar with the relevant manual before using industrial robot products.</li>
-				<li>Workers who maintain, repair or operate the robot must ensure that the robot is handled after completing the appropriate training courses.</li>
-				<li>Users of industrial robots are responsible for ensuring that they understand and comply with the relevant safety laws and regulations and for designing, installing and operating safeguards to protect workers working in the robot system.</li>
-			<% } %>
-		</ul>
-	</div><br>
 
 	<div class="book-copyright">
 		ⓒ Copyright 2024. HD Hyundai Robotics. All rights reserved.

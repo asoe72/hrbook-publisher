@@ -4,7 +4,8 @@ const ejs = require('ejs');
 const path = require('path');
 const md_it = require("markdown-it");
 const toc_ex = require("./toc_ex");
-const util = require("./util");
+const util = require("./util/util");
+const git_util = require("./util/git_util");
 const helpsect = require("./helpsect");
 
 
@@ -16,10 +17,24 @@ exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo, toc_
 	let bookinfo = JSON.parse(str_bookinfo);
 	bookinfo.toc_without_page = toc_without_page;
 
+	bookinfo.updatedDate = git_util.getCurrentCommitDate(path_in);
+	bookinfo.copyrightYear = makeCopyrightYear(path_in);
 	const toc = readToc(pathfile_toc);
 	bindMdWithToc(path_in, path_out, toc, bookinfo);
 	bindHtmlWithToc(path_out, toc, bookinfo);
 	copyAssets(path_out, path_in);
+}
+
+
+///@return		e.g. '2022-2025' or '2025'
+function makeCopyrightYear(path_in)
+{
+	const createdDate = git_util.getFirstCommitDate(path_in);
+	const updatedDate = git_util.getCurrentCommitDate(path_in);
+	const createdYear = createdDate.split("-")[0];
+	const updatedYear = updatedDate.split("-")[0];
+	if (createdYear === updatedYear) return createdYear;
+	else return `${createdYear}-${updatedYear}`;
 }
 
 
@@ -154,6 +169,7 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 	};
 
 	data.str_book_cover_front = getHtmlBookCoverFront(bookinfo);
+	data.str_book_warning = getHtmlBookWarning(bookinfo);
 	data.str_book_cover_back = getHtmlBookCoverBack(bookinfo);
 	data.html_toc = html_toc;	// test
 
@@ -344,6 +360,21 @@ function getHtmlFromMergedInBody(data)
 function getHtmlBookCoverFront(bookinfo)
 {
 	const rpathname = 'public/view/book_cover_front.ejs';
+	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	const data = { bookinfo: bookinfo };
+	let tmpl_rendered = ejs.render(book_tmpl_ejs, data
+		, { views : [ 'public/view/' ] } );	// for include in .ejs
+
+	tmpl_rendered = util.strInTag(tmpl_rendered, 'body', true);
+	return tmpl_rendered;
+}
+
+
+///@param[in]   bookinfo
+///@return      책 경고 문구 페이지의 문자열
+function getHtmlBookWarning(bookinfo)
+{
+	var rpathname = `public/view/book_warning_${bookinfo.langCode}.ejs`;
 	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
 	const data = { bookinfo: bookinfo };
 	let tmpl_rendered = ejs.render(book_tmpl_ejs, data

@@ -3,7 +3,7 @@ const path = require('path');
 const md_it = require("markdown-it");
 const md_it_impl_fig = require("markdown-it-implicit-figures");
 
-const util = require("./util");
+const util = require("./util/util");
 
 
 ///@param[in]	pathfile_md		markdown file
