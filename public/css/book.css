@@ -11,61 +11,52 @@
     margin-right: 20mm;
 }
 
+@page {
+    @top-left {
+        content: string(series-run);
+        font-size: 9pt;
+        color: rgb(128,128,128);
+    }
+    @top-right {
+        content: string(title-run);
+        font-size: 9pt;
+        color: rgb(128,128,128);
+    }
+    @bottom-left {
+        content: string(publisher-run);
+        font-size: 9pt;
+        color: rgb(128,128,128);
+    }
+    @bottom-center {
+        content: counter(page);
+        font-size: 9pt;
+        color: rgb(161, 142, 142);
+    }
+    @bottom-right {
+        content: string(updated-date-run);
+        font-size: 9pt;
+        color: rgb(128,128,128);
+    }
+}
+
 @page:first {
+    @top-left {
+        content: none;
+	}
 	@top-right {
         content: none;
 	}
 	@bottom-left {
         content: none;
     }
+    @bottom-left {
+        content: none;
+    }
+	@bottom-center {
+        content: none;
+    }
 	@bottom-right {
         content: none;
-    }
-	@bottom-right-corner {
-        content: none;
-    }
-}
-
-@page:left {
-    @top-left {
-        content: string(series-run);
-        font-size: 9pt;
-        color: rgb(128,128,128);
-    }
-    @bottom-right {
-        content: string(publisher-run);
-        font-size: 9pt;
-        color: rgb(128,128,128);
-    }
-    @bottom-left {
-        content: "_" string(title);
-        font-size: 9pt;
-        color: rgb(128,128,128);
-    }
-    @bottom-left-corner {
-        content: counter(page);
-        font-size: 9pt;
-        color: rgb(161, 142, 142);
-    }
-}
-
-@page:right {
-    @top-right {
-        content: string(title-run);
-        font-size: 9pt;
-        color: rgb(128,128,128);
-    }
-    @bottom-right {
-        content: string(h2-run);
-        margin: 0pt;
-        padding-right: 10pt;
-        font-size: 9pt;
-        color: rgb(128,128,128);
-    }
-    @bottom-right-corner {
-        content: counter(page);
-        font-size: 9pt;
-        color: rgb(128,128,128);
     }
 }
 
