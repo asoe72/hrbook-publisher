@@ -47,7 +47,8 @@ function replaceHintImgSrc(pathname_out, str)
 function getHtmlHelpSection(title, href_css, in_body)
 {
 	const rpathname = 'public/view/help_section.ejs';
-	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	let book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	book_tmpl_ejs = util.removeBom(book_tmpl_ejs);
 	const data = {
 		title: title,
 		href_css: href_css,

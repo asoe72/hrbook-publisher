@@ -13,7 +13,7 @@ const helpsect = require("./helpsect");
 exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo, toc_without_page)
 {
 	let str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
-	str_bookinfo = util.removeUtf16Bom(str_bookinfo);
+	str_bookinfo = util.removeBom(str_bookinfo);
 	let bookinfo = JSON.parse(str_bookinfo);
 	bookinfo.toc_without_page = toc_without_page;
 
@@ -346,7 +346,8 @@ function getInBodyFromHtmlFile(pathname)
 function getHtmlFromMergedInBody(data)
 {
 	const rpathname = 'public/view/book_template.ejs';
-	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	let book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	book_tmpl_ejs = util.removeBom(book_tmpl_ejs);
 
 	const tmpl_rendered = ejs.render(book_tmpl_ejs, data
 		, { views : [ 'public/view/' ] } );	// for include in .ejs
@@ -360,7 +361,8 @@ function getHtmlFromMergedInBody(data)
 function getHtmlBookCoverFront(bookinfo)
 {
 	const rpathname = 'public/view/book_cover_front.ejs';
-	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	let book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	book_tmpl_ejs = util.removeBom(book_tmpl_ejs);
 	const data = { bookinfo: bookinfo };
 	let tmpl_rendered = ejs.render(book_tmpl_ejs, data
 		, { views : [ 'public/view/' ] } );	// for include in .ejs
@@ -375,7 +377,8 @@ function getHtmlBookCoverFront(bookinfo)
 function getHtmlBookWarning(bookinfo)
 {
 	var rpathname = `public/view/book_warning_${bookinfo.langCode}.ejs`;
-	const book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	let book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
+	book_tmpl_ejs = util.removeBom(book_tmpl_ejs);
 	const data = { bookinfo: bookinfo };
 	let tmpl_rendered = ejs.render(book_tmpl_ejs, data
 		, { views : [ 'public/view/' ] } );	// for include in .ejs

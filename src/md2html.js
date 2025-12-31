@@ -10,7 +10,7 @@ const util = require("./util/util");
 exports.convFile = function(pathfile_md, pathfile_html)
 {
 	var str_md = fs.readFileSync(pathfile_md, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
-	str_md = util.removeUtf16Bom(str_md);
+	str_md = util.removeBom(str_md);
 	str_md = preprocMd(str_md);
 	const str_body = getHtmlFromMd(str_md);
 	

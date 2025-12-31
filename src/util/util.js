@@ -32,9 +32,9 @@ exports.extFromFName = (fname) => {
 }
 
 
-///@param[in]	str	string starts with utf-16 BOM
-///@return		string of utf-16
-exports.removeUtf16Bom = (str) => {
+///@param[in]	str	string starts with utf-8 BOM
+///@return		string of utf-8
+exports.removeBom = (str) => {
 	if(str.length < 1) return str;
 
 	let str_ret = str;
