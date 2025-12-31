@@ -5,6 +5,7 @@ const path = require('path');
 const md_it = require("markdown-it");
 const toc_ex = require("./toc_ex");
 const util = require("./util/util");
+const git_util = require("./util/git_util");
 const helpsect = require("./helpsect");
 
 
@@ -16,10 +17,24 @@ exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo, toc_
 	let bookinfo = JSON.parse(str_bookinfo);
 	bookinfo.toc_without_page = toc_without_page;
 
+	bookinfo.updatedDate = git_util.getCurrentCommitDate(path_in);
+	bookinfo.copyrightYear = makeCopyrightYear(path_in);
 	const toc = readToc(pathfile_toc);
 	bindMdWithToc(path_in, path_out, toc, bookinfo);
 	bindHtmlWithToc(path_out, toc, bookinfo);
 	copyAssets(path_out, path_in);
+}
+
+
+///@return		e.g. '2022-2025' or '2025'
+function makeCopyrightYear(path_in)
+{
+	const createdDate = git_util.getFirstCommitDate(path_in);
+	const updatedDate = git_util.getCurrentCommitDate(path_in);
+	const createdYear = createdDate.split("-")[0];
+	const updatedYear = updatedDate.split("-")[0];
+	if (createdYear === updatedYear) return createdYear;
+	else return `${createdYear}-${updatedYear}`;
 }
 
 
