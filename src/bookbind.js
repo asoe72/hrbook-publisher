@@ -268,9 +268,10 @@ function preprocHtml(str, item)
 ///@return		postprocessed html text
 function postprocHtml(str)
 {
-	var str = postprocHtml_assetPathTo1Level(str);
+	let str_tmp = postprocHtml_assetPathTo1Level(str);
+	str_tmp = postprocHtml_adjustPageBreak(str_tmp);
 	
-	return str;
+	return str_tmp;
 }
 
 
@@ -290,15 +291,6 @@ function preprocHtml_hdLevel(str_body, level)
 }
 
 
-///@param[in]	str	"../../../_assets/image33.png"
-///@return		"_assets/image33.png"
-function postprocHtml_assetPathTo1Level(str)
-{
-    var re = /(\.\.\/)+_assets/g;
-	return str.replace(re, '_assets');
-}
-
-
 ///@param[in]	str		'<pre><code'
 ///@return		'<pre class="codebox"><code'
 function preprocHtml_preCodeStyle(str)
@@ -312,6 +304,59 @@ function preprocHtml_removeEmpty_thead(str)
 {
 	var re = /<thead>\s*<tr>\s*(<th.*?><\/th>\s*)+<\/tr>\s*<\/thead>\s*/gm;
 	return str.replace(re, '');
+}
+
+
+///@param[in]	str	"../../../_assets/image33.png"
+///@return		"_assets/image33.png"
+function postprocHtml_assetPathTo1Level(str)
+{
+    var re = /(\.\.\/)+_assets/g;
+	return str.replace(re, '_assets');
+}
+
+
+///@return	str에 `<div class="page-break"></div>`를 적당히 삽입한 결과
+function postprocHtml_adjustPageBreak(str)
+{
+	let str_tmp = postprocHtml_addPageBreakBeforeLevel2Title(str);
+	str_tmp = postprocHtml_removePageBreakBetweenLevel1_2Title(str_tmp);
+	return str_tmp;
+}
+
+
+///@param[in]	str	"...<h2>..."
+///@return		"...<div class="page-break"></div>\n<h2>..."
+function postprocHtml_addPageBreakBeforeLevel2Title(str)
+{
+	const pageBreak = '\n<div class="page-break"></div>\n';
+	return str.replace(
+		/<h2>/gi,
+		`${pageBreak}<h2>`
+	);
+}
+
+
+///@param[in]	str	"...</h1>\s*<div class="page-break"></div>\s*<h2>..."
+///@return		"...</h1>\n<h2>..."
+function postprocHtml_removePageBreakBetweenLevel1_2Title(str)
+{
+	return str.replace(
+		/<\/h1>\s*<div class="page-break"><\/div>\s*<h2>/gi,
+		"</h1>\n<h2>"
+	);
+}
+
+
+///@param[in]	str	"...</h1>\n<h2>..."
+///@return		"...</h1>\n<div class="page-break"></div>\n<h2>..."
+function postprocHtml_pageBreak(str)
+{
+    const pageBreak = '\n<div class="page-break"></div>\n';
+	 return str.replace(
+        /<\/h1>\s*<h2>/gi,
+        `</h1>${pageBreak}<h2>`
+    );
 }
 
 
