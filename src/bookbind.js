@@ -4,7 +4,7 @@ const ejs = require('ejs');
 const path = require('path');
 const md_it = require("markdown-it");
 const toc_ex = require("./toc_ex");
-const util = require("./util");
+const util = require("./util/util");
 const helpsect = require("./helpsect");
 
 
