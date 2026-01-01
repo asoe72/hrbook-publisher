@@ -41,11 +41,11 @@ app.post('/adjust-md', function(req, res) {
 });
 
 
-app.post('/bind-book', function(req, res) {
+app.post('/bind-book', async function(req, res) {
 	console.log('bind-book');
 
     var result = {};
-    var iret = bindBook(req.body.path_md, result);
+    var iret = await bindBook(req.body.path_md, result);
     var msg;
     if(iret==0) {
         msg = 'bind-book ok';
@@ -92,11 +92,22 @@ function adjustMd(path_md, result)
 
 
 // ----------------------------------------------
+function bindBookAsync(path_md, result) {
+    return new Promise((resolve, reject) => {
+        bindBook(path_md, result, (err, iret) => {
+            if (err) reject(err);
+            else resolve(iret);
+        });
+    });
+}
+
+
+// ----------------------------------------------
 ///@return
 ///     -   0       ok
 ///     -   -1      SUMMARY.md (TOC) not found
 ///     -   -2      bookinfo.json found
-function bindBook(path_md, result)
+async function bindBook(path_md, result)
 {
     const pathfile_toc = path.join(path_md, "SUMMARY.md");
     const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
@@ -113,7 +124,7 @@ function bindBook(path_md, result)
 
     fs.rmSync(path_html, { recursive: true, force: true });
     md2html.convDir(path_md, path_html);
-    bookbind.bind(path_html, path_md, pathfile_toc, pathfile_bookinfo);
+    await bookbind.bind(path_html, path_md, pathfile_toc, pathfile_bookinfo);
 
     return 0;
 }

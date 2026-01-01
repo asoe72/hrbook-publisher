@@ -30,10 +30,10 @@
     @bottom-center {
         content: counter(page);
         font-size: 9pt;
-        color: rgb(161, 142, 142);
+        color: rgb(128,128,128);
     }
     @bottom-right {
-        content: string(updated-date-run);
+        content: string(doc-id-run);
         font-size: 9pt;
         color: rgb(128,128,128);
     }
@@ -65,7 +65,7 @@
 	#info-series { string-set: series-run content(text); }
 	#info-title { string-set: title-run content(text); }
     #info-publisher { string-set: publisher-run content(text); }
-    #info-updated-date { string-set: updated-date-run content(text); }
+    #info-doc-id { string-set: doc-id-run content(text); }
     body { margin: 0px; }
 }   
 
@@ -119,6 +119,15 @@ body {
     color: rgb(20,20,20);
 }
 
+.doc-id {
+    margin-top: -0.2cm;
+    padding-left: 0.1cm;
+    line-height: 1.5em;
+    font-size: 22pt;
+    font-weight: 600;
+    color: rgb(20,20,20);
+}
+
 .book-caution-title {
     position: absolute;
     top: 21.7cm;
@@ -156,6 +165,10 @@ body {
     font-family: 'HD Medium';
 }
 
+.book-references {
+    margin-top: 1em;
+}
+
 .book-tail-addr {
     position: absolute;
     top: 13cm;
@@ -182,7 +195,7 @@ h2 {
 }
 
 h3 {
-    color: rgb(0,173,29);
+    color: rgb(40, 40, 40);
     margin-top: 2em;
     margin-bottom: 0.8em;
     font-family: 'HD Medium';

@@ -6,10 +6,11 @@ const md_it = require("markdown-it");
 const util = require("./util/util");
 const git_util = require("./util/git_util");
 const helpsect = require("./helpsect");
+const references = require("./references");
 
 
 ///@param[in]	pathfile_toc		
-exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo)
+exports.bind = async function(path_out, path_in, pathfile_toc, pathname_bookinfo)
 {
 	let str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
 	str_bookinfo = util.removeBom(str_bookinfo);
@@ -19,7 +20,7 @@ exports.bind = function(path_out, path_in, pathfile_toc, pathname_bookinfo)
 	bookinfo.copyrightYear = makeCopyrightYear(path_in);
 	const toc = readToc(pathfile_toc);
 	bindMdWithToc(path_in, path_out, toc, bookinfo);
-	bindHtmlWithToc(path_out, toc, bookinfo);
+	await bindHtmlWithToc(path_out, toc, bookinfo);
 	copyAssets(path_out, path_in);
 }
 
@@ -137,7 +138,7 @@ function calcIndexForFind(pathname_md, str_md, toc_item, binded)
 ///@param[in]	path_out
 ///@param[in]	toc
 ///@param[in]	bookinfo
-function bindHtmlWithToc(path_out, toc, bookinfo)
+async function bindHtmlWithToc(path_out, toc, bookinfo)
 {
 	var pathfile_out = path.join(path_out, "book.html");
 	var str_all = "";
@@ -159,6 +160,7 @@ function bindHtmlWithToc(path_out, toc, bookinfo)
 
 	data.str_book_cover_front = getHtmlBookCoverFront(bookinfo);
 	data.str_book_warning = getHtmlBookWarning(bookinfo);
+	data.str_book_references = await references.getHtmlReferencesSection(bookinfo);
 	data.str_book_cover_back = getHtmlBookCoverBack(bookinfo);
 	data.html_toc = html_toc;	// test
 

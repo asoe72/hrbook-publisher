@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html:5>
+<html>
+
+<head>
+  <title>
+			Book References  
+  </title>
+  <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+  <link href="../css/book.css" type=text/css rel=stylesheet>
+</head>
+
+<body>
+  <% if (bookinfo?.references?.length) { %>
+    <p>
+    <h3>
+      <% if (bookinfo.langCode == "ko") { %>
+        참조 설명서
+      <% } else { %>
+        Book References
+      <% } %>
+    </h3>
+    <table class='book-references'>
+      <tr>
+        <th>Document Title</th>
+        <th>Document ID</th>
+      </tr>
+      <% bookinfo.references.forEach(ref => { %>
+        <tr>
+          <td><%= `${ref.series} ${ref.title}` %></td>
+          <td><%= ref.docId %></td>
+        </tr>
+      <% }) %>
+  </table>
+  <% } %>
+</body>
+
+</html>
