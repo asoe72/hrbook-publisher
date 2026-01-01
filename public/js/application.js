@@ -1,4 +1,4 @@
-﻿///@author	HD Hyundai Robototics. choi, won-hyuk (asoe72@hyundai-robotics.com)
+﻿///@author	HD Hyundai Robototics. choi, won-hyuk (asoe72@hd.com)
 
 
 ///@brief		button-handler 연결
