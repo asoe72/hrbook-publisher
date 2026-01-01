@@ -4,38 +4,48 @@
     <title>book cover front</title>
     <meta http-equiv=Content-Type content="text/html; charset=utf-8">
     <link href="../css/book.css" type=text/css rel=stylesheet >
+    <link href="../css/book_front.css" type=text/css rel=stylesheet >
+	 <!-- body만 추출되므로 head는 의미없다. -->
 </head>
 <body>
-	<div class="book-header-container">
-		<div class="book-hd-logo-box">
+	<div class="book-front-header-container">
+		<div class="book-front-hd-logo-box">
 			<% if (bookinfo.langCode == "ko") { %>
 				<img style="width: 4.8cm" src="../view/image/hd_hyundai_robotics_ko.png">
 			<% } else { %>
 				<img style="width: 4.0cm" src="../view/image/hd_hyundai_robotics_en.png">
 			<% } %>
 		</div>
-		<div class="book-manual-updated-date"><%= bookinfo.updatedDate %></div>
+		<!-- <div class="book-front-updated-date"><%= bookinfo.updatedDate %></div> -->
   </div>
 
-	<hr class="book-header-line"/>
+	<hr class="book-front-header-line"/>
 
-	<div class="book-series">
+	<div class="book-front-series">
    	<%= bookinfo.series %>
     </div><br>
-	<div class="book-title">
+	<div class="book-front-title">
 		<%= bookinfo.title %>
 	</div><br>
 
+	<div class="book-front-doc-info-wrap">
+		<div class="book-front-doc-info">
+			<% if (bookinfo.docId) { %>
+				Document ID: <%= bookinfo.docId %><br>
+			<% } %>
+			Updated date: <%= bookinfo.updatedDate  %>
+		</div><br>
+	</div>
 
-
-	<div class="book-copyright">
+	<div class="book-front-copyright">
 		ⓒ Copyright <%= bookinfo.copyrightYear %>. HD Hyundai Robotics. All rights reserved.
 	</div>
 
 	<div id="bookinfo" style="display:none">
 		<div id="info-series"><%= bookinfo.series %></div>
 		<div id="info-title"><%= bookinfo.title %></div>
-        <div id="info-publisher"><%= bookinfo.publisher %></div>
+      <div id="info-publisher"><%= bookinfo.publisher %></div>
+		<div id="info-doc-id"><%= bookinfo.docId %></div>
 	</div>
 </body>
 </html>

@@ -78,56 +78,6 @@ body {
     font-size: 1.0rem;
 }
 
-.book-header-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.book-hd-logo-box {
-    margin-top: 0cm;
-    padding-top: 0cm;
-}
-
-.book-manual-updated-date {
-    margin-top: 0.2cm;
-    font-family: 'HD Light';
-    font-size: 1.1rem;
-    color: rgb(20,20,20);
-}
-
-.book-header-line {
-    width: 100%;
-    margin-top: 0.2cm;
-    border: 1px solid black;
-}
-
-.book-series {
-    padding-top: 2.0cm;
-	padding-left: 0.1cm;
-	line-height: 0.5em;
-    color: rgb(60,60,60);
-    font-size: 16pt;
-}
-
-.book-title {
-    margin-top: -0.2cm;
-    padding-left: 0.1cm;
-    line-height: 1.5em;
-    font-size: 22pt;
-    font-weight: 600;
-    color: rgb(20,20,20);
-}
-
-.doc-id {
-    margin-top: -0.2cm;
-    padding-left: 0.1cm;
-    line-height: 1.5em;
-    font-size: 22pt;
-    font-weight: 600;
-    color: rgb(20,20,20);
-}
-
 .book-caution-title {
     position: absolute;
     top: 21.7cm;
@@ -145,15 +95,6 @@ body {
     color: rgb(140,140,140);
 }
 
-.book-copyright {
-    position: absolute;
-    top: 25.7cm;
-    left: 0cm;
-    font-size: 8pt;
-    color: rgb(140,140,140);
-    z-index: 5;
-}
-
 #toc li a::after{
     color: black;
     content: target-counter(attr(href), page);
@@ -167,13 +108,6 @@ body {
 
 .book-references {
     margin-top: 1em;
-}
-
-.book-tail-addr {
-    position: absolute;
-    top: 13cm;
-    font-size: 10pt;
-    line-height: 1.5em;
 }
 
 
@@ -310,9 +244,4 @@ th {
     /* 인쇄용이므로 줄 바꿈 */
     white-space: pre-wrap;
     word-break: break-all;
-}
-
-.customer-support-wrap {
-    display: flex;
-    gap: 4rem;             /* 텍스트와 QR 사이 간격 */
 }

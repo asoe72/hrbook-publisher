@@ -1,0 +1,16 @@
+﻿/**
+    @date: 	2026-01-02
+    @author: HD Hyundai Robototics. choi, won-hyuk (asoe72@hd.com)
+*/
+
+.book-back-tail-addr {
+    position: absolute;
+    top: 13cm;
+    font-size: 10pt;
+    line-height: 1.5em;
+}
+
+.book-back-customer-support-wrap {
+    display: flex;
+    gap: 4rem;             /* 텍스트와 QR 사이 간격 */
+}

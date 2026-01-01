@@ -1,0 +1,65 @@
+﻿/**
+    @date: 	2026-01-02
+    @author: HD Hyundai Robototics. choi, won-hyuk (asoe72@hd.com)
+*/
+
+.book-front-header-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.book-front-hd-logo-box {
+    margin-top: 0cm;
+    padding-top: 0cm;
+}
+
+/* .book-front-updated-date {
+    margin-top: 0.2cm;
+    font-family: 'HD Light';
+    font-size: 1.1rem;
+    color: rgb(20,20,20);
+} */
+
+.book-front-header-line {
+    width: 100%;
+    margin-top: 0.2cm;
+    border: 1px solid black;
+}
+
+.book-front-series {
+    padding-top: 2.0cm;
+	padding-left: 0.1cm;
+	line-height: 0.5em;
+    color: rgb(60,60,60);
+    font-size: 16pt;
+}
+
+.book-front-title {
+    margin-top: -0.2cm;
+    padding-left: 0.1cm;
+    line-height: 1.5em;
+    font-size: 22pt;
+    font-weight: 600;
+    color: rgb(20,20,20);
+}
+
+.book-front-doc-info-wrap {
+    margin-top: 2.5rem;
+}
+
+.book-front-doc-info {
+    font-family: 'HD Light';
+    font-size: 0.9rem;
+    line-height: 1.6rem;
+    color: rgb(60,60,60);
+}
+
+.book-front-copyright {
+    position: absolute;
+    top: 25.7cm;
+    left: 0cm;
+    font-size: 8pt;
+    color: rgb(140,140,140);
+    z-index: 5;
+}
