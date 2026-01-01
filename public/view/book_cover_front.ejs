@@ -14,7 +14,7 @@
 				<img style="width: 4.0cm" src="../view/image/hd_hyundai_robotics_en.png">
 			<% } %>
 		</div>
-		<div class="book-manual-release-date"><%= bookinfo.manualReleaseDate %></div>
+		<div class="book-manual-updated-date"><%= bookinfo.updatedDate %></div>
   </div>
 
 	<hr class="book-header-line"/>
@@ -29,7 +29,7 @@
 
 
 	<div class="book-copyright">
-		ⓒ Copyright 2024. HD Hyundai Robotics. All rights reserved.
+		ⓒ Copyright <%= bookinfo.copyrightYear %>. HD Hyundai Robotics. All rights reserved.
 	</div>
 
 	<div id="bookinfo" style="display:none">
