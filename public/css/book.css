@@ -114,14 +114,14 @@ body {
 /* title ---------------------------- */
 
 h1 {
-    color: rgb(0,173,29);
+    color: rgb(6, 47, 135);    /* rgb(0,173,29); */
     margin-bottom: 4px;
-    font-family: 'HD Bold';
+    font-family: 'HD Medium';
     font-size: 1.4rem;
 }
 
 h2 {
-    color: rgb(0,173,29);
+    color: rgb(6, 47, 135);    /* rgb(0,173,29); */
     margin-top: 2.5em;
     margin-bottom: 0.8em;
     font-family: 'HD Medium';
