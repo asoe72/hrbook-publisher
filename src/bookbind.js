@@ -412,7 +412,11 @@ function getHtmlBookCoverFront(bookinfo)
 ///@return      책 경고 문구 페이지의 문자열
 function getHtmlBookWarning(bookinfo)
 {
-	var rpathname = `public/view/book_warning_${bookinfo.langCode}.ejs`;
+	let rpathname = `public/view/book_warning_${bookinfo.langCode}.ejs`;
+	if(fs.existsSync(rpathname)==false) {
+		rpathname = `public/view/book_warning_en.ejs`;
+	}
+
 	let book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
 	book_tmpl_ejs = util.removeBom(book_tmpl_ejs);
 	const data = { bookinfo: bookinfo };
@@ -428,8 +432,10 @@ function getHtmlBookWarning(bookinfo)
 ///@return      책 뒷 표지 html 문서의 문자열
 function getHtmlBookCoverBack(bookinfo)
 {
-	var pathname_book_cover_back = `public/view/book_cover_back_${bookinfo.langCode}.html`;
-	var html = getInBodyFromHtmlFile(pathname_book_cover_back);
+	var rpathname = `public/view/book_cover_back_${bookinfo.langCode}.html`;
+	if(fs.existsSync(rpathname)==false) {
+		rpathname = `public/view/book_cover_back_en.html`;
+	}
+	var html = getInBodyFromHtmlFile(rpathname);
 	return html;
 }
-
