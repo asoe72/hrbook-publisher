@@ -101,6 +101,11 @@ body {
     float: right;
 }
 
+.book-prior-warning {
+    text-align: left;
+    width: 88%;
+}
+
 .book-prior-warning li {
     margin-bottom: 1.2em;
     font-family: 'HD Medium';
@@ -230,6 +235,11 @@ th {
     text-align: center;
     background-color: lightblue;
     padding: 0em 1.5em;
+}
+
+.hint-box-right {
+    width: 88%;
+    text-align: left;
 }
 
 .codebox {
