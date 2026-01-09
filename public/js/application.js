@@ -11,6 +11,12 @@ function initApplication() {
         this.blur();
 	});
 
+    $('#normalize-book').click(function(){
+        const path_md = $("#path-md").val();
+        normalizeBook(path_md);
+        this.blur();
+	});
+
     $('#bind-book').click(function(){
         const path_md = $("#path-md").val();
         bindBook(path_md);
@@ -39,6 +45,31 @@ function adjustMd(path_md) {
         success: function(res) {
             if(res.data.code==0) {
                 alert('adjust-md completed!');
+            }
+            else {
+                alert(res.message);
+            }
+        }
+    })
+}
+
+
+///@brief	서버에 normalize-book 요청 송신
+function normalizeBook(path_md) {
+    if(path_md.trim() == "") {
+        alert('Please, set the source-path (.md files)');
+        return;
+    }
+
+    $.ajax({
+        url: '/normalize-book',
+        type: 'post',
+        data: {
+            path_md: path_md
+		},
+        success: function(res) {
+            if(res.data.code==0) {
+                alert('normalize-book completed!');
             }
             else {
                 alert(res.message);

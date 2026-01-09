@@ -1,6 +1,6 @@
 {
   "name": "hrbook2pdf",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "description": "",
   "main": "app.js",
   "directories": {
@@ -12,6 +12,7 @@
   "author": "Choi, Won-Hyuk <asoe72@gmail.com>",
   "license": "Commercial",
   "dependencies": {
+    "chalk": "^5.6.2",
     "ejs": "3.1.6",
     "express": "4.17.1",
     "fs-extra": "10.0.0",
