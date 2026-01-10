@@ -5,6 +5,7 @@ const path = require('path');
 const md_it = require("markdown-it");
 const util = require("./util/util");
 const git_util = require("./util/git_util");
+const { replaceVariablesInBookinfoToValues, replaceVariablesInStrToValues } = require('./variables.mjs');
 const helpsect = require("./helpsect");
 const references = require("./references");
 
@@ -15,6 +16,7 @@ exports.bind = async function(path_out, path_in, pathfile_toc, pathname_bookinfo
 	let str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
 	str_bookinfo = util.removeBom(str_bookinfo);
 	let bookinfo = JSON.parse(str_bookinfo);
+	replaceVariablesInBookinfoToValues(bookinfo);
 
 	bookinfo.updatedDate = git_util.getCurrentCommitDate(path_in);
 	bookinfo.copyrightYear = makeCopyrightYear(path_in);
@@ -82,36 +84,12 @@ function bindMdSub(pathname_md, toc_item, binded, bookinfo)
 	let str_md = fs.readFileSync(pathname_md, 'utf8');
 	str_md = str_md.replace('\ufeff', '');			// strip BOM
 	str_md = str_md.replace(/\r\n/g, '\n');		// 개행문자 \n로 변환
-	str_md = replaceVariablesToValues(str_md, bookinfo.variables);
+	str_md = replaceVariablesInStrToValues(str_md, bookinfo.variables);
 	binded.str_all += str_md;
 
 	calcIndexForFind(pathname_md, str_md, toc_item, binded);
 
 	return 0;
-}
-
-
-///@param[in]	str		e.g.
-function replaceVariablesToValues(str, vars)
-{
-	//console.log('replaceVariablesToValues');
-	//console.log(JSON.stringify(info.variables));
-	let modifiedStr = str;
-	for(const vname in vars) {
-		modifiedStr = replaceVariablesToValue(modifiedStr, vname, vars[vname]);
-	}
-	
-	return modifiedStr;
-}
-
-
-///@param[in]	str		e.g.
-///@param[in]	var_name		e.g. 'cont_model'
-///@param[in]	var_value		e.g. 'Hi7'
-function replaceVariablesToValue(str, var_name, var_value)
-{
-	const pattern = new RegExp(`\\$\\{${var_name}\\}`, 'g');
-	return str.replace(pattern, var_value);
 }
 
 
@@ -150,7 +128,7 @@ async function bindHtmlWithToc(path_out, toc, bookinfo)
 		str_all += str_html;
 	}
 	
-	str_all = replaceVariablesToValues(str_all, bookinfo.variables);
+	str_all = replaceVariablesInStrToValues(str_all, bookinfo.variables);
 	str_all = postprocHtml(str_all);
 
 	let data = {
