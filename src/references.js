@@ -28,10 +28,16 @@ async function enrichReferences(bookinfo)
 
 	for(const ref of bookinfo.references) {
 		const bookinfoOfRef = await fetchBookinfoFromRPath(ref.rpath);
-		if(!bookinfoOfRef) continue;
-		ref.series = bookinfoOfRef.series;
-		ref.title = bookinfoOfRef.title;
-		ref.docId = bookinfoOfRef.docId;
+		if(!bookinfoOfRef) {	// broken link
+			ref.series = '';
+			ref.title = '-';
+			ref.docId = '';
+		}
+		else {
+			ref.series = bookinfoOfRef.series;
+			ref.title = bookinfoOfRef.title;
+			ref.docId = bookinfoOfRef.docId;
+		}
 	}
 }
 
