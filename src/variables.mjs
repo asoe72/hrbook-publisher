@@ -48,11 +48,26 @@ export function replaceVariablesInStrToValues(str, vars)
 }
 
 
-///@param[in]	str		e.g.
+///@param[in]	str		e.g.		'..${cont_model}..', '${cont_model:upper}AUTOBACKUP_KO_001'
 ///@param[in]	var_name		e.g. 'cont_model'
 ///@param[in]	var_value		e.g. 'Hi7'
+///@return			e.g.	'..Hi7..', 'HI7AUTOBACKUP_KO_001'
 function replaceVariablesToValue(str, var_name, var_value)
 {
-	const pattern = new RegExp(`\\$\\{${var_name}\\}`, 'g');
-	return str.replace(pattern, var_value);
+	const pattern = new RegExp(`\\$\\{${var_name}(:\\w+)?\\}`, 'g');
+
+	return str.replace(pattern, (_, option) => {
+			if (!option) return var_value;
+			if(option.startsWith(':') == false) return var_value;			
+			const opt = option.slice(1);		// option 앞 : 제거
+
+			switch (opt) {
+				case 'lower':
+					return var_value.toLowerCase();
+				case 'upper':
+					return var_value.toUpperCase();
+				default:
+					return var_value;
+			}
+		});
 }
