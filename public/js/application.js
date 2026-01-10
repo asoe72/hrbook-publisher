@@ -13,7 +13,9 @@ function initApplication() {
 
     $('#bind-book').click(function(){
         const path_md = $("#path-md").val();
-        bindBook(path_md);
+        const cont_model = $("#cont-model").val();
+        console.log(`cont_model = ${cont_model}`);
+        bindBook(path_md, cont_model);
         this.blur();
 	});
 	
@@ -49,7 +51,7 @@ function adjustMd(path_md) {
 
 
 ///@brief	서버에 bind-book 요청 송신
-function bindBook(path_md) {
+function bindBook(path_md, cont_model) {
     if(path_md.trim() == "") {
         alert('Please, set the source-path (.md files)');
         return;
@@ -59,7 +61,10 @@ function bindBook(path_md) {
         url: '/bind-book',
         type: 'post',
         data: {
-            path_md: path_md
+            path_md: path_md,
+            variables: {
+                cont_model
+            }
 		},
         success: function(res) {
             if(res.data.code==0) {

@@ -11,11 +11,17 @@ const references = require("./references");
 
 
 ///@param[in]	pathfile_toc		
-exports.bind = async function(path_out, path_in, pathfile_toc, pathname_bookinfo)
+exports.bind = async function(path_out, path_in, variables, pathfile_toc, pathname_bookinfo)
 {
 	let str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
 	str_bookinfo = util.removeBom(str_bookinfo);
 	let bookinfo = JSON.parse(str_bookinfo);
+	if (bookinfo.variables !== null && typeof bookinfo.variables === 'object') {
+		Object.assign(bookinfo.variables, variables);		// 전달받은 variables를 bookinfo.variables에 병합
+	}
+	else {
+		bookinfo.variables = variables;
+	}
 	replaceVariablesInBookinfoToValues(bookinfo);
 
 	bookinfo.updatedDate = git_util.getCurrentCommitDate(path_in);

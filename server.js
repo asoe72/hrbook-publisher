@@ -12,7 +12,7 @@ var app = express();
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ 
     limit:"10mb",
-    extended: false 
+    extended: true 
 }));
 
 
@@ -45,7 +45,8 @@ app.post('/bind-book', async function(req, res) {
 	console.log('bind-book');
 
     var result = {};
-    var iret = await bindBook(req.body.path_md, result);
+    const vars = req.body.variables;
+    var iret = await bindBook(req.body.path_md, req.body.variables, result);
     var msg;
     if(iret==0) {
         msg = 'bind-book ok';
@@ -94,7 +95,7 @@ function adjustMd(path_md, result)
 // ----------------------------------------------
 function bindBookAsync(path_md, result) {
     return new Promise((resolve, reject) => {
-        bindBook(path_md, result, (err, iret) => {
+        bindBook(path_md, [], result, (err, iret) => {
             if (err) reject(err);
             else resolve(iret);
         });
@@ -107,7 +108,7 @@ function bindBookAsync(path_md, result) {
 ///     -   0       ok
 ///     -   -1      SUMMARY.md (TOC) not found
 ///     -   -2      bookinfo.json found
-async function bindBook(path_md, result)
+async function bindBook(path_md, variables, result)
 {
     const pathfile_toc = path.join(path_md, "SUMMARY.md");
     const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
@@ -124,7 +125,7 @@ async function bindBook(path_md, result)
 
     fs.rmSync(path_html, { recursive: true, force: true });
     md2html.convDir(path_md, path_html);
-    await bookbind.bind(path_html, path_md, pathfile_toc, pathfile_bookinfo);
+    await bookbind.bind(path_html, path_md, variables, pathfile_toc, pathfile_bookinfo);
 
     return 0;
 }
