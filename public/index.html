@@ -26,13 +26,22 @@
 <body>
 	<div id="main">
 		<div id="titlebar" style="text-align:right">
-			Version 1.8.2
+			Version 1.10.0
 		</div>
 		<div id="client-area" style="margin-left: 2em;">
 			<h1 style='font-size:4em;'><b>hrbook2pdf</b></h1>
 			<br><br>
 			source-path (.md files)
 			<input type="text" id="path-md" class="lineedit" size="60" placeholder="e.g. d:/doc-hrscript"/><br><br>
+
+			<!-- 제어기 모델 변수 선택 -->
+			cont_model =
+			<select id="cont-model" class="form-control" style="display:inline-block; width:100px;">
+    		<option value="Hi6">Hi6</option>
+    		<option value="Hi7">Hi7</option>
+			</select>
+			<br><br>
+
 			<!-- <button type="button" id="adjust-md" class="btn btn-default"><span class="glyphicon glyphicon-wrench"></span>adjust-md</button> -->
 			<button type="button" id="bind-book" class="btn btn-default"><span class="glyphicon glyphicon-book"></span>&nbsp;bind-book</button>
 			<button type="button" id="print-book" class="btn btn-default"><span class="glyphicon glyphicon-print"></span>&nbsp;print-book</button>
