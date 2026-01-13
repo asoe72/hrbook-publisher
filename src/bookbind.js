@@ -5,7 +5,7 @@ const path = require('path');
 const md_it = require("markdown-it");
 const util = require("./util/util");
 const git_util = require("./util/git_util");
-const { replaceVariablesInBookinfoToValues, replaceVariablesInStrToValues } = require('./variables.mjs');
+const { replaceVariablesInBookinfoToValues, replaceVariablesInStrToValues } = require('./variables.js');
 const helpsect = require("./helpsect");
 const references = require("./references");
 

@@ -1,9 +1,9 @@
-﻿import { walk } from "./util/walk_util.mjs";
+﻿const { walk } = require("./util/walk_util.js");
 
 
 ///@param[in,out]		bookinfo
 ///@brief						bookinfo 항목 내의 요소들의 ${ }들을 bookinfo.variables로 replace
-export function replaceVariablesInBookinfoToValues(bookinfo)
+function replaceVariablesInBookinfoToValues(bookinfo)
 {
 	walk(bookinfo.variables, bookinfo, cbReplaceVariablesInItemToValues);
 }
@@ -33,7 +33,7 @@ function cbReplaceVariablesInItemToValues(variables, value, path)
 
 
 ///@param[in]	str		e.g.
-export function replaceVariablesInStrToValues(str, vars)
+function replaceVariablesInStrToValues(str, vars)
 {
 	if (typeof str !== 'string') return str;
 
@@ -70,4 +70,9 @@ function replaceVariablesToValue(str, var_name, var_value)
 					return var_value;
 			}
 		});
+}
+
+module.exports = {
+	replaceVariablesInBookinfoToValues,
+	replaceVariablesInStrToValues
 }

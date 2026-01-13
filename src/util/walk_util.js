@@ -5,7 +5,7 @@
 ///@param[in]		path		경로	e.g. ['references', 2, 'rpath']
 ///@brief				value 포함 그 하부의 모든 배열이나 객체가 아닌 요소에 대해 cb(value, path) 호출
 ///							최상위의 indexOrKey는 null이다.
-export function walk(arg, value, cb, path = [])
+function walk(arg, value, cb, path = [])
 {
   // 현재 노드에 대해 콜백 호출
   cb(arg, value, path);
@@ -24,4 +24,8 @@ export function walk(arg, value, cb, path = [])
       walk(arg, val, cb, path.concat(key));
     });
   }
+}
+
+module.exports = {
+  walk
 }

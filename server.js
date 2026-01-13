@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const md_adjuster = require("./src/md_adjuster");
 const md2html = require("./src/md2html");
 const bookbind = require("./src/bookbind");
-const normalize = require("./src/normalize/normalize.mjs");
+const { normalizeProcAll } = require("./src/normalize/normalize.js");
 
 var app = express();
 
@@ -137,7 +137,7 @@ function bindBookAsync(path_md, result) {
 function normalizeBook(path_md, result)
 {
     console.log(path_md);
-    normalize.procAll(path_md);
+    normalizeProcAll(path_md);
     return 0;
 }
 

@@ -1,6 +1,6 @@
-﻿import fs from 'fs';
-import path from 'path';
-import chalk from 'chalk';
+﻿const fs = require('fs');
+const path = require('path');
+const chalk = require('chalk').default;
 
 
 // 제외할 폴더 or 파일명 목록
@@ -49,7 +49,7 @@ const ALT_SPECIAL_CHAR = new Map([
 ///@param[in]   _path     basePath
 ///@return      context
 ///@brief		    _path 내의 모든 TEXT_EXTENSIONS 파일들에 대해 check 수행
-export function normalizeAll(_path)
+function normalizeAll(_path)
 {
   console.log('');
   console.log('# CHECK & MODIFY FILES ================');
@@ -235,4 +235,8 @@ function isHangul(cp) {
 ///@return      ascii 영역인지 여부
 function isInAscii(cp) {
   return (0x00 <= cp && cp <= 0x7F);
+}
+
+module.exports = {
+  normalizeAll
 }

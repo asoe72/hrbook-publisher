@@ -1,6 +1,6 @@
-﻿import fs from 'fs';
-import path from 'path';
-import chalk from 'chalk';
+﻿const fs = require('fs');
+const path = require('path');
+const chalk = require('chalk').default;
 
 
 // 제외할 폴더 or 파일명 목록
@@ -35,7 +35,7 @@ function hasUtf8Bom(buffer) {
 ///@param[in]   basePath
 ///@return    insert한 개수
 ///@brief		    _path 내의 모든 TEXT_EXTENSIONS 파일들에 대해 utf8-bom이 없으면 삽입
-export function insertUtf8Bom(basePath)
+function insertUtf8Bom(basePath)
 {
   console.log('');
   console.log('# INSERT UTF8-BOM ================');
@@ -109,4 +109,8 @@ function insertUtf8BomOnPath(_path, context)
   }
 
   return count;
+}
+
+module.exports = {
+  insertUtf8Bom
 }
