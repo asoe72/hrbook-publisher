@@ -19,13 +19,17 @@ const TEXT_EXTENSIONS = new Set([
 const PERMITTED_CHARS = new Set(['°', '→', '↑', '↓', '🠔', '←', '·', '㎡', 'Ω', '≤']);
 
 // 금지된 문자열 (검지되면 수작업 확인 안내)
-const PROHIBITED_STRS = new Set(['Hi6', 'Hi7', 'HI6', 'HI7'
-  , 'korean', 'english'
-  , '[**', '**]' ]);
+const PROHIBITED_STRS = new Set(['Hi6', 'Hi7', 'HI6', 'HI7',
+  'korean', 'english',
+  'www.hyundai-robotics.com',
+  '[**', '**]' ]);
 
 // 대체 문자
 const ALT_SPECIAL_CHAR = new Map([
   [ '–', '-' ],
+  [ '−', '-' ],
+  [ '‑', '-' ], 
+  [ '—', '-' ], 
   [ '…', '...'],
   [ '“', '"'],
   [ '”', '"'],
