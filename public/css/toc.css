@@ -8,7 +8,9 @@
 .toc-title {
     color: rgb(0,173,29);   /* HD현대로보틱스 Heritage Green */
     margin-bottom: 4px;
-    font-family: 'HD Bold';
+    font-family:
+        'HD Bold',
+        'Microsoft YaHei';
     font-size: 1.6rem;
 }
 
@@ -25,14 +27,18 @@
     color: black;
     margin-top: 1.5rem;
     margin-bottom: 0.4rem;
-    font-family: 'HD Medium';
+    font-family:
+        'HD Medium',
+        'Microsoft YaHei';
     font-size: 1.2rem;
 }
 
 .toc-element-level-2{
     margin-left: 1.4rem;
     line-height: 2.0rem;
-    font-family: 'HD Light';
+    font-family:
+        'HD Light',
+        'Microsoft YaHei';
     font-size: 1.0rem;
 }
 

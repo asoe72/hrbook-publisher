@@ -1,6 +1,6 @@
 {
   "name": "hrbook2pdf",
-  "version": "1.11.3",
+  "version": "1.12.0",
   "type": "commonjs",
   "description": "",
   "main": "app.js",

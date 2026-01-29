@@ -74,7 +74,9 @@
 }
 
 body {
-    font-family: 'HD Light';
+    font-family:
+        'HD Light',
+        'Microsoft YaHei';
     font-size: 1.0rem;
 }
 
@@ -108,7 +110,9 @@ body {
 
 .book-prior-warning li {
     margin-bottom: 1.2em;
-    font-family: 'HD Medium';
+    font-family:
+        'HD Medium',
+        'Microsoft YaHei';
 }
 
 .book-references {
@@ -118,10 +122,16 @@ body {
 
 /* title ---------------------------- */
 
+h1, h2, h3, h4 {
+    font-family:
+        'HD Medium',
+        'Microsoft YaHei';
+    /* font-synthesis: none; */
+}
+
 h1 {
     color: rgb(6, 47, 135);    /* rgb(0,173,29); */
     margin-bottom: 4px;
-    font-family: 'HD Medium';
     font-size: 1.4rem;
 }
 
@@ -129,7 +139,6 @@ h2 {
     color: rgb(6, 47, 135);    /* rgb(0,173,29); */
     margin-top: 2.5em;
     margin-bottom: 0.8em;
-    font-family: 'HD Medium';
     font-size: 1.2rem;
 }
 
@@ -137,7 +146,6 @@ h3 {
     color: rgb(40, 40, 40);
     margin-top: 2em;
     margin-bottom: 0.8em;
-    font-family: 'HD Medium';
     font-size: 1.1rem;
 }
 
@@ -145,13 +153,15 @@ h4 {
     color: rgb(40, 40, 40);
     margin-top: 1.8em;
     margin-bottom: 0.8em;
-    font-family: 'HD Medium';
     font-size: 1.1rem;
 }
 
 p {
     line-height: 180%;
-    font-family: 'HD Light';
+    font-family: 
+        'HD Light',
+        'Microsoft YaHei';
+    font-synthesis: none;
     font-size: 1.0rem;
 }
 
@@ -172,7 +182,10 @@ img {
 
 figcaption {
     margin-top: 0.5rem;
-    font-family: 'HD Light', Tahoma;
+    font-family: 
+        'HD Light',
+        'Microsoft YaHei',
+        Tahoma;
     font-size: 0.9rem;
     text-align: center;
 }
@@ -181,7 +194,10 @@ figcaption {
     background-color: #ddd;
     padding: 0.2rem;
     border-radius: 0.2rem;
-    font-family: 'HD Light', Tahoma;
+    font-family: 
+        'HD Light',
+        'Microsoft YaHei',
+        Tahoma;
 }
 
 /* table --------------------------- */
