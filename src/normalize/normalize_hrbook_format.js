@@ -1,6 +1,6 @@
 ﻿const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk').default;
+const chalk = require('chalk');
 
 
 // 제외할 폴더 or 파일명 목록
@@ -19,29 +19,32 @@ const TEXT_EXTENSIONS = new Set([
 const PERMITTED_CHARS = new Set(['°', '→', '↑', '↓', '🠔', '←', '·', '㎡', 'Ω', '≤']);
 
 // 금지된 문자열 (검지되면 수작업 확인 안내)
-const PROHIBITED_STRS = new Set(['Hi6', 'Hi7', 'HI6', 'HI7'
-  , 'korean', 'english'
-  , '[**', '**]' ]);
+const PROHIBITED_STRS = new Set([
+  'Hi6', 'Hi7', 'HI6', 'HI7',
+  'korean', 'english',
+  'hyundai-robotics.com',
+  '[**', '**]' ]);
 
 // 대체 문자
 const ALT_SPECIAL_CHAR = new Map([
-  [ '–', '-' ],
+  [ '–', '-' ], // U+2013
+  [ '−', '-' ], // U+2212
   [ '…', '...'],
   [ '“', '"'],
   [ '”', '"'],
   [ '‘', '\''],
   [ '’', '\''],
-  [ '\[**', '\`'],
-  [ '**\]', '\`'],
+  //[ '\[**', '\`'],
+  //[ '**\]', '\`'],
   [ '○', 'o'],
   [ '×', 'x'],
   [ '※', '*'],
-  [ '⇒', '=>'],
-  [ '⇒', '=>'],
+  [ '⇒', '=>'], // U+21D2
+  [ '⇒', '=>'], // U+21D2
   [ '㎝', 'cm'],
   [ '㎜', 'mm'],
   [ '㎏', 'kg'],
-  [ '​', ' ']
+  [ '​', ' '] // U+200B
 ]);
 
 

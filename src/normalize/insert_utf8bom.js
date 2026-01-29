@@ -1,6 +1,6 @@
 ﻿const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk').default;
+const chalk = require('chalk');
 
 
 // 제외할 폴더 or 파일명 목록
