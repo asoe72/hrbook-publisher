@@ -15,7 +15,14 @@ exports.bind = async function(path_out, path_in, variables, pathfile_toc, pathna
 {
 	let str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
 	str_bookinfo = util.removeBom(str_bookinfo);
-	let bookinfo = JSON.parse(str_bookinfo);
+	let bookinfo = null;
+	try {
+		bookinfo = JSON.parse(str_bookinfo);
+	}
+	catch(err) {
+		console.error(`bookbind) json.parse(${pathname_bookinfo}) error`, err.message);
+		return null;
+	}
 	if (bookinfo.variables !== null && typeof bookinfo.variables === 'object') {
 		Object.assign(bookinfo.variables, variables);		// 전달받은 variables를 bookinfo.variables에 병합
 	}
