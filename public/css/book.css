@@ -103,18 +103,6 @@ body {
     float: right;
 }
 
-.book-prior-warning {
-    text-align: left;
-    width: 88%;
-}
-
-.book-prior-warning li {
-    margin-bottom: 1.2em;
-    font-family:
-        'HD Medium',
-        'Microsoft YaHei';
-}
-
 .book-references {
     margin-top: 1em;
 }

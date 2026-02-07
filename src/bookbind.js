@@ -121,7 +121,6 @@ async function bindHtmlWithToc(path_out, toc, bookinfo)
 	};
 
 	data.str_book_cover_front = getHtmlBookCoverFront(bookinfo);
-	data.str_book_warning = getHtmlBookWarning(bookinfo);
 	data.str_book_references = await references.getHtmlReferencesSection(bookinfo);
 	data.str_book_cover_back = getHtmlBookCoverBack(bookinfo);
 	data.html_toc = html_toc;	// test
@@ -360,26 +359,6 @@ function getHtmlFromMergedInBody(data)
 function getHtmlBookCoverFront(bookinfo)
 {
 	const rpathname = 'public/view/book_cover_front.ejs';
-	let book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
-	book_tmpl_ejs = util.removeBom(book_tmpl_ejs);
-	const data = { bookinfo: bookinfo };
-	let tmpl_rendered = ejs.render(book_tmpl_ejs, data
-		, { views : [ 'public/view/' ] } );	// for include in .ejs
-
-	tmpl_rendered = util.strInTag(tmpl_rendered, 'body', true);
-	return tmpl_rendered;
-}
-
-
-///@param[in]   bookinfo
-///@return      책 경고 문구 페이지의 문자열
-function getHtmlBookWarning(bookinfo)
-{
-	let rpathname = `public/view/book_warning_${bookinfo.langCode}.ejs`;
-	if(fs.existsSync(rpathname)==false) {
-		rpathname = `public/view/book_warning_en.ejs`;
-	}
-
 	let book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
 	book_tmpl_ejs = util.removeBom(book_tmpl_ejs);
 	const data = { bookinfo: bookinfo };
