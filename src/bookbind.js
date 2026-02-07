@@ -29,10 +29,11 @@ exports.bind = async function(path_out, path_in, variables, pathfile_toc, pathna
 	else {
 		bookinfo.variables = variables;
 	}
+	bookinfo.variables._copyrightYear = makeCopyrightYear(path_in);
 	replaceVariablesInBookinfoToValues(bookinfo);
 
 	bookinfo.updatedDate = git_util.getCurrentCommitDate(path_in);
-	bookinfo.copyrightYear = makeCopyrightYear(path_in);
+	bookinfo.copyrightYear = bookinfo.variables._copyrightYear;
 	const toc = readToc(pathfile_toc);
 	bindMdWithToc(path_in, path_out, toc, bookinfo);
 	await bindHtmlWithToc(path_out, toc, bookinfo);

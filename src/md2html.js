@@ -1,17 +1,18 @@
 ﻿const fs = require('fs');
 const path = require('path');
 const md_it = require("markdown-it");
+const { replaceIncludeUrls } = require('./include_urls.js');
 const md_it_impl_fig = require("markdown-it-implicit-figures");
 
 const util = require("./util/util");
 
 
 ///@param[in]	pathfile_md		markdown file
-exports.convFile = function(pathfile_md, pathfile_html)
+exports.convFile = async function(pathfile_md, pathfile_html)
 {
 	var str_md = fs.readFileSync(pathfile_md, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
 	str_md = util.removeBom(str_md);
-	str_md = preprocMd(str_md);
+	str_md = await preprocMd(str_md);
 	const str_body = getHtmlFromMd(str_md);
 	
 	fs.writeFileSync(pathfile_html, str_body);
@@ -20,7 +21,7 @@ exports.convFile = function(pathfile_md, pathfile_html)
 
 ///@param[in]	path_md
 ///@param[in]	path_html
-exports.convDir = function(path_md, path_html)
+exports.convDir = async function(path_md, path_html)
 {
 	if(path_md.length > 0) {
 		if(path_md[0] == '.') return -1;
@@ -46,11 +47,11 @@ exports.convDir = function(path_md, path_html)
 			var path_html2 = path.join(path_html, fname);
 
 			console.log(`convDir(${path_md2}, ${path_html2})`);
-			module.exports.convDir(path_md2, path_html2);
+			await module.exports.convDir(path_md2, path_html2);
 		}
 		else {
 			console.log(`convFileSub(${path_md}, ${path_html}, ${fname})`);
-			convFileSub(path_md, path_html, fname);
+			await convFileSub(path_md, path_html, fname);
 		}
 	};
 
@@ -64,7 +65,7 @@ exports.convDir = function(path_md, path_html)
 ///@return
 ///		-	0	ok
 ///		-	-1	ng. not .md
-function convFileSub(path_md, path_html, fname)
+async function convFileSub(path_md, path_html, fname)
 {
 	const ftitle = util.ftitleFromFName(fname);
 	const ext = util.extFromFName(fname);
@@ -78,7 +79,7 @@ function convFileSub(path_md, path_html, fname)
 	const pathname_html = path.join(path_html, ftitle) + ".html";
 
 	console.log(`convFile(${pathname_md}, ${pathname_html}`);
-	module.exports.convFile(pathname_md, pathname_html);
+	await module.exports.convFile(pathname_md, pathname_html);
 
 	return 0;
 }
@@ -86,9 +87,10 @@ function convFileSub(path_md, path_html, fname)
 
 ///@param[in]	str
 ///@return		preprocessed md text
-function preprocMd(str)
+async function preprocMd(str)
 {
 	let str2 = preprocMd_hyperLinkInTag(str);
+	str2 = await replaceIncludeUrls(str2);
 	str2 = preprocMd_hintStyle(str2);
 	return str2;
 }
@@ -130,8 +132,8 @@ function preprocMd_hintStyle_sub(str, level)
 }
 
 
-///@param[in]	str		`<td>자세한 내용은 [Hi6 로봇제어기 조작설명서](https://hrbook-hrc.web.app/#/view/doc-hi6-operation/korean-tp630/)를 참조하세요.</td>`
-///@return		`<td>자세한 내용은 "<a href="https://hrbook-hrc.web.app/#/view/doc-hi6-operation/korean-tp630/">Hi6 로봇제어기 조작설명서</a>를 참조하세요.</td>`
+///@param[in]	str		`<td>자세한 내용은 [Hi6 로봇제어기 조작설명서](https://hrbook-hrc.web.app/#/view/doc-hi6-operation/ko-tp630/)를 참조하세요.</td>`
+///@return		`<td>자세한 내용은 "<a href="https://hrbook-hrc.web.app/#/view/doc-hi6-operation/ko-tp630/">Hi6 로봇제어기 조작설명서</a>를 참조하세요.</td>`
 ///@brief		html tag 내부의 link는 md->html 변환이 제대로 안 되므로, 이 함수로 전처리 수행함.
 function preprocMd_hyperLinkInTag(str)
 {

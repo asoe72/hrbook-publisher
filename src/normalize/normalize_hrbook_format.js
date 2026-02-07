@@ -16,7 +16,10 @@ const TEXT_EXTENSIONS = new Set([
 
 
 // 허용할 문자 (대체할 문자가 없는 경우)
-const PERMITTED_CHARS = new Set(['°', '→', '↑', '↓', '🠔', '←', '·', '㎡', 'Ω', '≤']);
+const PERMITTED_CHARS = new Set([
+  '°', '→', '↑', '↓', '🠔', '←', '◁','▷',
+  '·', '㎡', 'Ω', '≤'
+]);
 
 // 금지된 문자열 (검지되면 수작업 확인 안내)
 const PROHIBITED_STRS = new Set([
