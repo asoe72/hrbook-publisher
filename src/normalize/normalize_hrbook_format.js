@@ -16,17 +16,25 @@ const TEXT_EXTENSIONS = new Set([
 ]);
 
 
+// https://unicodeplus.com/search 활용할 것
 // 허용할 문자 (대체할 문자가 없는 경우)
 const PERMITTED_CHARS = new Set([
-  '°', '→', '↑', '↓', '🠔', '←', '◁','▷',
-  '·', '㎡', 'Ω', '≤'
+  '→', '↑', '↓', '🠔', '←', '↔', '◁','▷',
+  '·', '≤', '±', '°', '㎡', '㎟', '℃', 'Ω',
+  '◎'
 ]);
+
+const PERMITTED_CHAR_RANGE = [
+  [ 0x2460, 0x2473],    // CIRCLED NUMBER
+  [ 0x24B6, 0x24F4]     // CIRCLED LATIN, CIRCLED DIGIT ZERO, NEGATIVE CIRCLED NUMBER
+];
 
 // 금지된 문자열 (검지되면 수작업 확인 안내)
 const PROHIBITED_STRS = new Set([
   'Hi6', 'Hi7', 'HI6', 'HI7',
-  'korean', 'english',
-  'hyundai-robotics.com',
+  'korean', 'english',      // -> ko, en으로 branch명 통일함.
+  'hyundai-robotics.com',   // 과거 사이트 주소
+  'Copyright ⓒ',           // 공용 page 참조만 해야 함.
   '[**', '**]' ]);
 
 // 대체 문자
@@ -47,11 +55,13 @@ const ALT_SPECIAL_CHAR = new Map([
   [ '○', 'o'],
   [ '×', 'x'],
   [ '※', '*'],
-  [ '～', '~'],
+  [ '～', '~'], // U+FF5E
+  [ '∼', '~'],  // U+223C
   [ '⇒', '=>'], // U+21D2
   [ '㎝', 'cm'],
   [ '㎜', 'mm'],
   [ '㎏', 'kg'],
+  [ ' ', ' '],   // U+00A0
   [ '​', ' '],   // U+200B
   [ ' ', ' ']   // U+2003
 ]);
@@ -169,8 +179,9 @@ function processFile_SpecialChars(strMsg, pathname, str, context)
   let items = findSpecialChars(str);
   for (const item of items) {
     const { line, col } = str_util.lineColFromIndex(str, item.index);
+    const unicode = str_util.strUnicodeHexFromChar(item.char);
     console.log(strMsg + chalk.yellow('NG') + ` (special character `
-      + chalk.yellow(`'${item.char}'`) + ` at (Ln ${line}, Col ${col}))`);
+      + chalk.yellow(`'${item.char}'`) + `(${unicode}) at (Ln ${line}, Col ${col}))`);
 
     let normStr = normalizeSpecialChars(str);
     if(normStr != str) {
@@ -228,12 +239,28 @@ function findSpecialChars(str)
 
   for (const ch of str) {
     const cp = ch.codePointAt(0);
-    if(!PERMITTED_CHARS.has(ch) && !isHangul(cp) && !isInAscii(cp)) {
+    PERMITTED_CHAR_RANGE
+    if(!isPermittedChar(ch) && !isHangul(cp) && !isInAscii(cp)) {
       items.push({ char: ch, index });
     }
     index += ch.length;
   }
   return items;
+}
+
+
+function isPermittedChar(ch)
+{
+  if(PERMITTED_CHARS.has(ch)) return true;
+
+  const cp = ch.codePointAt(0);
+
+  for(const [st, en] of PERMITTED_CHAR_RANGE) {
+    if (st <= cp && cp <= en) {
+      return true;
+    }
+  }
+  return false;
 }
 
 

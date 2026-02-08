@@ -36,3 +36,12 @@ exports.lineColFromIndex = (str, index) =>
 	}
 	return { line, col };
 }
+
+
+///@param[in]		ch	e.g. '⇒'
+///@return			e.g. 'U+21D2'
+exports.strUnicodeHexFromChar = (ch) =>
+{
+  const hex = ch.codePointAt(0).toString(16).toUpperCase();
+  return 'U+' + hex.padStart(4, '0');
+}
