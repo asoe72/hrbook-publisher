@@ -26,7 +26,8 @@ const PERMITTED_CHARS = new Set([
 
 const PERMITTED_CHAR_RANGE = [
   [ 0x2460, 0x2473],    // CIRCLED NUMBER
-  [ 0x24B6, 0x24F4]     // CIRCLED LATIN, CIRCLED DIGIT ZERO, NEGATIVE CIRCLED NUMBER
+  [ 0x24B6, 0x24F4],    // CIRCLED LATIN, CIRCLED DIGIT ZERO, NEGATIVE CIRCLED NUMBER
+  [ 0x2500, 0x256C]     // BOX DRAWINGS
 ];
 
 // 금지된 문자열 (검지되면 수작업 확인 안내)
@@ -63,7 +64,8 @@ const ALT_SPECIAL_CHAR = new Map([
   [ '㎏', 'kg'],
   [ ' ', ' '],   // U+00A0
   [ '​', ' '],   // U+200B
-  [ ' ', ' ']   // U+2003
+  [ ' ', ' '],   // U+2003
+  [ '　', ' ']   // U+3000
 ]);
 
 
@@ -75,7 +77,8 @@ function normalizeAll(_path)
 {
   console.log('');
   console.log('# CHECK & MODIFY FILES ================');
-  const context = { basePath: _path, nChecked: 0, nOk: 0, nNg: 0, nModified: 0 };
+  const context = { basePath: _path, nChecked: 0
+    , nOk: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
   processPath(_path, context);
   printReport(context);  
   
@@ -89,8 +92,8 @@ function printReport(context)
   console.log(`----------------------------------------`);
   console.log(`${context.nChecked} file(s) checked.`);
   console.log(chalk.green(`  * OK : ${context.nOk} file(s)`));
-  if(context.nNg > 0) {
-    console.log(chalk.yellow(`  * NG : ${context.nNg} file(s)`));
+  if(context.nNgFile > 0) {
+    console.log(chalk.yellow(`  * NG : ${context.nNgFile} file(s), ${context.nNgItem} item(s)`));
     console.log(chalk.yellow(`    => Review and correct if necessary.`));
   }
 
@@ -104,7 +107,7 @@ function printReport(context)
 
 
 ///@param[in]   _path
-///@param[in]   context   { nChecked: 0, nOk: 0, nNg: 0 }
+///@param[in]   context   { nChecked: 0, nOk: 0, nNgFile: 0, nNgItem: 0 }
 ///@return      check한 파일 개수 (skip file 제외)
 ///@brief		    _path 내의 모든 파일에 대해 processFile() 수행
 function processPath(_path, context)
@@ -124,7 +127,7 @@ function processPath(_path, context)
     else if (entry.isFile()) {
       const ret = processFile(pathname, context);
       if(ret < 0) {
-        context.nNg++;
+        context.nNgFile++;
       }
       else if(ret > 0) {
         context.nOk++;
@@ -157,10 +160,14 @@ function processFile(pathname, context)
   str = str.replace('\ufeff', '');			// strip BOM
   
   let iret = processFile_SpecialChars(strMsg, pathname, str, context);
-  if(iret < 0) return iret;
+  if(iret < 0) {
+    return iret;
+  }
 
-  iret = processFile_ProhibitedStrs(strMsg, str);
-  if(iret < 0) return iret;
+  iret = processFile_ProhibitedStrs(strMsg, str, context);
+  if(iret < 0) {
+    return iret;
+  }
 
   //console.log(strMsg + chalk.green('PASSED'));
 
@@ -182,6 +189,7 @@ function processFile_SpecialChars(strMsg, pathname, str, context)
     const unicode = str_util.strUnicodeHexFromChar(item.char);
     console.log(strMsg + chalk.yellow('NG') + ` (special character `
       + chalk.yellow(`'${item.char}'`) + `(${unicode}) at (Ln ${line}, Col ${col}))`);
+    context.nNgItem++;
 
     let normStr = normalizeSpecialChars(str);
     if(normStr != str) {
@@ -201,18 +209,20 @@ function processFile_SpecialChars(strMsg, pathname, str, context)
 //      -   0   PASSED. (no prohibited string)
 //      -   -1  NG. (found prohibited string) (수작업 확인, 수정 필요)
 ///@brief     str내에서 PROHIBITED_STRS 배열의 금지 문자열들이 있으면 처리
-function processFile_ProhibitedStrs(strMsg, str)
+function processFile_ProhibitedStrs(strMsg, str, context)
 {
   let found = false;
   for(const prohibited_str of PROHIBITED_STRS) {
-    processFile_ProhibitedStr(strMsg, str, prohibited_str);
-    found = true;
+    const ret = processFile_ProhibitedStr(strMsg, str, prohibited_str, context);
+    if(ret < 0) {
+      found = true;
+    }
   }
   return found ? -1 : 0;
 }
 
 
-function processFile_ProhibitedStr(strMsg, str, prohibited_str)
+function processFile_ProhibitedStr(strMsg, str, prohibited_str, context)
 {
   let idx = str.indexOf(prohibited_str);
   let found = false;
@@ -222,6 +232,7 @@ function processFile_ProhibitedStr(strMsg, str, prohibited_str)
     console.log(strMsg + chalk.yellow('NG') + ` (prohibited string `
       + chalk.yellow(`'${prohibited_str}'`) + ` at (Ln ${line}, Col ${col}))`
     );
+    context.nNgItem++;
     found = true;
     idx = str.indexOf(prohibited_str, idx + prohibited_str.length);
   }

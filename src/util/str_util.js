@@ -45,3 +45,12 @@ exports.strUnicodeHexFromChar = (ch) =>
   const hex = ch.codePointAt(0).toString(16).toUpperCase();
   return 'U+' + hex.padStart(4, '0');
 }
+
+
+///@brief		화면 지우기
+exports.clearConsole = () =>
+{
+	if (process.stdout.isTTY) {
+		process.stdout.write('\x1Bc');
+	}
+}
