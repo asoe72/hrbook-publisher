@@ -1,8 +1,7 @@
 ﻿const fs = require('fs');
 const path = require('path');
-const md_it = require("markdown-it");
 
-const util = require("./util/util");
+const file_util = require("./util/file_util");
 
 
 ///@param[in]	pathfile_md		markdown file
@@ -58,7 +57,7 @@ exports.adjustDir = function(path_md)
 ///		-	-1	ng. not .md
 function adjustFileSub(path_md, fname)
 {
-	const ext = util.extFromFName(fname);
+	const ext = file_util.extFromFName(fname);
 
 	console.log(fname);
 	console.log(ext);

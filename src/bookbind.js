@@ -3,7 +3,8 @@ const fse = require('fs-extra');
 const ejs = require('ejs');
 const path = require('path');
 const md_it = require("markdown-it");
-const util = require("./util/util");
+const file_util = require("./util/file_util");
+const str_util = require("./util/str_util");
 const git_util = require("./util/git_util");
 const { replaceVariablesInBookinfoToValues, replaceVariablesInStrToValues } = require('./variables.js');
 const helpsect = require("./helpsect");
@@ -14,7 +15,7 @@ const references = require("./references");
 exports.bind = async function(path_out, path_in, variables, pathfile_toc, pathname_bookinfo)
 {
 	let str_bookinfo = fs.readFileSync(pathname_bookinfo, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
-	str_bookinfo = util.removeBom(str_bookinfo);
+	str_bookinfo = file_util.removeBom(str_bookinfo);
 	let bookinfo = null;
 	try {
 		bookinfo = JSON.parse(str_bookinfo);
@@ -72,7 +73,7 @@ function bindMdWithToc(path_in, path_out, toc, bookinfo)
 
 	// 한 덩어리로 bind된 파일로 출력 (검색용 색인 역할도 함.)
 	let pathname_book_md = path.join(path_in, "book.md");
-	util.writeFileSyncUtf8(pathname_book_md, binded.str_all);
+	file_util.writeFileSyncUtf8(pathname_book_md, binded.str_all);
 }
 
 
@@ -328,7 +329,7 @@ function postprocHtml_pageBreak(str)
 function getInBodyFromHtmlFile(pathname)
 {
 	const text = fs.readFileSync(pathname, 'utf8');
-	const in_body = util.strInTag(text, 'body', true);
+	const in_body = str_util.strInTag(text, 'body', true);
 	return in_body;
 }
 
@@ -345,7 +346,7 @@ function getHtmlFromMergedInBody(data)
 {
 	const rpathname = 'public/view/book_template.ejs';
 	let book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
-	book_tmpl_ejs = util.removeBom(book_tmpl_ejs);
+	book_tmpl_ejs = file_util.removeBom(book_tmpl_ejs);
 
 	const tmpl_rendered = ejs.render(book_tmpl_ejs, data
 		, { views : [ 'public/view/' ] } );	// for include in .ejs
@@ -360,12 +361,12 @@ function getHtmlBookCoverFront(bookinfo)
 {
 	const rpathname = 'public/view/book_cover_front.ejs';
 	let book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
-	book_tmpl_ejs = util.removeBom(book_tmpl_ejs);
+	book_tmpl_ejs = file_util.removeBom(book_tmpl_ejs);
 	const data = { bookinfo: bookinfo };
 	let tmpl_rendered = ejs.render(book_tmpl_ejs, data
 		, { views : [ 'public/view/' ] } );	// for include in .ejs
 
-	tmpl_rendered = util.strInTag(tmpl_rendered, 'body', true);
+	tmpl_rendered = str_util.strInTag(tmpl_rendered, 'body', true);
 	return tmpl_rendered;
 }
 

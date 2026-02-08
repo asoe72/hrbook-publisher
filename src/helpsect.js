@@ -4,7 +4,8 @@
 const fs = require('fs');
 const ejs = require('ejs');
 const path = require('path');
-const util = require("./util/util");
+const file_util = require("./util/file_util");
+const str_util = require("./util/str_util");
 
 
 ///@param[in]   pathname_out
@@ -12,9 +13,9 @@ const util = require("./util/util");
 ///@return      in_body를 온전한 html로 만들어 pathname_out 파일로 생성.
 exports.makeWholeHtmlFromInBody = (pathname_out, in_body) =>
 {
-	let title = util.strInTag(in_body, 'h1', false);
-	if(title=="") title = util.strInTag(in_body, 'h2', false);
-	if(title=="") title = util.strInTag(in_body, 'h3', false);
+	let title = str_util.strInTag(in_body, 'h1', false);
+	if(title=="") title = str_util.strInTag(in_body, 'h2', false);
+	if(title=="") title = str_util.strInTag(in_body, 'h3', false);
 
 	in_body = replaceHintImgSrc(pathname_out, in_body);
 
@@ -48,7 +49,7 @@ function getHtmlHelpSection(title, href_css, in_body)
 {
 	const rpathname = 'public/view/help_section.ejs';
 	let book_tmpl_ejs = fs.readFileSync(rpathname, 'utf-8');
-	book_tmpl_ejs = util.removeBom(book_tmpl_ejs);
+	book_tmpl_ejs = file_util.removeBom(book_tmpl_ejs);
 	const data = {
 		title: title,
 		href_css: href_css,

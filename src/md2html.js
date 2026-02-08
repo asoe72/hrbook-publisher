@@ -4,14 +4,14 @@ const md_it = require("markdown-it");
 const { replaceIncludeUrls } = require('./include_urls.js');
 const md_it_impl_fig = require("markdown-it-implicit-figures");
 
-const util = require("./util/util");
+const file_util = require("./util/file_util");
 
 
 ///@param[in]	pathfile_md		markdown file
 exports.convFile = async function(pathfile_md, pathfile_html)
 {
 	var str_md = fs.readFileSync(pathfile_md, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
-	str_md = util.removeBom(str_md);
+	str_md = file_util.removeBom(str_md);
 	str_md = await preprocMd(str_md);
 	const str_body = getHtmlFromMd(str_md);
 	
@@ -27,7 +27,7 @@ exports.convDir = async function(path_md, path_html)
 		if(path_md[0] == '.') return -1;
 	}
 
-	util.mkdir(path_html);
+	file_util.mkdir(path_html);
 
 	fnames = fs.readdirSync(path_md);
 
@@ -67,8 +67,8 @@ exports.convDir = async function(path_md, path_html)
 ///		-	-1	ng. not .md
 async function convFileSub(path_md, path_html, fname)
 {
-	const ftitle = util.ftitleFromFName(fname);
-	const ext = util.extFromFName(fname);
+	const ftitle = file_util.ftitleFromFName(fname);
+	const ext = file_util.extFromFName(fname);
 
 	console.log(fname);
 	console.log(ext);

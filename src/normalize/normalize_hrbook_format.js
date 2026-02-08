@@ -1,6 +1,7 @@
 ﻿const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const str_util = require("../util/str_util");
 
 
 // 제외할 폴더 or 파일명 목록
@@ -167,8 +168,9 @@ function processFile_SpecialChars(strMsg, pathname, str, context)
 {
   let items = findSpecialChars(str);
   for (const item of items) {
+    const { line, col } = str_util.lineColFromIndex(str, item.index);
     console.log(strMsg + chalk.yellow('NG') + ` (special character `
-      + chalk.yellow(`'${item.char}'`) + ` at ${item.index})`);
+      + chalk.yellow(`'${item.char}'`) + ` at (Ln ${line}, Col ${col}))`);
 
     let normStr = normalizeSpecialChars(str);
     if(normStr != str) {
@@ -205,8 +207,9 @@ function processFile_ProhibitedStr(strMsg, str, prohibited_str)
   let found = false;
 
   while (idx !== -1) {
+    const { line, col } = str_util.lineColFromIndex(str, idx);
     console.log(strMsg + chalk.yellow('NG') + ` (prohibited string `
-      + chalk.yellow(`'${prohibited_str}'`) + ` at ${idx})`
+      + chalk.yellow(`'${prohibited_str}'`) + ` at (Ln ${line}, Col ${col}))`
     );
     found = true;
     idx = str.indexOf(prohibited_str, idx + prohibited_str.length);
