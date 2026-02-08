@@ -145,13 +145,13 @@ function processFile(pathname, context)
   let str = fs.readFileSync(pathname, 'utf8');
   str = str.replace('\ufeff', '');			// strip BOM
   
-  let iret = processFile_SpecialChar(strMsg, pathname, str, context);
+  let iret = processFile_SpecialChars(strMsg, pathname, str, context);
   if(iret < 0) return iret;
 
-  iret = processFile_ProhibitedStr(strMsg, str);
+  iret = processFile_ProhibitedStrs(strMsg, str);
   if(iret < 0) return iret;
 
-  console.log(strMsg + chalk.green('PASSED'));
+  //console.log(strMsg + chalk.green('PASSED'));
 
   return 1;
 }
@@ -163,12 +163,12 @@ function processFile(pathname, context)
 //      -   0   PASSED. (nothing to process)
 //      -   -1  NG. (수작업 확인, 수정 필요)
 ///@brief		    pathname file이 지정한 확장자이면, format check 수행
-function processFile_SpecialChar(strMsg, pathname, str, context)
+function processFile_SpecialChars(strMsg, pathname, str, context)
 {
-  let result = findFirstSpecialChar(str);
-  if(result) {
+  let items = findSpecialChars(str);
+  for (const item of items) {
     console.log(strMsg + chalk.yellow('NG') + ` (special character `
-      + chalk.yellow(`'${result.char}'`) + ` at ${result.index})`);
+      + chalk.yellow(`'${item.char}'`) + ` at ${item.index})`);
 
     let normStr = normalizeSpecialChars(str);
     if(normStr != str) {
@@ -177,10 +177,9 @@ function processFile_SpecialChar(strMsg, pathname, str, context)
       console.log(chalk.green('    : replaced some characters'));
       context.nModified++;
     }
-    return -1;
-  }
+  }  
 
-  return 0;
+  return (items.length > 0) ? -1 : 0;
 }
 
 
@@ -188,36 +187,50 @@ function processFile_SpecialChar(strMsg, pathname, str, context)
 ///@return
 //      -   0   PASSED. (no prohibited string)
 //      -   -1  NG. (found prohibited string) (수작업 확인, 수정 필요)
-function processFile_ProhibitedStr(strMsg, str)
+///@brief     str내에서 PROHIBITED_STRS 배열의 금지 문자열들이 있으면 처리
+function processFile_ProhibitedStrs(strMsg, str)
 {
-  for(const prohibited_str of PROHIBITED_STRS)
-  {
-    const idx = str.indexOf(prohibited_str);
-    if(idx >= 0) {
-      console.log(strMsg + chalk.yellow('NG') + ` (prohibited string `
-        + chalk.yellow(`'${prohibited_str}'`) + ` at ${idx})`);
-      return -1;
-    }
+  let found = false;
+  for(const prohibited_str of PROHIBITED_STRS) {
+    processFile_ProhibitedStr(strMsg, str, prohibited_str);
+    found = true;
   }
-  return 0;
+  return found ? -1 : 0;
+}
+
+
+function processFile_ProhibitedStr(strMsg, str, prohibited_str)
+{
+  let idx = str.indexOf(prohibited_str);
+  let found = false;
+
+  while (idx !== -1) {
+    console.log(strMsg + chalk.yellow('NG') + ` (prohibited string `
+      + chalk.yellow(`'${prohibited_str}'`) + ` at ${idx})`
+    );
+    found = true;
+    idx = str.indexOf(prohibited_str, idx + prohibited_str.length);
+  }
+
+  return found ? -1 : 0;
 }
 
 
 ///@param[in]   str   대상 문자열 (utf8)
-///@return      { char: ch, index }   처음 찾은 특수문자 (ascii 1~7f 영역 밖, 한글도 아님)
-///           없으면 null
-function findFirstSpecialChar(str)
+///@return      items [{ char: ch, index }, ... ]   처음 찾은 특수문자 (ascii 1~7f 영역 밖, 한글도 아님)
+function findSpecialChars(str)
 {
+  const items = [];
   let index = 0;
 
   for (const ch of str) {
     const cp = ch.codePointAt(0);
     if(!PERMITTED_CHARS.has(ch) && !isHangul(cp) && !isInAscii(cp)) {
-      return { char: ch, index };
+      items.push({ char: ch, index });
     }
     index += ch.length;
   }
-  return null;
+  return items;
 }
 
 

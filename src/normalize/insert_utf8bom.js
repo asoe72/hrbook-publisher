@@ -68,7 +68,7 @@ function insertUtf8BomOnFile(pathname, context)
   const data = fs.readFileSync(pathname);
 
   if (hasUtf8Bom(data)) {
-    console.log(strMsg + chalk.green(`has BOM already: `));
+    //console.log(strMsg + chalk.green(`has BOM already: `));
     return 0;
   }
 
