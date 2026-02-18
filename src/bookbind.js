@@ -234,6 +234,7 @@ function postprocHtml(str)
 {
 	let str_tmp = postprocHtml_assetPathTo1Level(str);
 	str_tmp = postprocHtml_adjustPageBreak(str_tmp);
+	str_tmp = postprocHtml_removeBrInPBlock(str_tmp);
 	
 	return str_tmp;
 }
@@ -286,6 +287,19 @@ function postprocHtml_adjustPageBreak(str)
 	let str_tmp = postprocHtml_addPageBreakBeforeLevel2Title(str);
 	str_tmp = postprocHtml_removePageBreakBetweenLevel1_2Title(str_tmp);
 	return str_tmp;
+}
+
+
+///@return	str에 `<p>..<br>..</p>`는 문제를 일으킬 수 있으므로 <br> 제거
+function postprocHtml_removeBrInPBlock(str)
+{
+    return str
+        .replace(/<p\b[^>]*>([\s\S]*?)<\/p>/gi, (m, inner) => {
+            let cleaned = inner.replace(/<br\s*\/?>/gi, '');
+            if (cleaned.trim() === '') return '';
+            return `<p>${cleaned}</p>`;
+        })
+        .replace(/<p>\s*<\/p>/gi, '');
 }
 
 
