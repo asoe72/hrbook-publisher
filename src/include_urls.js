@@ -14,8 +14,14 @@ async function replaceIncludeUrls(str)
 			const fullMatch = match[0]; // {% include url="..." %}
 			const url = match[1];       // 실제 URL
 
-			const res = await fetch(url);
-			const text = await res.text();
+			let text;
+			try {
+				const res = await fetch(url);
+				text = await res.text();
+			} catch (e) {
+				console.error(`Failed to replace url="${url}"`);
+				text = fullMatch; // 원본 유지
+			}
 
 			return { fullMatch, text };
 		})
