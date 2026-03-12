@@ -2,6 +2,7 @@
 const path = require('path');
 const md_it = require("markdown-it");
 const { replaceIncludeUrls } = require('./include_urls.js');
+const { replaceIncludeFiles } = require('./include_files.js');
 const md_it_impl_fig = require("markdown-it-implicit-figures");
 
 const file_util = require("./util/file_util");
@@ -50,6 +51,7 @@ exports.convDir = async function(path_md, path_html)
 			await module.exports.convDir(path_md2, path_html2);
 		}
 		else {
+			if(fname == 'book.md') continue;
 			console.log(`convFileSub(${path_md}, ${path_html}, ${fname})`);
 			await convFileSub(path_md, path_html, fname);
 		}
@@ -90,6 +92,7 @@ async function convFileSub(path_md, path_html, fname)
 async function preprocMd(str)
 {
 	let str2 = preprocMd_hyperLinkInTag(str);
+	str2 = await replaceIncludeFiles(str2);
 	str2 = await replaceIncludeUrls(str2);
 	str2 = preprocMd_hintStyle(str2);
 	return str2;

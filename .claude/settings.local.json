@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(analyze:exec-plan-github-issue)",
+      "Bash(gh issue:*)"
+    ]
+  }
+}
