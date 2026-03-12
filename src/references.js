@@ -28,6 +28,14 @@ async function enrichReferences(bookinfo)
 	if(Array.isArray(bookinfo.references) == false) return bookinfo;
 
 	for(const ref of bookinfo.references) {
+		// .title, .id 직접 지정 방식
+		if(ref.title || ref.id) {
+			ref.series = ref.series ?? '';
+			ref.title = ref.title ?? '';
+			ref.docId = ref.id ?? '';
+			continue;
+		}
+		// .rpath fetch 방식 (주의: 사내에서 방화벽에 막힐 수 있음.)
 		const bookinfoOfRef = await fetchBookinfoFromRPath(ref.rpath);
 		if(!bookinfoOfRef) {	// broken link
 			ref.series = '';
@@ -50,7 +58,13 @@ async function fetchBookinfoFromRPath(rpath)
 	const proxy = 'https://hrcontentsrelay-bmgae5hdbzapc4bc.koreacentral-01.azurewebsites.net/api/proxy?path=';
 	const url = `${proxy}${rpath}/bookinfo.json`
 
-	const res = await fetch(url);
+	let res;
+	try {
+		res = await fetch(url);
+	} catch (e) {
+		console.error(`fetchBookinfoFromRPath: Failed to fetch url="${url}"`);
+		return undefined;
+	}
 	if (!res.ok) {
 		return undefined;
 	}
