@@ -1,5 +1,6 @@
 *.zip
 *.pdf
+doc/_memo.txt
 backup/
 _raw/
 _test/

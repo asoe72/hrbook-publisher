@@ -223,6 +223,7 @@ function preprocHtml(str, item)
 	var str = preprocHtml_hdLevel(str, item.level);
 	str = preprocHtml_preCodeStyle(str);
 	str = preprocHtml_removeEmpty_thead(str);
+	str = preprocMd_removeRelativeUrls(str);
 	
 	return str;
 }
@@ -265,10 +266,22 @@ function preprocHtml_preCodeStyle(str)
 }
 
 
+///@brief			<th></th>만 있는 빈 <thead>를 삭제
 function preprocHtml_removeEmpty_thead(str)
 {
 	var re = /<thead>\s*<tr>\s*(<th.*?><\/th>\s*)+<\/tr>\s*<\/thead>\s*/gm;
 	return str.replace(re, '');
+}
+
+
+///@param[in]		str		`Refer to &quot;<a href="../../../6-monitoring/README.md">6. Monitoring</a>&quot;`
+///@return		`Refer to &quot;<b>6. Monitoring</b>&quot;`
+///@brief			상대경로로 된 <a> tag를 제거하고 text만 리턴.
+// 						book_id/branch_id 정보를 얻을 수가 없어서, 같은 책에 대한 절대경로 URL을 생성하기 힘들다. 일단은 그냥 제거하는 것으로 처리함.
+function preprocMd_removeRelativeUrls(str)
+{
+	const re = /<a\s+[^>]*href="\.\.\/[^"]*"[^>]*>(.*?)<\/a>/g;
+	return str.replace(re, '<b>$1</b>');
 }
 
 
