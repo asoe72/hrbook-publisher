@@ -29,6 +29,10 @@ function initApplication() {
         printBook();
         this.blur();
     });
+
+    $.get('/app-version', function(res) {
+        $('#app-version').text(res.version);
+    });
 }
 
 

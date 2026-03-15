@@ -4,9 +4,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const md_adjuster = require("./src/md_adjuster");
-const md2html = require("./src/md2html");
-const bookbind = require("./src/bookbind");
-const { normalizeProcAll } = require("./src/normalize/normalize.js");
 const { normalizeBook, bindBook } = require('./src/book_commands');
 
 var app = express();
@@ -16,6 +13,13 @@ app.use(bodyParser.urlencoded({
     limit:"10mb",
     extended: true 
 }));
+
+
+
+app.get('/app-version', function(req, res) {
+    const { version } = require('./package.json');
+    res.send({ version });
+});
 
 
 app.post('/adjust-md', function(req, res) {
@@ -119,7 +123,10 @@ function adjustMd(path_md, result)
 }
 
 
+if (require.main === module) {
+    app.listen(50000, function() {
+        console.log('Server Running at http://127.0.0.1:50000');
+    });
+}
 
-app.listen(50000, function() {
-    console.log('Server Running at http://127.0.0.1:50000');
-});
+module.exports = app;
