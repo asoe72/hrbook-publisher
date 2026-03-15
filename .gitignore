@@ -3,6 +3,12 @@
 doc/_memo.txt
 backup/
 _raw/
-_test/
 out/
 node_modules/
+
+#test
+_test/
+coverage/
+
+#claude
+.claude/settings.local.json

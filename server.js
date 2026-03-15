@@ -7,6 +7,7 @@ const md_adjuster = require("./src/md_adjuster");
 const md2html = require("./src/md2html");
 const bookbind = require("./src/bookbind");
 const { normalizeProcAll } = require("./src/normalize/normalize.js");
+const { normalizeBook, bindBook } = require('./src/book_commands');
 
 var app = express();
 
@@ -117,57 +118,6 @@ function adjustMd(path_md, result)
     return 0;
 }
 
-
-// ----------------------------------------------
-function bindBookAsync(path_md, result) {
-    return new Promise((resolve, reject) => {
-        bindBook(path_md, [], result, (err, iret) => {
-            if (err) reject(err);
-            else resolve(iret);
-        });
-    });
-}
-
-
-// ----------------------------------------------
-///@return
-///     -   0       ok
-///     -   -1      SUMMARY.md (TOC) not found
-///     -   -2      bookinfo.json found
-function normalizeBook(path_md, result)
-{
-    console.log(path_md);
-    normalizeProcAll(path_md);
-    return 0;
-}
-
-
-// ----------------------------------------------
-///@return
-///     -   0       ok
-///     -   -1      SUMMARY.md (TOC) not found
-///     -   -2      bookinfo.json found
-async function bindBook(path_md, variables, result)
-{
-    const pathfile_toc = path.join(path_md, "SUMMARY.md");
-    const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
-    const path_html = 'public/out/';
-
-    if(fs.existsSync( pathfile_toc )==false) {
-        result.msg = pathfile_toc + ' not found.';
-        return -1;
-    }
-    if(fs.existsSync( pathfile_bookinfo )==false) {
-        result.msg = pathfile_bookinfo + ' not found.';
-        return -2;
-    }
-
-    fs.rmSync(path_html, { recursive: true, force: true });
-    await md2html.convDir(path_md, path_html);
-    await bookbind.bind(path_html, path_md, variables, pathfile_toc, pathfile_bookinfo);
-
-    return 0;
-}
 
 
 app.listen(50000, function() {
