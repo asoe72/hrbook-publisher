@@ -94,8 +94,22 @@ async function preprocMd(str)
 	let str2 = preprocMd_hyperLinkInTag(str);
 	str2 = await replaceIncludeFiles(str2);
 	str2 = await replaceIncludeUrls(str2);
+	str2 = preprocMd_inHintStyle(str2);
 	str2 = preprocMd_hintStyle(str2);
 	return str2;
+}
+
+
+///@brief 	{% hint %}~{% endhint %} 내부의 markdown 문법을 미리 html로 변환.
+/// 				(preprocMd_hintStyle를 수행하고 나면, <table class='hint-box'>.. </table> 내부로 들어가서 
+/// 				md2html이 작동하지 않기 때문에, 미리 html로 변환해둔다)
+function preprocMd_inHintStyle(str)
+{
+	const re = /({% hint style=".*?" %})([\s\S]*?)({% endhint %})/g;
+	return str.replace(re, (match, open, content, close) => {
+		const convertedContent = getHtmlFromMd(content);
+		return open + convertedContent + close;
+	});
 }
 
 
