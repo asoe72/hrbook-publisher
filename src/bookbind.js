@@ -235,7 +235,7 @@ function postprocHtml(str)
 {
 	let str_tmp = postprocHtml_assetPathTo1Level(str);
 	str_tmp = postprocHtml_adjustPageBreak(str_tmp);
-	str_tmp = postprocHtml_removeBrInPBlock(str_tmp);
+	//str_tmp = postprocHtml_removeBrInPBlock(str_tmp);		// (개행이 사라지는 문제를 방지하기 위해 다시 remark 함. 문제가 생기면 재검토하자.)
 	
 	return str_tmp;
 }
