@@ -113,7 +113,6 @@ async function bindHtmlWithToc(path_out, toc, bookinfo)
 		str_all += str_html;
 	}
 	
-	str_all = replaceVariablesInStrToValues(str_all, bookinfo.variables);
 	str_all = postprocHtml(str_all);
 
 	let data = {

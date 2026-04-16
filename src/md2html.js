@@ -3,26 +3,29 @@ const path = require('path');
 const md_it = require("markdown-it");
 const { replaceIncludeUrls } = require('./include_urls.js');
 const { replaceIncludeFiles } = require('./include_files.js');
+const { replaceVariablesInStrToValues } = require('./variables.js');
 const md_it_impl_fig = require("markdown-it-implicit-figures");
 
 const file_util = require("./util/file_util");
 
 
 ///@param[in]	pathfile_md		markdown file
-exports.convFile = async function(pathfile_md, pathfile_html)
+exports.convFile = async function(pathfile_md, pathfile_html, variables)
 {
 	var str_md = fs.readFileSync(pathfile_md, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
 	str_md = file_util.removeBom(str_md);
 	str_md = await preprocMd(str_md);
 	const str_body = getHtmlFromMd(str_md);
-	
-	fs.writeFileSync(pathfile_html, str_body);
+	const str_body2 = replaceVariablesInStrToValues(str_body, variables);
+
+	fs.writeFileSync(pathfile_html, str_body2);
 }
 
 
 ///@param[in]	path_md
 ///@param[in]	path_html
-exports.convDir = async function(path_md, path_html)
+///@param[in]	variables
+exports.convDir = async function(path_md, path_html, variables)
 {
 	if(path_md.length > 0) {
 		if(path_md[0] == '.') return -1;
@@ -48,12 +51,12 @@ exports.convDir = async function(path_md, path_html)
 			var path_html2 = path.join(path_html, fname);
 
 			console.log(`convDir(${path_md2}, ${path_html2})`);
-			await module.exports.convDir(path_md2, path_html2);
+			await module.exports.convDir(path_md2, path_html2, variables);
 		}
 		else {
 			if(fname == 'book.md') continue;
 			console.log(`convFileSub(${path_md}, ${path_html}, ${fname})`);
-			await convFileSub(path_md, path_html, fname);
+			await convFileSub(path_md, path_html, fname, variables);
 		}
 	};
 
@@ -67,7 +70,7 @@ exports.convDir = async function(path_md, path_html)
 ///@return
 ///		-	0	ok
 ///		-	-1	ng. not .md
-async function convFileSub(path_md, path_html, fname)
+async function convFileSub(path_md, path_html, fname, variables)
 {
 	const ftitle = file_util.ftitleFromFName(fname);
 	const ext = file_util.extFromFName(fname);
@@ -81,7 +84,7 @@ async function convFileSub(path_md, path_html, fname)
 	const pathname_html = path.join(path_html, ftitle) + ".html";
 
 	console.log(`convFile(${pathname_md}, ${pathname_html}`);
-	await module.exports.convFile(pathname_md, pathname_html);
+	await module.exports.convFile(pathname_md, pathname_html, variables);
 
 	return 0;
 }

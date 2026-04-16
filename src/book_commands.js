@@ -36,7 +36,7 @@ async function bindBook(path_md, variables, result)
     }
 
     fs.rmSync(path_html, { recursive: true, force: true });
-    await md2html.convDir(path_md, path_html);
+    await md2html.convDir(path_md, path_html, variables);
     await bookbind.bind(path_html, path_md, variables, pathfile_toc, pathfile_bookinfo);
 
     return 0;
