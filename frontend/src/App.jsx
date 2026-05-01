@@ -62,7 +62,11 @@ function App() {
         <>
             <TitleBar version={version} />
             <div id="client-area">
-                <h1 style={{ fontSize: '4em' }}><b>hrbook-publisher</b></h1>
+                <h1 style={{ fontSize: '2.8em' }}>
+                    <img src="/book-orange-80.png" 
+                    style={{ height: '1em', verticalAlign: 'middle', marginBottom: '0.3em', marginRight: '0.3em' }} />
+                    <b>hrbook-publisher</b>
+                </h1>
                 <br /><br />
                 <SourcePathInput value={pathMd} onChange={setPathMd} />
                 <ControllerModelSelect value={contModel} onChange={setContModel} />
