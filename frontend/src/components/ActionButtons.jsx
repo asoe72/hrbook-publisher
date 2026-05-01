@@ -6,13 +6,13 @@ function ActionButtons({ onNormalize, onBindBook, onPrintBook }) {
     return (
         <div className="d-flex gap-2">
             <button type="button" className="btn btn-secondary" onClick={onNormalize}>
-                normalize
+                <i className="bi bi-file-text"></i>&nbsp;normalize
             </button>
             <button type="button" className="btn btn-secondary" onClick={onBindBook}>
-                bind-book
+                <i className="bi bi-book"></i>&nbsp;bind-book
             </button>
             <button type="button" className="btn btn-secondary" onClick={onPrintBook}>
-                print-book
+                <i className="bi bi-printer"></i>&nbsp;print-book
             </button>
         </div>
     );
