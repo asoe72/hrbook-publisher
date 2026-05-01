@@ -1,4 +1,4 @@
-# hrbook2pdf
+# hrbook-publisher
 
 hrbook 기술 문서를 PDF 출력용 단일 HTML로 변환하는 도구입니다.
 
@@ -157,10 +157,10 @@ GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대
 
 ## CLI 사용법
 
-전역 설치 후 `hrbook2pdf` 명령어를 사용합니다.
+전역 설치 후 `hrbook-publisher` 명령어를 사용합니다.
 
 ```bash
-npm install -g hrbook2pdf
+npm install -g hrbook-publisher
 ```
 
 ### 1단계: 문서 정규화
@@ -168,7 +168,7 @@ npm install -g hrbook2pdf
 마크다운 파일의 인코딩(UTF-8 BOM) 및 특수 문자를 표준화합니다.
 
 ```bash
-hrbook2pdf normalize-book --path_md="<문서_디렉토리_경로>"
+hrbook-publisher normalize-book --path_md="<문서_디렉토리_경로>"
 ```
 
 ### 2단계: 북 바인딩 (HTML 생성)
@@ -176,14 +176,14 @@ hrbook2pdf normalize-book --path_md="<문서_디렉토리_경로>"
 마크다운을 HTML로 변환하고 `book.html`로 통합합니다.
 
 ```bash
-hrbook2pdf bind-book --path_md="<문서_디렉토리_경로>"
+hrbook-publisher bind-book --path_md="<문서_디렉토리_경로>"
 ```
 
 ### 사용 예시
 
 ```bash
-hrbook2pdf normalize-book --path_md="/home/user/my-book"
-hrbook2pdf bind-book --path_md="/home/user/my-book"
+hrbook-publisher normalize-book --path_md="/home/user/my-book"
+hrbook-publisher bind-book --path_md="/home/user/my-book"
 ```
 
 성공 시 다음 메시지가 출력됩니다.
@@ -212,7 +212,7 @@ bind-book ok
 ### 서버 시작
 
 ```bash
-node node_modules/hrbook2pdf/server.js
+node node_modules/hrbook-publisher/server.js
 # Server Running at http://127.0.0.1:50000
 ```
 

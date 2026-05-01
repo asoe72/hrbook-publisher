@@ -22,7 +22,7 @@ function parseArgs(argv)
 // ----------------------------------------------
 function printUsage()
 {
-    console.log('hrbook2pdf');
+    console.log('hrbook-publisher');
     console.log('Usage:');
     console.log('  node cli.js normalize-book --path_md="<path>"');
     console.log('  node cli.js bind-book --path_md="<path>"');
