@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const { reviewBook } = require('./src/review/review');
 const md_adjuster = require("./src/md_adjuster");
 const { normalizeBook, bindBook } = require('./src/book_commands');
 
@@ -72,12 +73,38 @@ app.post('/normalize-book', async function(req, res) {
 });
 
 
+app.post('/review-book', async function(req, res) {
+	console.log('review-book');
+
+    var result = {};
+    const vars = req.body.variables;
+    var iret = await reviewBook(req.body.path_md, vars, result);
+    var msg;
+    if(iret==0) {
+        msg = 'review-book ok';
+    }
+    else if(iret==-1 || iret==-2) {
+        msg = result.msg;
+    }
+    else {
+        msg = 'error code=' + iret;
+    }
+
+    res.send({
+        message: msg,
+        data: {
+            code: iret
+        }
+    })
+});
+
+
 app.post('/bind-book', async function(req, res) {
 	console.log('bind-book');
 
     var result = {};
     const vars = req.body.variables;
-    var iret = await bindBook(req.body.path_md, req.body.variables, result);
+    var iret = await bindBook(req.body.path_md, vars, result);
     var msg;
     if(iret==0) {
         msg = 'bind-book ok';

@@ -21,6 +21,24 @@ async function requestNormalizeBook(pathMd) {
 }
 
 
+///@param[in]   pathMd  소스 .md 파일 경로
+///@param[in]   contModel   제어기 모델 (e.g. 'Hi6', 'Hi7')
+///@return      { message: string, data: { code: number } }
+///@brief       POST /review-book - check, fix
+async function requestReviewBook(pathMd, contModel) {
+    const res = await fetch('/review-book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            path_md: pathMd,
+            'variables[cont_model]': contModel
+        })
+    });
+    if (!res.ok) throw new Error('review-book request failed');
+    return res.json();
+}
+
+
 ///@param[in]   pathMd      소스 .md 파일 경로
 ///@param[in]   contModel   제어기 모델 (e.g. 'Hi6', 'Hi7')
 ///@return      { message: string, data: { code: number } }
@@ -54,4 +72,4 @@ async function requestLinkCheck(pathMd) {
 }
 
 
-export { fetchAppVersion, requestNormalizeBook, requestBindBook, requestLinkCheck };
+export { fetchAppVersion, requestNormalizeBook, requestReviewBook, requestBindBook, requestLinkCheck };
