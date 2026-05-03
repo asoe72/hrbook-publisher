@@ -62,7 +62,7 @@ describe('bindBook', () => {
     test('두 파일 모두 있으면 md2html.convDir 호출됨', async () => {
         mockFs.existsSync.mockReturnValue(true);
         await bindBook('/some/path', [], {});
-        expect(md2html.convDir).toHaveBeenCalledWith('/some/path', 'public/out/');
+        expect(md2html.convDir).toHaveBeenCalledWith('/some/path', 'public/out/', []);
     });
 
     test('두 파일 모두 있으면 bookbind.bind 호출됨', async () => {

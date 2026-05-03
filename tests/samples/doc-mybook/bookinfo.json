@@ -1,0 +1,12 @@
+﻿{
+    "langCode": "ko",
+    "series": "${cont_model} 제어기",
+    "title": "기능 설명서 - 엔드리스",
+    "publisher": "HD현대로보틱스",
+    "tocTitle": "목차",
+    "tocTitleElements": "[ \"h1\", \"h2\" ]",
+    "docId": "${cont_model:upper}ENDLESS_KO_001",
+    "references": [
+        { "rpath" : "doc-hi6-operation/ko-tp630" }
+    ]
+}

@@ -12,6 +12,15 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\server.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest 디버그 테스트",
+            "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
+            "args": ["--runInBand"], // 중요: 테스트를 순차적으로 실행해야 중단점이 잘 잡힙니다.
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }
