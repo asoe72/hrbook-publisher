@@ -114,7 +114,7 @@ async function reviewFile(pathname, context)
   const str = fs.readFileSync(pathname, 'utf8');
   const html = str.replace('\ufeff', '');			// strip BOM
 
-  const brokenLinks = await checkHasBrokenLink(context.browserPage, html);
+  const brokenLinks = await checkHasBrokenLink(context, html);
   if(brokenLinks.length) {
     reportBrokenLinks(pathname, brokenLinks);
   }
