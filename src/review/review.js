@@ -29,6 +29,8 @@ exports.reviewBook = async function(basePathMd, variables)
 
   await reviewPathAll(basePathHtml);
 
+  console.log(`\n------------------- COMPLETED.`);
+
   return 0;
 }
 
@@ -77,7 +79,7 @@ async function reviewPath(_path, context)
     }
 
     if (entry.isDirectory()) {
-      reviewPath(pathname, context);
+      await reviewPath(pathname, context);
     }
     else if (entry.isFile()) {
       const ret = await reviewFile(pathname, context);
@@ -112,7 +114,22 @@ async function reviewFile(pathname, context)
   const str = fs.readFileSync(pathname, 'utf8');
   const html = str.replace('\ufeff', '');			// strip BOM
 
-  await checkHasBrokenLink(context.browserPage, html);
+  const brokenLinks = await checkHasBrokenLink(context.browserPage, html);
+  if(brokenLinks.length) {
+    reportBrokenLinks(pathname, brokenLinks);
+  }
 
   return 1;
+}
+
+
+// --------------------------------------------------
+function reportBrokenLinks(pathname, brokenLinks)
+{
+  console.log('\n');
+  console.log(`## BROKEN LINKS of ${pathname}:`);
+  for(const link of brokenLinks)
+  {
+    console.log(` - ${link}`);
+  }
 }
