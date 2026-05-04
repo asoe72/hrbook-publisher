@@ -15,7 +15,8 @@ exports.convFile = async function(pathfile_md, pathfile_html, variables)
 	var str_md = fs.readFileSync(pathfile_md, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
 	str_md = file_util.removeBom(str_md);
 	str_md = await preprocMd(str_md);
-	const str_body = getHtmlFromMd(str_md);
+	const str_md2 = replaceVariablesInStrToValues(str_md, variables);
+	const str_body = getHtmlFromMd(str_md2);
 	const str_body2 = replaceVariablesInStrToValues(str_body, variables);
 
 	fs.writeFileSync(pathfile_html, str_body2);
