@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
@@ -102,14 +104,22 @@ function isHRBookUrl(url) {
 // --------------------------------------------------
 /// @param[in]	url	  e.g. "../3-endless/4-2-rcode/2-r354-manual-zero.md?cont_model=Hi6"
 ///               e.g. "2-system-setting/README.md"
-/// @brief		context.basePath에 url로 지정한 file이 존재하는지 여부로 확인한다.
+/// @brief		context.basePathMd 기준으로 url이 가리키는 .md 파일이 존재하는지 확인한다.
 // --------------------------------------------------
-async function checkRelativePathLink(context, url) {
-  
-  // ? query 부분 제거
+function checkRelativePathLink(context, url) {
+  // 페이지 내 앵커 링크는 항상 유효
+  if (url.startsWith('#')) return true;
 
-  
-  return false;
+  // ? query 및 # anchor 제거
+  let filePath = url.split('?')[0].split('#')[0];
+  if (!filePath) return true;
+
+  // basePathHtml 기준의 pathCur의 상대경로
+  const relDir = path.relative(context.basePathHtml, context.pathCur);
+  const mdFileDir = path.join(context.basePathMd, relDir);
+
+  const absPath = path.resolve(mdFileDir, filePath);
+  return fs.existsSync(absPath);
 }
 
 

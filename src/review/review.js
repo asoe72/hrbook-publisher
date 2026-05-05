@@ -27,7 +27,7 @@ exports.reviewBook = async function(basePathMd, variables)
 
   await convMds2HtmlsAll(basePathMd, basePathHtml, variables);
 
-  await reviewPathAll(basePathHtml);
+  await reviewPathAll(basePathMd, basePathHtml);
 
   console.log(`\n------------------- COMPLETED.`);
 
@@ -49,25 +49,26 @@ async function convMds2HtmlsAll(basePathMd, basePathHtml, variables)
 
 
 // ----------------------------------------------
-async function reviewPathAll(_path)
+async function reviewPathAll(basePathMd, basePathHtml)
 {
   console.log('');
   console.log('# CHECK & MODIFY FILES ================');
-  const context = { basePath: _path, nChecked: 0
-    , nOk: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
+  const context = { basePathMd, basePathHtml, basePathCur: basePathHtml
+    , nChecked: 0, nOk: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
 
   const browser = await puppeteer.launch();
   context.browserPage = await browser.newPage();
 
-  return await reviewPath(_path, context);
+  return await reviewPath(context, basePathHtml);
 }
 
 
-///@param[in]   _path
-///@param[in]   context   { nChecked: 0, nOk: 0, nNgFile: 0, nNgItem: 0 }
+///@param[in]   context   { basePathMd, basePathHtml, basePathCur
+///               , nChecked: 0, nOk: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
+///@param[in]   _path     현재까지 진행된 base 경로
 ///@return      review한 파일 개수 (skip file 제외)
-///@brief		    _path 내의 모든 파일에 대해 reviewFile() 수행
-async function reviewPath(_path, context)
+///@brief		    context.basePathHtml 내의 모든 파일에 대해 reviewFile() 수행
+async function reviewPath(context, _path)
 {
   const entries = fs.readdirSync(_path, { withFileTypes: true });
   
@@ -79,7 +80,7 @@ async function reviewPath(_path, context)
     }
 
     if (entry.isDirectory()) {
-      await reviewPath(pathname, context);
+      await reviewPath(context, pathname);
     }
     else if (entry.isFile()) {
       const ret = await reviewFile(pathname, context);
@@ -95,7 +96,7 @@ async function reviewPath(_path, context)
 }
 
 
-///@param[in]   pathname
+///@param[in]   pathname    .html의 경로파일명
 ///@return
 //      -   1   OK
 //      -   0   skip
@@ -103,7 +104,7 @@ async function reviewPath(_path, context)
 ///@brief		    pathname file이 지정한 확장자이면, format check 수행
 async function reviewFile(pathname, context)
 {
-  const relPath = path.relative(context.basePath, pathname);
+  const relPath = path.relative(context.basePathHtml, pathname);
   let strMsg = `  * review: ${relPath} : `;
 
   const ext = path.extname(pathname).toLowerCase();
@@ -114,6 +115,7 @@ async function reviewFile(pathname, context)
   const str = fs.readFileSync(pathname, 'utf8');
   const html = str.replace('\ufeff', '');			// strip BOM
 
+  context.pathCur = path.dirname(pathname);
   const brokenLinks = await checkHasBrokenLink(context, html);
   if(brokenLinks.length) {
     reportBrokenLinks(pathname, brokenLinks);
