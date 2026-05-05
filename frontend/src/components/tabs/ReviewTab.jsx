@@ -2,8 +2,8 @@ import ControllerModelSelect from '../ControllerModelSelect';
 
 ///@param[in]   onNormalize     normalize 버튼 클릭 콜백
 ///@param[in]   onReviewBook    review-book 버튼 클릭 콜백
-///@brief       proof-read 탭 콘텐츠 - 교정 관련 버튼 (추후 옵션 체크박스 확장 예정)
-function ProofReadTab({ contModel, onContModelChange, onNormalize, onReviewBook }) {
+///@brief       review 탭 콘텐츠 - 교정 관련 버튼 (추후 옵션 체크박스 확장 예정)
+function ReviewTab({ contModel, onContModelChange, onNormalize, onReviewBook }) {
     return (
         <div className="pt-3">
             <ControllerModelSelect value={contModel} onChange={onContModelChange} />
@@ -19,4 +19,4 @@ function ProofReadTab({ contModel, onContModelChange, onNormalize, onReviewBook 
     );
 }
 
-export default ProofReadTab;
+export default ReviewTab;

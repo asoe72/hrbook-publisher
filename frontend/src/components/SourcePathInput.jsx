@@ -9,7 +9,7 @@ function SourcePathInput({ value, onChange }) {
             <input
                 type="text"
                 className="form-control mt-1"
-                style={{ width: '60ch', display: 'inline-block', color: '#111' }}
+                style={{ width: '100%', color: '#111' }}
                 value={value}
                 onChange={e => onChange(e.target.value)}
                 placeholder="e.g. d:/doc-hrscript"

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import ProofReadTab from './ProofReadTab';
+import ReviewTab from './ReviewTab';
 import PublishTab from './PublishTab';
 
 const TABS = [
-    { id: 'proof-read',  label: 'proof-read' },
+    { id: 'review',  label: 'review' },
     { id: 'publish',     label: 'publish' },
 ];
 
@@ -35,8 +35,8 @@ function renderTabNav(activeTab, onSelect) {
 ///@param[in]   onContModelChange   제어기 모델 변경 콜백
 ///@brief       활성 탭에 해당하는 콘텐츠 컴포넌트 렌더링
 function renderTabContent(activeTab, handlers, contModel, onContModelChange) {
-    if (activeTab === 'proof-read') {
-        return <ProofReadTab
+    if (activeTab === 'review') {
+        return <ReviewTab
             contModel={contModel}
             onContModelChange={onContModelChange}
             onNormalize={handlers.onNormalize}
@@ -59,7 +59,7 @@ function renderTabContent(activeTab, handlers, contModel, onContModelChange) {
 ///@param[in]   onContModelChange   제어기 모델 변경 콜백 (newValue: string)
 ///@param[in]   onBindBook          bind-book 버튼 클릭 콜백
 ///@param[in]   onPrintBook         print-book 버튼 클릭 콜백
-///@brief       link-check / proof-read / publish 3개 탭 패널 컨테이너 (기본 탭: publish)
+///@brief       review / publish 2개 탭 패널 컨테이너 (기본 탭: publish)
 function TabPanel({ onLinkCheck, onNormalize, onReviewBook, contModel, onContModelChange, onBindBook, onPrintBook }) {
     const [activeTab, setActiveTab] = useState('publish');
 
