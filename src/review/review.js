@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const md2html = require('../md2html');
 const puppeteer = require('puppeteer');
-const { checkHasBrokenLink } = require('./links/check_links');
+const { checkMdHasBrokenLink } = require('./links/check_links');
+const { replaceVariablesInStrToValues } = require('../variables');
 
 
 // 제외할 폴더 or 파일명 목록
@@ -23,11 +23,7 @@ exports.reviewBook = async function(basePathMd, variables)
   console.log('');
   console.log('# PROCESS ALL FILES ================');
 
-  const basePathHtml = 'public/out/';
-
-  await convMds2HtmlsAll(basePathMd, basePathHtml, variables);
-
-  await reviewPathAll(basePathMd, basePathHtml);
+  await reviewPathAll(basePathMd, variables);
 
   console.log(`\n------------------- COMPLETED.`);
 
@@ -36,38 +32,25 @@ exports.reviewBook = async function(basePathMd, variables)
 
 
 // ----------------------------------------------
-async function convMds2HtmlsAll(basePathMd, basePathHtml, variables)
-{
-  console.log('');
-  console.log('## CONVERT MDs to HTMLs ALL');
-
-	fs.rmSync(basePathHtml, { recursive: true, force: true });
-	await md2html.convDir(basePathMd, basePathHtml, variables);
-
-  return 0;
-}
-
-
-// ----------------------------------------------
-async function reviewPathAll(basePathMd, basePathHtml)
+async function reviewPathAll(basePathMd, variables)
 {
   console.log('');
   console.log('# CHECK & MODIFY FILES ================');
-  const context = { basePathMd, basePathHtml, basePathCur: basePathHtml
+  const context = { basePathMd, variables
     , nChecked: 0, nOk: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
 
   const browser = await puppeteer.launch();
   context.browserPage = await browser.newPage();
 
-  return await reviewPath(context, basePathHtml);
+  return await reviewPath(context, basePathMd);
 }
 
 
-///@param[in]   context   { basePathMd, basePathHtml, basePathCur
+///@param[in]   context   { basePathMd, basePathCur
 ///               , nChecked: 0, nOk: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
 ///@param[in]   _path     현재까지 진행된 base 경로
 ///@return      review한 파일 개수 (skip file 제외)
-///@brief		    context.basePathHtml 내의 모든 파일에 대해 reviewFile() 수행
+///@brief		    _path 내의 모든 파일에 대해 reviewFile() 수행
 async function reviewPath(context, _path)
 {
   const entries = fs.readdirSync(_path, { withFileTypes: true });
@@ -96,7 +79,7 @@ async function reviewPath(context, _path)
 }
 
 
-///@param[in]   pathname    .html의 경로파일명
+///@param[in]   pathname    .md의 경로파일명
 ///@return
 //      -   1   OK
 //      -   0   skip
@@ -104,7 +87,7 @@ async function reviewPath(context, _path)
 ///@brief		    pathname file이 지정한 확장자이면, format check 수행
 async function reviewFile(pathname, context)
 {
-  const relPath = path.relative(context.basePathHtml, pathname);
+  const relPath = path.relative(context.basePathMd, pathname);
   let strMsg = `  * review: ${relPath} : `;
 
   const ext = path.extname(pathname).toLowerCase();
@@ -112,11 +95,13 @@ async function reviewFile(pathname, context)
     return 0;
   }
   
-  const str = fs.readFileSync(pathname, 'utf8');
-  const html = str.replace('\ufeff', '');			// strip BOM
+  const mdText0 = fs.readFileSync(pathname, 'utf8');
+  const mdText1 = mdText0.replace('\ufeff', '');			// strip BOM
+
+  const mdText2 = replaceVariablesInStrToValues(mdText1, context.variables);
 
   context.pathCur = path.dirname(pathname);
-  const brokenLinks = await checkHasBrokenLink(context, html);
+  const brokenLinks = await checkMdHasBrokenLink(context, mdText2);
   if(brokenLinks.length) {
     reportBrokenLinks(pathname, brokenLinks);
   }

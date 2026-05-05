@@ -1,31 +1,41 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-const cheerio = require('cheerio');
+const markdown_it = require("markdown-it");
 
 
 // --------------------------------------------------
-async function checkHasBrokenLink(context, html) {
+async function checkMdHasBrokenLink(context, mdText) {
 
-	const brokenLinks = await brokenLinkFromHtml(context, html);
+	const brokenLinks = await brokenLinkFromMd(context, mdText);
   return brokenLinks;
 }
 
+
 // --------------------------------------------------
 /// @param[in]	context
-/// @param[in]	html	검사할 html
+/// @param[in]	mdText	검사할 text
 /// @return		brokenLinks[] 배열
-/// @brief		html 내에서 모든 <a> 태그들의 link를 확인하여, brokenLinks[] 배열을 리턴한다.
+/// @brief		mdText 내에서 모든 <a> 태그들의 link를 확인하여, brokenLinks[] 배열을 리턴한다.
 // --------------------------------------------------
-async function brokenLinkFromHtml(context, html) {
-  const $ = cheerio.load(html);
+async function brokenLinkFromMd(context, mdText) {
+
+  const md_it = new markdown_it();
+  const tokens = md_it.parse(mdText, {});
   const links = [];
   const brokenLinks = [];
 
-  // 모든 <a> 태그에서 href 추출
-  $('a').each((_, el) => {
-    const href = $(el).attr('href');
-    if (href) links.push(href);
+  tokens.forEach((token) => {
+    if (token.children) {
+      token.children.forEach((child) => {
+        if (child.type === 'link_open') {
+          // attrs는 [['href', 'url'], ['target', '_blank']] 형태의 2차원 배열입니다.
+          const hrefToken = child.attrs.find(attr => attr[0] === 'href');
+          const url = hrefToken[1];
+          links.push(url);
+        }
+      });
+    }
   });
 
 	for(const url of links) {
@@ -114,11 +124,7 @@ function checkRelativePathLink(context, url) {
   let filePath = url.split('?')[0].split('#')[0];
   if (!filePath) return true;
 
-  // basePathHtml 기준의 pathCur의 상대경로
-  const relDir = path.relative(context.basePathHtml, context.pathCur);
-  const mdFileDir = path.join(context.basePathMd, relDir);
-
-  const absPath = path.resolve(mdFileDir, filePath);
+  const absPath = path.resolve(context.pathCur, filePath);
   return fs.existsSync(absPath);
 }
 
@@ -186,5 +192,5 @@ async function checkExternalLink(url) {
 
 
 module.exports = {
-  checkHasBrokenLink, checkLink
+  checkMdHasBrokenLink, checkLink
 }
