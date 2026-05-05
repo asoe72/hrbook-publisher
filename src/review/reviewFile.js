@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { checkMdHasBrokenLink } = require('./links/check_links');
+const { applyRule_SpecialChars } = require('./rules/special-char');
 const { replaceVariablesInStrToValues } = require('../variables');
 
 
@@ -29,8 +30,11 @@ async function reviewFile(pathname, context)
   // 파일 읽기
   const mdText0 = fs.readFileSync(pathname, 'utf8');
 
-  let modified = false;   // 저장해야 할지 여부
-  if(hasBOM(mdText0)==false) modified = true;    // 추후, BOM 붙여서 저장해야 함.
+  context.nModified = 0;   // 저장해야 할지 여부
+  if(hasBOM(mdText0)==false) {
+    chalk.yellow(`  BOM added`);
+    context.nModified++;    // 추후, BOM 붙여서 저장해야 함.
+  }
 
   // strip BOM
   const mdText1 = hasBOM ? mdText0.replace('\ufeff', '') : mdText0;
@@ -44,9 +48,12 @@ async function reviewFile(pathname, context)
     reportBrokenLinks(pathname, brokenLinks);
   }
 
+  // 특수문자 확인, 대체
+  const mdText3 = applyRule_SpecialChars(context, mdText1);
+
   // 파일 저장
-  if(modified) {
-    saveWithBOM(pathname, mdText1);
+  if(context.nModified > 0) {
+    saveWithBOM(pathname, mdText3);
   }
 
   return 1;
