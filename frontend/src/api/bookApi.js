@@ -56,20 +56,4 @@ async function requestBindBook(pathMd, contModel) {
     return res.json();
 }
 
-
-
-///@param[in]   pathMd  소스 .md 파일 경로
-///@return      { message: string, data: { code: number } }
-///@brief       POST /link-check - 링크 유효성 검사 요청
-async function requestLinkCheck(pathMd) {
-    const res = await fetch('/link-check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ path_md: pathMd })
-    });
-    if (!res.ok) throw new Error('link-check request failed');
-    return res.json();
-}
-
-
-export { fetchAppVersion, requestNormalizeBook, requestReviewBook, requestBindBook, requestLinkCheck };
+export { fetchAppVersion, requestNormalizeBook, requestReviewBook, requestBindBook };
