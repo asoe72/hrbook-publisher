@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
 const puppeteer = require('puppeteer');
 const str_util = require('../util/str_util');
 const { reviewFile } = require('./review-file');
@@ -18,22 +19,22 @@ exports.reviewBook = async function(basePathMd, variables)
   console.log('');
   console.log('# PROCESS ALL FILES ================');
 
-  await reviewPathAll(basePathMd, variables);
+  const context = { basePathMd, variables
+    , nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
 
-  console.log(`\n------------------- COMPLETED.`);
+  await reviewPathAll(context, basePathMd, variables);
+
+  printBookReport(context);
+
+  console.log(`\n--------------------------- COMPLETED.`);
 
   return 0;
 }
 
 
 // ----------------------------------------------
-async function reviewPathAll(basePathMd, variables)
+async function reviewPathAll(context, basePathMd, variables)
 {
-  console.log('');
-  console.log('# CHECK & MODIFY FILES ================');
-  const context = { basePathMd, variables
-    , nChecked: 0, nOk: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
-
   const browser = await puppeteer.launch();
   context.browserPage = await browser.newPage();
 
@@ -42,7 +43,7 @@ async function reviewPathAll(basePathMd, variables)
 
 
 ///@param[in]   context   { basePathMd, basePathCur
-///               , nChecked: 0, nOk: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
+///               , nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
 ///@param[in]   _path     현재까지 진행된 base 경로
 ///@return      review한 파일 개수 (skip file 제외)
 ///@brief		    _path 내의 모든 파일에 대해 reviewFile() 수행
@@ -61,14 +62,27 @@ async function reviewPath(context, _path)
       await reviewPath(context, pathname);
     }
     else if (entry.isFile()) {
-      const ret = await reviewFile(pathname, context);
-      if(ret < 0) {
-        context.nNgFile++;
-      }
-      else if(ret > 0) {
-        context.nOk++;
-      }
+      await reviewFile(pathname, context);
     }
-    context.nChecked++;
+  }
+}
+
+
+///@brief		    결과 보고 출력
+function printBookReport(context)
+{
+  console.log(`----------------------------------------`);
+  console.log(`${context.nChecked} file(s) checked.`);
+  console.log(chalk.green(`  * OK : ${context.nOkFile} file(s)`));
+  if(context.nNgFile > 0) {
+    console.log(chalk.yellow(`  * NG : ${context.nNgFile} file(s), ${context.nNgItem} item(s)`));
+    console.log(chalk.yellow(`    => Review and correct if necessary.`));
+  }
+
+  if(context.nModified > 0) {
+    console.log(chalk.yellow(`${context.nModified}`) + ` file(s) modified.\nRun the process again to check the result.`);
+  }
+  else {
+    console.log('No files modified.');
   }
 }

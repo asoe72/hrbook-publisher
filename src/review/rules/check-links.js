@@ -11,6 +11,7 @@ async function applyRule_BrokenLinks(context, mdText) {
 	const brokenLinks = await brokenLinkFromMd(context, mdText);
   if(brokenLinks.length) {
     reportLog(context, brokenLinks);
+    context.nNgItem += brokenLinks.length;
   }
   return brokenLinks;
 }

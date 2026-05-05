@@ -80,7 +80,7 @@ function normalizeAll(_path)
   console.log('');
   console.log('# CHECK & MODIFY FILES ================');
   const context = { basePath: _path, nChecked: 0
-    , nOk: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
+    , nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
   processPath(_path, context);
   printReport(context);  
   
@@ -93,7 +93,7 @@ function printReport(context)
 {
   console.log(`----------------------------------------`);
   console.log(`${context.nChecked} file(s) checked.`);
-  console.log(chalk.green(`  * OK : ${context.nOk} file(s)`));
+  console.log(chalk.green(`  * OK : ${context.nOkFile} file(s)`));
   if(context.nNgFile > 0) {
     console.log(chalk.yellow(`  * NG : ${context.nNgFile} file(s), ${context.nNgItem} item(s)`));
     console.log(chalk.yellow(`    => Review and correct if necessary.`));
@@ -109,7 +109,7 @@ function printReport(context)
 
 
 ///@param[in]   _path
-///@param[in]   context   { nChecked: 0, nOk: 0, nNgFile: 0, nNgItem: 0 }
+///@param[in]   context   { nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0 }
 ///@return      check한 파일 개수 (skip file 제외)
 ///@brief		    _path 내의 모든 파일에 대해 processFile() 수행
 function processPath(_path, context)
@@ -132,7 +132,7 @@ function processPath(_path, context)
         context.nNgFile++;
       }
       else if(ret > 0) {
-        context.nOk++;
+        context.nOkFile++;
       }
     }
     context.nChecked++;

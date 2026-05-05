@@ -17,7 +17,6 @@ const TEXT_EXTENSIONS = new Set([
 ///@return
 //      -   1   OK
 //      -   0   skip
-//      -   -1  NG
 ///@brief		    pathname file이 지정한 확장자이면, format check 수행
 async function reviewFile(pathname, context)
 {
@@ -29,11 +28,16 @@ async function reviewFile(pathname, context)
   console.log(` --------------------------------`);
   const relPathname = path.relative(context.basePathMd, pathname);
   console.log(` ## FILE: ${relPathname} : `);
+
+  context.nChecked++;
   
+  context.pathCur = path.dirname(pathname);
+  context.pathname = pathname;
+  context.nModified = 0;   // 저장해야 할지 여부
+
   // 파일 읽기
   const mdText0 = fs.readFileSync(pathname, 'utf8');
 
-  context.nModified = 0;   // 저장해야 할지 여부
   if(hasBOM(mdText0)==false) {
     chalk.yellow(`  ### BOM added`);
     context.nModified++;    // 추후, BOM 붙여서 저장해야 함.
@@ -42,23 +46,47 @@ async function reviewFile(pathname, context)
   // strip BOM
   const mdText1 = hasBOM ? mdText0.replace('\ufeff', '') : mdText0;
 
-  // 변수 대체
-  const mdText2 = replaceVariablesInStrToValues(mdText1, context.variables);
-
-  context.pathCur = path.dirname(pathname);
-  context.pathname = pathname;
-
-  const brokenLinks = await applyRule_BrokenLinks(context, mdText2);
-
-  // 특수문자 확인, 대체
-  const mdText3 = applyRule_SpecialChars(context, mdText1);
-
+  // text review
+  const reviewedMdText = await reviewText(context, mdText1);
+  
   // 파일 저장
   if(context.nModified > 0) {
-    saveWithBOM(pathname, mdText3);
+    saveWithBOM(pathname, reviewedMdText);
   }
 
   return 1;
+}
+
+
+// --------------------------------------------------
+///@param[in]   mdText
+///@return    reviewedMdText
+//      -   1   OK
+//      -   0   NG text
+//      -   -1  NG
+// --------------------------------------------------
+async function reviewText(context, mdText)
+{
+  const nNgItemBefore = context.nNgItem;
+
+  // 변수 대체
+  const mdTextVarApplied = replaceVariablesInStrToValues(mdText, context.variables);
+  
+  // link 깨짐 확인
+  const brokenLinks = await applyRule_BrokenLinks(context, mdTextVarApplied);
+  if (brokenLinks.length) isTextOk = false;
+
+  // 특수문자 확인, 대체
+  const normText = applyRule_SpecialChars(context, mdText);
+
+  if (nNgItemBefore < context.nNgItem) {
+    context.nNgFile++;
+  }
+  else {
+    context.nOkFile++;
+  }
+
+  return normText;
 }
 
 

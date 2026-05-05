@@ -60,7 +60,9 @@ function applyRule_SpecialChars(context, str)
 {
 	// 검사만 함.
 	let items = findSpecialChars(str);
-	context.nNgItem += items.length;
+	if(items.length) {
+		context.nNgItem += items.length;
+	}
 
 	// 대체 문자가 있는 것은 대체
 	let normStr = normalizeSpecialChars(str);
