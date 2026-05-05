@@ -9,7 +9,7 @@ const invalidGlobalUrl2 = 'https://book-hrc.web.app/#/view/doc-hrscript/ko/3-flo
 
 describe('checkHRBookLink', () => {
 
-    let browser, page;
+    let context = {}, browser, page;
 
     beforeAll(async () => {
         browser = await puppeteer.launch();
@@ -21,29 +21,27 @@ describe('checkHRBookLink', () => {
 
     // 각 테스트 시작 전에 새로운 페이지(탭)를 생성
     beforeEach(async () => {
-        page = await browser.newPage();
+        context.browserPage = await browser.newPage();
     });
 
     // 각 테스트 종료 후에 페이지를 닫음 (상태 전이 방지)
     afterEach(async () => {
-        await page.close();
+        await context.browserPage.close();
     });
 
-    it('valid url 1 (hrbook)에 200으로 리턴한다.', async () => {
-        const iret = await checkLink(page, validGlobalUrl);
-        expect(iret).toBe(200);
+    it('valid url 1 (hrbook)에 true로 리턴한다.', async () => {
+        const iret = await checkLink(context, validGlobalUrl);
+        expect(iret).toBe(true);
     }, 10000);
 
-    it('invalid url 1 (hash 뒤 오류)에 4XX으로 리턴한다.', async () => {
-        const iret = await checkLink(page, invalidGlobalUrl1);
-        expect(iret).toBeGreaterThanOrEqual(400);
-        expect(iret).toBeLessThan(500);
+    it('invalid url 1 (hash 뒤 오류)에 false로 리턴한다.', async () => {
+        const iret = await checkLink(context, invalidGlobalUrl1);
+        expect(iret).toBe(false);
     }, 10000);
 
-    it('invalid url 2 (hash 앞 오류)에 4XX으로 리턴한다.', async () => {
-        const iret = await checkLink(page, invalidGlobalUrl2);
-        expect(iret).toBeGreaterThanOrEqual(400);
-        expect(iret).toBeLessThan(500);
+    it('invalid url 2 (hash 앞 오류)에 false로 리턴한다.', async () => {
+        const iret = await checkLink(context, invalidGlobalUrl2);
+        expect(iret).toBe(false);
     }, 10000);
 });
 
@@ -54,15 +52,14 @@ const invalidExternalUrl = 'https://www.hd-hyundairobotics.com/part/am2';
 
 describe('checkExternalLink', () => {
 
-    it('valid url (external)에 200으로 리턴한다.', async () => {
+    it('valid url (external)에 true로 리턴한다.', async () => {
         const iret = await checkLink(null, validExternalUrl);
-        expect(iret).toBe(200);
+        expect(iret).toBe(true);
     }, 10000);
 
-    it('invalid url (external)에 4XX로 리턴한다.', async () => {
+    it('invalid url (external)에 false로 리턴한다.', async () => {
         const iret = await checkLink(null, invalidExternalUrl);
-        expect(iret).toBeGreaterThanOrEqual(400);
-        expect(iret).toBeLessThan(500);
+        expect(iret).toBe(false);
     }, 10000);
 
 });
