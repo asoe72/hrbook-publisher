@@ -7,7 +7,6 @@ export default defineConfig({
         open: true,
         proxy: {
             '/app-version': 'http://localhost:50000',
-            '/normalize-book': 'http://localhost:50000',
             '/review-book': 'http://localhost:50000',
             '/bind-book': 'http://localhost:50000',
             '/out': 'http://localhost:50000',

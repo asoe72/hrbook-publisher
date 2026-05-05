@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 const { reviewBook } = require('./src/review/review-book');
 const md_adjuster = require("./src/md_adjuster");
-const { normalizeBook, bindBook } = require('./src/book_commands');
+const { bindBook } = require('./src/book_commands');
 
 var app = express();
 
@@ -31,31 +31,6 @@ app.post('/adjust-md', function(req, res) {
     var msg;
     if(iret==0) {
         msg = 'adjust-md ok';
-    }
-    else if(iret==-1 || iret==-2) {
-        msg = result.msg;
-    }
-    else {
-        msg = 'error code=' + iret;
-    }
-
-    res.send({
-        message: msg,
-        data: {
-            code: iret
-        }
-    })
-});
-
-
-app.post('/normalize-book', async function(req, res) {
-	console.log('normalize-book');
-
-    var result = {};
-    var iret = normalizeBook(req.body.path_md, result);
-    var msg;
-    if(iret==0) {
-        msg = 'normalize-book ok';
     }
     else if(iret==-1 || iret==-2) {
         msg = result.msg;

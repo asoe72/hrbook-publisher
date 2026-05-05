@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import TitleBar from './components/TitleBar';
 import SourcePathInput from './components/SourcePathInput';
 import TabPanel from './components/tabs/TabPanel';
-import { fetchAppVersion, requestNormalizeBook, requestReviewBook, requestBindBook } from './api/bookApi';
+import { fetchAppVersion, requestReviewBook, requestBindBook } from './api/bookApi';
 
 ///@param[in]   pathMd  source-path 입력값
 ///@return      true: 유효, false: 빈 값 (경고 표시 후 false)
@@ -40,12 +40,6 @@ function App() {
             .catch(() => setVersion('?'));
     }, []);
 
-    async function handleNormalize() {
-        if (!validatePathMd(pathMd)) return;
-        const res = await requestNormalizeBook(pathMd);
-        handleApiResponse(res, 'normalize-book completed!');
-    }
-
     async function handleReviewBook() {
         if (!validatePathMd(pathMd)) return;
         const res = await requestReviewBook(pathMd, contModel);
@@ -78,7 +72,6 @@ function App() {
                     contModel={contModel}
                     onContModelChange={setContModel}
                     
-                    onNormalize={handleNormalize}
                     onReviewBook={handleReviewBook}
                     
                     onBindBook={handleBindBook}

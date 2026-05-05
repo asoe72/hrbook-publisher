@@ -1,4 +1,4 @@
-const { normalizeBook, bindBook } = require('./src/book_commands');
+const { bindBook } = require('./src/book_commands');
 
 // ----------------------------------------------
 /// process.argv에서 command와 --path_md 파싱
@@ -24,7 +24,6 @@ function printUsage()
 {
     console.log('hrbook-publisher');
     console.log('Usage:');
-    console.log('  node cli.js normalize-book --path_md="<path>"');
     console.log('  node cli.js bind-book --path_md="<path>"');
 }
 
@@ -42,16 +41,7 @@ async function main()
     const result = {};
     let iret;
 
-    if (command === 'normalize-book') {
-        iret = normalizeBook(path_md, result);
-        if (iret === 0) {
-            console.log('normalize-book ok');
-        } else {
-            console.error(result.msg || `error code=${iret}`);
-            process.exit(1);
-        }
-    }
-    else if (command === 'bind-book') {
+    if (command === 'bind-book') {
         iret = await bindBook(path_md, [], result);
         if (iret === 0) {
             console.log('bind-book ok');

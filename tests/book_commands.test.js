@@ -5,19 +5,11 @@ const path = require('path');
 // mock 모듈
 jest.mock('../src/md2html', () => ({ convDir: jest.fn().mockResolvedValue(0) }));
 jest.mock('../src/bookbind', () => ({ bind: jest.fn().mockResolvedValue(undefined) }));
-jest.mock('../src/normalize/normalize.js', () => ({ normalizeProcAll: jest.fn() }));
 
-const { normalizeBook, bindBook } = require('../src/book_commands');
-const { normalizeProcAll } = require('../src/normalize/normalize.js');
+const { bindBook } = require('../src/book_commands');
 const md2html = require('../src/md2html');
 const bookbind = require('../src/bookbind');
 
-describe('normalizeBook', () => {
-    test('normalizeProcAll을 path_md와 함께 호출', () => {
-        normalizeBook('/my/book', {});
-        expect(normalizeProcAll).toHaveBeenCalledWith('/my/book');
-    });
-});
 
 describe('bindBook', () => {
     const mockFs = require('fs');

@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const { checkLink } = require('../src/review/links/check_links');
+const { checkLink } = require('../src/review/rules/check-links');
 
 
 const validGlobalUrl = 'https://hrbook-hrc.web.app/#/view/doc-hrscript/ko/3-flowcontrol-subprogram/7-call-jump/README?cont_model=Hi6';

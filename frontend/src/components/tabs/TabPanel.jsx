@@ -30,7 +30,7 @@ function renderTabNav(activeTab, onSelect) {
 
 
 ///@param[in]   activeTab           현재 활성 탭 id
-///@param[in]   handlers            { onNormalize, onBindBook, onPrintBook }
+///@param[in]   handlers            { onBindBook, onPrintBook }
 ///@param[in]   contModel           현재 선택된 제어기 모델
 ///@param[in]   onContModelChange   제어기 모델 변경 콜백
 ///@brief       활성 탭에 해당하는 콘텐츠 컴포넌트 렌더링
@@ -39,7 +39,6 @@ function renderTabContent(activeTab, handlers, contModel, onContModelChange) {
         return <ReviewTab
             contModel={contModel}
             onContModelChange={onContModelChange}
-            onNormalize={handlers.onNormalize}
             onReviewBook={handlers.onReviewBook} />;
     }
     else {
@@ -52,17 +51,16 @@ function renderTabContent(activeTab, handlers, contModel, onContModelChange) {
 }
 
 
-///@param[in]   onNormalize         normalize 버튼 클릭 콜백
 ///@param[in]   onReviewBook        review-book 버튼 클릭 콜백
 ///@param[in]   contModel           현재 선택된 제어기 모델
 ///@param[in]   onContModelChange   제어기 모델 변경 콜백 (newValue: string)
 ///@param[in]   onBindBook          bind-book 버튼 클릭 콜백
 ///@param[in]   onPrintBook         print-book 버튼 클릭 콜백
 ///@brief       review / publish 2개 탭 패널 컨테이너 (기본 탭: publish)
-function TabPanel({ onNormalize, onReviewBook, contModel, onContModelChange, onBindBook, onPrintBook }) {
+function TabPanel({ onReviewBook, contModel, onContModelChange, onBindBook, onPrintBook }) {
     const [activeTab, setActiveTab] = useState('publish');
 
-    const handlers = { onNormalize, onReviewBook, onBindBook, onPrintBook };
+    const handlers = { onReviewBook, onBindBook, onPrintBook };
 
     return (
         <div>

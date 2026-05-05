@@ -2,17 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const md2html = require('./md2html');
 const bookbind = require('./bookbind');
-const { normalizeProcAll } = require('./normalize/normalize.js');
-
-// ----------------------------------------------
-///@return
-///     -   0       ok
-function normalizeBook(path_md, result)
-{
-    console.log(path_md);
-    normalizeProcAll(path_md);
-    return 0;
-}
 
 
 // ----------------------------------------------
@@ -43,4 +32,4 @@ async function bindBook(path_md, variables, result)
 }
 
 
-module.exports = { normalizeBook, bindBook };
+module.exports = { bindBook };
