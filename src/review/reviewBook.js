@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
+const str_util = require('../util/str_util');
 const { reviewFile } = require('./reviewFile');
 
 
@@ -13,6 +14,7 @@ const EXCLUDED_NAMES = new Set([
 // ----------------------------------------------
 exports.reviewBook = async function(basePathMd, variables)
 {
+  str_util.clearConsole();
   console.log('');
   console.log('# PROCESS ALL FILES ================');
 
