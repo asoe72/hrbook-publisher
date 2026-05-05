@@ -5,6 +5,7 @@ const { replaceVariablesInStrToValues } = require('../variables');
 // rules
 const { applyRule_BrokenLinks } = require('./rules/check-links');
 const { applyRule_SpecialChars } = require('./rules/special-char');
+const { applyRule_ProhibitedStrs } = require('./rules/prohibited-strs');
 
 
 // 처리할 텍스트 파일 확장자 목록 (hrbook 문서만)
@@ -78,6 +79,9 @@ async function reviewText(context, mdText)
 
   // 특수문자 확인, 대체
   const normText = applyRule_SpecialChars(context, mdText);
+
+  // 금지 문자열 확인
+  applyRule_ProhibitedStrs(context, mdText);
 
   if (nNgItemBefore < context.nNgItem) {
     context.nNgFile++;
