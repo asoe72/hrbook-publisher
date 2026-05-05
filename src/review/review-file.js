@@ -1,8 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-const { checkMdHasBrokenLink } = require('./links/check_links');
-const { applyRule_SpecialChars } = require('./rules/special-char');
 const { replaceVariablesInStrToValues } = require('../variables');
+
+// rules
+const { applyRule_BrokenLinks } = require('./rules/check-links');
+const { applyRule_SpecialChars } = require('./rules/special-char');
 
 
 // 처리할 텍스트 파일 확장자 목록 (hrbook 문서만)
@@ -43,10 +45,9 @@ async function reviewFile(pathname, context)
   const mdText2 = replaceVariablesInStrToValues(mdText1, context.variables);
 
   context.pathCur = path.dirname(pathname);
-  const brokenLinks = await checkMdHasBrokenLink(context, mdText2);
-  if(brokenLinks.length) {
-    reportBrokenLinks(pathname, brokenLinks);
-  }
+  context.pathname = pathname;
+
+  const brokenLinks = await applyRule_BrokenLinks(context, mdText2);
 
   // 특수문자 확인, 대체
   const mdText3 = applyRule_SpecialChars(context, mdText1);
@@ -57,18 +58,6 @@ async function reviewFile(pathname, context)
   }
 
   return 1;
-}
-
-
-// --------------------------------------------------
-function reportBrokenLinks(pathname, brokenLinks)
-{
-  console.log('\n');
-  console.log(`## BROKEN LINKS of ${pathname}:`);
-  for(const link of brokenLinks)
-  {
-    console.log(` - ${link}`);
-  }
 }
 
 

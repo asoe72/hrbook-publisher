@@ -5,9 +5,12 @@ const markdown_it = require("markdown-it");
 
 
 // --------------------------------------------------
-async function checkMdHasBrokenLink(context, mdText) {
+async function applyRule_BrokenLinks(context, mdText) {
 
 	const brokenLinks = await brokenLinkFromMd(context, mdText);
+  if(brokenLinks.length) {
+    reportLog(context, brokenLinks);
+  }
   return brokenLinks;
 }
 
@@ -191,6 +194,18 @@ async function checkExternalLink(url) {
 }
 
 
+// --------------------------------------------------
+function reportLog(context, brokenLinks)
+{
+  console.log('\n');
+  console.log(`## BROKEN LINKS of ${context.pathname}:`);
+  for(const link of brokenLinks)
+  {
+    console.log(` - ${link}`);
+  }
+}
+
+
 module.exports = {
-  checkMdHasBrokenLink, checkLink
+  applyRule_BrokenLinks, checkLink
 }
