@@ -9,7 +9,7 @@ const { applyRule_SpecialChars } = require('./rules/special-char');
 
 // 처리할 텍스트 파일 확장자 목록 (hrbook 문서만)
 const TEXT_EXTENSIONS = new Set([
-  '.md', '.html', '.json'
+  '.md'
 ]);
 
 
@@ -21,20 +21,21 @@ const TEXT_EXTENSIONS = new Set([
 ///@brief		    pathname file이 지정한 확장자이면, format check 수행
 async function reviewFile(pathname, context)
 {
-  const relPath = path.relative(context.basePathMd, pathname);
-  let strMsg = `  * review: ${relPath} : `;
-
   const ext = path.extname(pathname).toLowerCase();
   if (!TEXT_EXTENSIONS.has(ext)) {
     return 0;
   }
+
+  console.log(` --------------------------------`);
+  const relPathname = path.relative(context.basePathMd, pathname);
+  console.log(` ## FILE: ${relPathname} : `);
   
   // 파일 읽기
   const mdText0 = fs.readFileSync(pathname, 'utf8');
 
   context.nModified = 0;   // 저장해야 할지 여부
   if(hasBOM(mdText0)==false) {
-    chalk.yellow(`  BOM added`);
+    chalk.yellow(`  ### BOM added`);
     context.nModified++;    // 추후, BOM 붙여서 저장해야 함.
   }
 

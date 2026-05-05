@@ -60,20 +60,18 @@ function applyRule_SpecialChars(context, str)
 {
 	// 검사만 함.
 	let items = findSpecialChars(str);
-	for (const item of items) {
-		const { line, col } = str_util.lineColFromIndex(str, item.index);
-		const unicode = str_util.strUnicodeHexFromChar(item.char);
-		console.log(chalk.yellow('NG') + ` (special character `
-			+ chalk.yellow(`'${item.char}'`) + `(${unicode}) at (Ln ${line}, Col ${col}))`);
-		context.nNgItem++;
-	}
+	context.nNgItem += items.length;
 
 	// 대체 문자가 있는 것은 대체
 	let normStr = normalizeSpecialChars(str);
-	if(normStr != str) {
-		console.log(chalk.green('    : replaced some characters'));
+	const replaced = (normStr != str);
+	if(replaced) {
 		context.nModified++;
-	}  
+	}
+
+	if(items.length || replaced) {
+		reportSpecialChars(context, items, str, replaced);
+	}	
 
 	return normStr;
 }
@@ -146,6 +144,25 @@ function isHangul(cp) {
 // --------------------------------------------------
 function isInAscii(cp) {
   return (0x00 <= cp && cp <= 0x7F);
+}
+
+
+// --------------------------------------------------
+function reportSpecialChars(context, items, str, replaced)
+{
+	console.log('\n');
+  console.log(`  ### SPECIAL CHARS`);
+
+	for (const item of items) {
+		const { line, col } = str_util.lineColFromIndex(str, item.index);
+		const unicode = str_util.strUnicodeHexFromChar(item.char);
+		console.log('   - ' + chalk.yellow('[NG]') + ` (special character `
+			+ chalk.yellow(`'${item.char}'`) + `(${unicode}) at (Ln ${line}, Col ${col}))`);
+	}
+
+	if(replaced) {
+		console.log(chalk.green('    : replaced some characters'));
+	}
 }
 
 

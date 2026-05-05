@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+const chalk = require('chalk');
 const markdown_it = require("markdown-it");
 
 
@@ -198,10 +199,10 @@ async function checkExternalLink(url) {
 function reportLog(context, brokenLinks)
 {
   console.log('\n');
-  console.log(`## BROKEN LINKS of ${context.pathname}:`);
+  console.log(`  ### BROKEN LINKS`);
   for(const link of brokenLinks)
   {
-    console.log(` - ${link}`);
+    console.log(`   - ` + chalk.yellow('[NG]') + ` ${link}`);
   }
 }
 

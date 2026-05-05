@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
 const str_util = require('../util/str_util');
-const { reviewFile } = require('./reviewFile');
+const { reviewFile } = require('./review-file');
 
 
 // 제외할 폴더 or 파일명 목록
