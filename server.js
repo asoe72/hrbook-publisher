@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { reviewBook } = require('./src/review/review');
+const { reviewBook } = require('./src/review/reviewBook');
 const md_adjuster = require("./src/md_adjuster");
 const { normalizeBook, bindBook } = require('./src/book_commands');
 
