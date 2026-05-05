@@ -26,15 +26,27 @@ async function reviewFile(pathname, context)
     return 0;
   }
   
+  // 파일 읽기
   const mdText0 = fs.readFileSync(pathname, 'utf8');
-  const mdText1 = mdText0.replace('\ufeff', '');			// strip BOM
 
+  let modified = false;   // 저장해야 할지 여부
+  if(hasBOM(mdText0)==false) modified = true;    // 추후, BOM 붙여서 저장해야 함.
+
+  // strip BOM
+  const mdText1 = hasBOM ? mdText0.replace('\ufeff', '') : mdText0;
+
+  // 변수 대체
   const mdText2 = replaceVariablesInStrToValues(mdText1, context.variables);
 
   context.pathCur = path.dirname(pathname);
   const brokenLinks = await checkMdHasBrokenLink(context, mdText2);
   if(brokenLinks.length) {
     reportBrokenLinks(pathname, brokenLinks);
+  }
+
+  // 파일 저장
+  if(modified) {
+    saveWithBOM(pathname, mdText1);
   }
 
   return 1;
@@ -50,6 +62,21 @@ function reportBrokenLinks(pathname, brokenLinks)
   {
     console.log(` - ${link}`);
   }
+}
+
+
+// --------------------------------------------------
+function hasBOM(text)
+{
+  return (text.charCodeAt(0) === 0xFEFF);
+}
+
+
+// --------------------------------------------------
+function saveWithBOM(pathname, text)
+{
+  const textWithBOM = '\uFEFF' + text;
+  fs.writeFileSync(pathname, textWithBOM, 'utf8');
 }
 
 
