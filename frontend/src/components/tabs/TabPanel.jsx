@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ReviewTab from './ReviewTab';
 import PublishTab from './PublishTab';
 
+
 const TABS = [
     { id: 'review',  label: 'review' },
     { id: 'publish',     label: 'publish' },
@@ -34,15 +35,19 @@ function renderTabNav(activeTab, onSelect) {
 ///@param[in]   contModel           현재 선택된 제어기 모델
 ///@param[in]   onContModelChange   제어기 모델 변경 콜백
 ///@brief       활성 탭에 해당하는 콘텐츠 컴포넌트 렌더링
-function renderTabContent(activeTab, handlers, contModel, onContModelChange) {
+function renderTabContent(activeTab, handlers, pathMd, setPathMd, contModel, onContModelChange) {
     if (activeTab === 'review') {
         return <ReviewTab
+            pathMd={pathMd}
+            setPathMd={setPathMd}
             contModel={contModel}
             onContModelChange={onContModelChange}
             onReviewBook={handlers.onReviewBook} />;
     }
     else {
         return <PublishTab
+            pathMd={pathMd}
+            setPathMd={setPathMd}
             contModel={contModel}
             onContModelChange={onContModelChange}
             onBindBook={handlers.onBindBook}
@@ -52,12 +57,14 @@ function renderTabContent(activeTab, handlers, contModel, onContModelChange) {
 
 
 ///@param[in]   onReviewBook        review-book 버튼 클릭 콜백
+///@param[in]   pathMd              source-path .md
+///@param[in]   setPathMd           source-path .md 변경 콜백
 ///@param[in]   contModel           현재 선택된 제어기 모델
 ///@param[in]   onContModelChange   제어기 모델 변경 콜백 (newValue: string)
 ///@param[in]   onBindBook          bind-book 버튼 클릭 콜백
 ///@param[in]   onPrintBook         print-book 버튼 클릭 콜백
 ///@brief       review / publish 2개 탭 패널 컨테이너 (기본 탭: publish)
-function TabPanel({ onReviewBook, contModel, onContModelChange, onBindBook, onPrintBook }) {
+function TabPanel({ onReviewBook, pathMd, setPathMd, contModel, onContModelChange, onBindBook, onPrintBook }) {
     const [activeTab, setActiveTab] = useState('publish');
 
     const handlers = { onReviewBook, onBindBook, onPrintBook };
@@ -65,7 +72,8 @@ function TabPanel({ onReviewBook, contModel, onContModelChange, onBindBook, onPr
     return (
         <div>
             {renderTabNav(activeTab, setActiveTab)}
-            {renderTabContent(activeTab, handlers, contModel, onContModelChange)}
+            <br/>
+            {renderTabContent(activeTab, handlers, pathMd, setPathMd, contModel, onContModelChange)}
         </div>
     );
 }

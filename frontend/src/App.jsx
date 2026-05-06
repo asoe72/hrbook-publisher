@@ -66,9 +66,11 @@ function App() {
                     style={{ height: '1em', verticalAlign: 'middle', marginBottom: '0.3em', marginRight: '0.3em' }} />
                     <b>hrbook-publisher</b>
                 </h1>
-                <br /><br />
-                <SourcePathInput value={pathMd} onChange={setPathMd} />
-                <TabPanel                                        
+                <br />
+                <TabPanel
+                    pathMd={pathMd}
+                    setPathMd={setPathMd}                               
+
                     contModel={contModel}
                     onContModelChange={setContModel}
                     

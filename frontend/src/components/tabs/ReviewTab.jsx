@@ -1,10 +1,12 @@
+import SourcePathInput from '../SourcePathInput';
 import ControllerModelSelect from '../ControllerModelSelect';
 
 ///@param[in]   onReviewBook    review-book 버튼 클릭 콜백
 ///@brief       review 탭 콘텐츠 - 교정 관련 버튼 (추후 옵션 체크박스 확장 예정)
-function ReviewTab({ contModel, onContModelChange, onReviewBook }) {
+function ReviewTab({ pathMd, setPathMd, contModel, onContModelChange, onReviewBook }) {
     return (
         <div className="pt-3">
+            <SourcePathInput value={pathMd} onChange={setPathMd} />
             <ControllerModelSelect value={contModel} onChange={onContModelChange} />
             <div className="d-flex gap-2">
                 <button type="button" className="btn btn-secondary" onClick={onReviewBook}>
