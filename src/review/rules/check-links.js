@@ -8,7 +8,7 @@ const markdown_it = require("markdown-it");
 // --------------------------------------------------
 async function applyRule_BrokenLinks(context, mdText) {
 
-	const brokenLinks = await brokenLinkFromMd(context, mdText);
+	const brokenLinks = await brokenLinksFromMd(context, mdText);
   if(brokenLinks.length) {
     reportLog(context, brokenLinks);
     context.nNgItem += brokenLinks.length;
@@ -21,27 +21,12 @@ async function applyRule_BrokenLinks(context, mdText) {
 /// @param[in]	context
 /// @param[in]	mdText	검사할 text
 /// @return		brokenLinks[] 배열
-/// @brief		mdText 내에서 모든 <a> 태그들의 link를 확인하여, brokenLinks[] 배열을 리턴한다.
+/// @brief		mdText 내에서 모든 []() 요소와 ![]() 요소들의 link를 확인하여, brokenLinks[] 배열을 리턴한다.
 // --------------------------------------------------
-async function brokenLinkFromMd(context, mdText) {
+async function brokenLinksFromMd(context, mdText) {
 
-  const md_it = new markdown_it();
-  const tokens = md_it.parse(mdText, {});
-  const links = [];
+  const links = linksFromMd(mdText);
   const brokenLinks = [];
-
-  tokens.forEach((token) => {
-    if (token.children) {
-      token.children.forEach((child) => {
-        if (child.type === 'link_open') {
-          // attrs는 [['href', 'url'], ['target', '_blank']] 형태의 2차원 배열입니다.
-          const hrefToken = child.attrs.find(attr => attr[0] === 'href');
-          const url = hrefToken[1];
-          links.push(url);
-        }
-      });
-    }
-  });
 
 	for(const url of links) {
 		try {
@@ -55,6 +40,44 @@ async function brokenLinkFromMd(context, mdText) {
     }
 	}
 	return brokenLinks;
+}
+
+
+// --------------------------------------------------
+/// @param[in]	mdText	검사할 text
+/// @return		links[] 배열
+/// @brief		mdText 내의 모든 []() 요소와 ![]() 요소들의 link로 구성된 links[] 배열을 리턴한다.
+// --------------------------------------------------
+function linksFromMd(mdText) {
+
+  const md_it = new markdown_it();
+  const tokens = md_it.parse(mdText, {});
+  const links = [];
+
+  tokens.forEach((token) => {
+    if (token.children) {
+      token.children.forEach((child) => {
+        let attr = null;
+        if (child.type === 'link_open') {
+          // attrs는 [['href', 'url'], ['target', '_blank']] 형태의 2차원 배열입니다.
+          attr = child.attrs.find(attr => attr[0] === 'href');
+        }
+        else if (child.type === 'image') {
+          // attrs는 [['src', '경로'], ['alt', '설명']] 형태의 2차원 배열입니다.
+          attr = child.attrs.find(attr => attr[0] === 'src');
+        }
+        else {
+          return;
+        }
+        if (attr) {
+          const url = attr[1];
+          links.push(url);
+        }
+      });
+    }
+  });
+
+	return links;
 }
 
 
