@@ -4,9 +4,7 @@ const CONTROLLER_MODELS = ['Hi6', 'Hi7'];
 
 
 ///@brief       제어기 모델(cont_model) 선택 셀렉터
-function ControllerModelSelect() {
-
-    const { contModel, setContModel } = useStore();
+function ControllerModelSelect({ contModel, setContModel }) {
 
     return (
         <div className="mb-3">

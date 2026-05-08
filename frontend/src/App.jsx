@@ -2,53 +2,14 @@ import { useState, useEffect } from 'react';
 import { useStore } from './store';
 import TitleBar from './components/TitleBar';
 import TabPanels from './components/panels/TabPanels';
-import { fetchAppVersion, requestReviewBook, requestBindBook } from './api/bookApi';
+import { fetchAppVersion } from './api/bookApi';
 
-///@param[in]   pathMd  source-path 입력값
-///@return      true: 유효, false: 빈 값 (경고 표시 후 false)
-///@brief       path_md 유효성 검사
-function validatePathMd(pathMd) {
-    if (pathMd.trim() === '') {
-        alert('Please, set the source-path (.md files)');
-        return false;
-    }
-    return true;
-}
-
-
-///@param[in]   bookId  remote book ID
-///@param[in]   version remote book version
-///@return      true: 유효, false: 빈 값 (경고 표시 후 false)
-///@brief       remote source (bookId, version) 유효성 검사
-function validateRemoteSource(bookId, version) {
-    if (bookId.trim() === '') {
-        alert('Please, set the source-book id');
-        return false;
-    }
-    if (version.trim() === '') {
-        alert('Please, set the source-book version');
-        return false;
-    }
-    return true;
-}
-
-
-///@param[in]   res         서버 응답 객체 { message, data: { code } }
-///@param[in]   successMsg  code===0 일 때 표시할 메시지
-///@brief       API 응답 처리 - 성공/실패 여부에 따라 alert 표시
-function handleApiResponse(res, successMsg) {
-    if (res.data.code === 0) {
-        alert(successMsg);
-    } else {
-        alert(res.message);
-    }
-}
 
 
 ///@brief   최상위 App 컴포넌트 - 전체 상태 관리 및 API 호출 담당
 function App() {
 
-    const { pathMd, contModel, version, setVersion } = useStore();
+    const { version, setVersion } = useStore();
 
     const [sourceType, setSourceType] = useState('local');
     const [remoteBookId, setRemoteBookId] = useState('');
@@ -59,29 +20,6 @@ function App() {
             .then(data => setVersion(data.version))
             .catch(() => setVersion('?'));
     }, []);
-
-    async function handleReviewBook() {
-        if (sourceType === 'local') {
-            if (!validatePathMd(pathMd)) return;
-            const res = await requestReviewBook(pathMd, contModel);
-            handleApiResponse(res, 'review-book completed!');
-        } else {
-            if (!validateRemoteSource(remoteBookId, remoteVersion)) return;
-            // remote review: Step 6에서 구현 예정
-            alert('remote review-book: not implemented yet');
-        }
-    }
-
-    async function handleBindBook() {
-        if (!validatePathMd(pathMd)) return;
-        const res = await requestBindBook(pathMd, contModel);
-        handleApiResponse(res, 'bind-book completed!');
-    }
-
-    function handlePrintBook() {
-        const win = window.open('out/book.html', '_blank');
-        win.focus();
-    }
 
     return (
         <>
@@ -100,11 +38,6 @@ function App() {
                     setRemoteBookId={setRemoteBookId}
                     remoteVersion={remoteVersion}
                     setRemoteVersion={setRemoteVersion}
-
-                    onReviewBook={handleReviewBook}
-
-                    onBindBook={handleBindBook}
-                    onPrintBook={handlePrintBook}
                 />
             </div>
         </>
