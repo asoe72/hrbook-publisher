@@ -1,10 +1,10 @@
+import { useStore } from '../../store';
 import SourcePathInput from '../SourcePathInput';
 import SourceTypeRadio from '../SourceTypeRadio';
 import RemoteSourceInput from '../RemoteSourceInput';
 import ControllerModelSelect from '../ControllerModelSelect';
 
-///@param[in]   pathMd              local source-path 값
-///@param[in]   setPathMd           local source-path 변경 콜백
+
 ///@param[in]   sourceType          source 타입 ('local' | 'remote')
 ///@param[in]   setSourceType       source 타입 변경 콜백
 ///@param[in]   remoteBookId        remote book ID
@@ -15,7 +15,10 @@ import ControllerModelSelect from '../ControllerModelSelect';
 ///@param[in]   onContModelChange   제어기 모델 변경 콜백
 ///@param[in]   onReviewBook        review-book 버튼 클릭 콜백
 ///@brief       review 탭 콘텐츠 - 교정 관련 버튼 (추후 옵션 체크박스 확장 예정)
-function ReviewTabPanel({ pathMd, setPathMd, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange, onReviewBook }) {
+function ReviewTabPanel({ sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange, onReviewBook }) {
+    
+    const { pathMd, setPathMd } = useStore();
+    
     return (
         <div className="pt-3">
             <SourceTypeRadio value={sourceType} onChange={setSourceType} />

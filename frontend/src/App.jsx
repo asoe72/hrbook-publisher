@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useStore } from './store';
 import TitleBar from './components/TitleBar';
 import SourcePathInput from './components/SourcePathInput';
 import TabPanels from './components/panels/TabPanels';
@@ -47,8 +48,10 @@ function handleApiResponse(res, successMsg) {
 
 ///@brief   최상위 App 컴포넌트 - 전체 상태 관리 및 API 호출 담당
 function App() {
+
+    const { pathMd, setPathMd } = useStore();
+
     const [version, setVersion] = useState('...');
-    const [pathMd, setPathMd] = useState('');
     const [contModel, setContModel] = useState('Hi6');
     const [sourceType, setSourceType] = useState('local');
     const [remoteBookId, setRemoteBookId] = useState('');
@@ -94,9 +97,6 @@ function App() {
                 </h1>
                 <br />
                 <TabPanels
-                    pathMd={pathMd}
-                    setPathMd={setPathMd}
-
                     sourceType={sourceType}
                     setSourceType={setSourceType}
                     remoteBookId={remoteBookId}

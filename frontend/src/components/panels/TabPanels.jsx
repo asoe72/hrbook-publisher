@@ -32,8 +32,6 @@ function renderTabNav(activeTab, onSelect) {
 
 ///@param[in]   activeTab           현재 활성 탭 id
 ///@param[in]   handlers            { onReviewBook, onBindBook, onPrintBook }
-///@param[in]   pathMd              local source-path 값
-///@param[in]   setPathMd           local source-path 변경 콜백
 ///@param[in]   sourceType          source 타입 ('local' | 'remote')
 ///@param[in]   setSourceType       source 타입 변경 콜백
 ///@param[in]   remoteBookId        remote book ID
@@ -43,11 +41,9 @@ function renderTabNav(activeTab, onSelect) {
 ///@param[in]   contModel           현재 선택된 제어기 모델
 ///@param[in]   onContModelChange   제어기 모델 변경 콜백
 ///@brief       활성 탭에 해당하는 콘텐츠 컴포넌트 렌더링
-function renderTabContent(activeTab, handlers, pathMd, setPathMd, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange) {
+function renderTabContent(activeTab, handlers, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange) {
     if (activeTab === 'review') {
         return <ReviewTabPanel
-            pathMd={pathMd}
-            setPathMd={setPathMd}
             sourceType={sourceType}
             setSourceType={setSourceType}
             remoteBookId={remoteBookId}
@@ -60,8 +56,6 @@ function renderTabContent(activeTab, handlers, pathMd, setPathMd, sourceType, se
     }
     else {
         return <PublishTabPanel
-            pathMd={pathMd}
-            setPathMd={setPathMd}
             contModel={contModel}
             onContModelChange={onContModelChange}
             onBindBook={handlers.onBindBook}
@@ -71,8 +65,6 @@ function renderTabContent(activeTab, handlers, pathMd, setPathMd, sourceType, se
 
 
 ///@param[in]   onReviewBook        review-book 버튼 클릭 콜백
-///@param[in]   pathMd              local source-path .md
-///@param[in]   setPathMd           local source-path .md 변경 콜백
 ///@param[in]   sourceType          source 타입 ('local' | 'remote')
 ///@param[in]   setSourceType       source 타입 변경 콜백
 ///@param[in]   remoteBookId        remote book ID
@@ -84,7 +76,7 @@ function renderTabContent(activeTab, handlers, pathMd, setPathMd, sourceType, se
 ///@param[in]   onBindBook          bind-book 버튼 클릭 콜백
 ///@param[in]   onPrintBook         print-book 버튼 클릭 콜백
 ///@brief       review / publish 2개 탭 패널 컨테이너 (기본 탭: publish)
-function TabPanels({ onReviewBook, pathMd, setPathMd, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange, onBindBook, onPrintBook }) {
+function TabPanels({ onReviewBook, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange, onBindBook, onPrintBook }) {
     const [activeTab, setActiveTab] = useState('publish');
 
     const handlers = { onReviewBook, onBindBook, onPrintBook };
@@ -93,7 +85,7 @@ function TabPanels({ onReviewBook, pathMd, setPathMd, sourceType, setSourceType,
         <div>
             {renderTabNav(activeTab, setActiveTab)}
             <br/>
-            {renderTabContent(activeTab, handlers, pathMd, setPathMd, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange)}
+            {renderTabContent(activeTab, handlers, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange)}
         </div>
     );
 }

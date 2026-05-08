@@ -1,12 +1,17 @@
+import { useStore } from '../../store';
 import SourcePathInput from '../SourcePathInput';
 import ControllerModelSelect from '../ControllerModelSelect';
+
 
 ///@param[in]   contModel           현재 선택된 제어기 모델
 ///@param[in]   onContModelChange   제어기 모델 변경 콜백 (newValue: string)
 ///@param[in]   onBindBook          bind-book 버튼 클릭 콜백
 ///@param[in]   onPrintBook         print-book 버튼 클릭 콜백
 ///@brief       publish 탭 콘텐츠 - 제어기 모델 선택 및 출판 버튼
-function PublishTabPanel({ pathMd, setPathMd, contModel, onContModelChange, onBindBook, onPrintBook }) {
+function PublishTabPanel({ contModel, onContModelChange, onBindBook, onPrintBook }) {
+    
+    const { pathMd, setPathMd } = useStore();
+    
     return (
         <div className="pt-3">
             <SourcePathInput value={pathMd} onChange={setPathMd} />
