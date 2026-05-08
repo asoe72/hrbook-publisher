@@ -6,7 +6,7 @@ import ControllerModelSelect from '../ControllerModelSelect';
 ///@param[in]   onBindBook          bind-book 버튼 클릭 콜백
 ///@param[in]   onPrintBook         print-book 버튼 클릭 콜백
 ///@brief       publish 탭 콘텐츠 - 제어기 모델 선택 및 출판 버튼
-function PublishTab({ pathMd, setPathMd, contModel, onContModelChange, onBindBook, onPrintBook }) {
+function PublishTabPanel({ pathMd, setPathMd, contModel, onContModelChange, onBindBook, onPrintBook }) {
     return (
         <div className="pt-3">
             <SourcePathInput value={pathMd} onChange={setPathMd} />
@@ -23,4 +23,4 @@ function PublishTab({ pathMd, setPathMd, contModel, onContModelChange, onBindBoo
     );
 }
 
-export default PublishTab;
+export default PublishTabPanel;

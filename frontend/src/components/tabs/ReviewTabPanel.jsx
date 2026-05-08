@@ -15,7 +15,7 @@ import ControllerModelSelect from '../ControllerModelSelect';
 ///@param[in]   onContModelChange   제어기 모델 변경 콜백
 ///@param[in]   onReviewBook        review-book 버튼 클릭 콜백
 ///@brief       review 탭 콘텐츠 - 교정 관련 버튼 (추후 옵션 체크박스 확장 예정)
-function ReviewTab({ pathMd, setPathMd, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange, onReviewBook }) {
+function ReviewTabPanel({ pathMd, setPathMd, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange, onReviewBook }) {
     return (
         <div className="pt-3">
             <SourceTypeRadio value={sourceType} onChange={setSourceType} />
@@ -38,4 +38,4 @@ function ReviewTab({ pathMd, setPathMd, sourceType, setSourceType, remoteBookId,
     );
 }
 
-export default ReviewTab;
+export default ReviewTabPanel;

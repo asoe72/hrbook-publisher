@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import ReviewTab from './ReviewTab';
-import PublishTab from './PublishTab';
+import ReviewTabPanel from './ReviewTabPanel';
+import PublishTabPanel from './PublishTabPanel';
 
 
 const TABS = [
@@ -45,7 +45,7 @@ function renderTabNav(activeTab, onSelect) {
 ///@brief       활성 탭에 해당하는 콘텐츠 컴포넌트 렌더링
 function renderTabContent(activeTab, handlers, pathMd, setPathMd, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange) {
     if (activeTab === 'review') {
-        return <ReviewTab
+        return <ReviewTabPanel
             pathMd={pathMd}
             setPathMd={setPathMd}
             sourceType={sourceType}
@@ -59,7 +59,7 @@ function renderTabContent(activeTab, handlers, pathMd, setPathMd, sourceType, se
             onReviewBook={handlers.onReviewBook} />;
     }
     else {
-        return <PublishTab
+        return <PublishTabPanel
             pathMd={pathMd}
             setPathMd={setPathMd}
             contModel={contModel}
@@ -84,7 +84,7 @@ function renderTabContent(activeTab, handlers, pathMd, setPathMd, sourceType, se
 ///@param[in]   onBindBook          bind-book 버튼 클릭 콜백
 ///@param[in]   onPrintBook         print-book 버튼 클릭 콜백
 ///@brief       review / publish 2개 탭 패널 컨테이너 (기본 탭: publish)
-function TabPanel({ onReviewBook, pathMd, setPathMd, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange, onBindBook, onPrintBook }) {
+function TabPanels({ onReviewBook, pathMd, setPathMd, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, contModel, onContModelChange, onBindBook, onPrintBook }) {
     const [activeTab, setActiveTab] = useState('publish');
 
     const handlers = { onReviewBook, onBindBook, onPrintBook };
@@ -98,4 +98,4 @@ function TabPanel({ onReviewBook, pathMd, setPathMd, sourceType, setSourceType, 
     );
 }
 
-export default TabPanel;
+export default TabPanels;

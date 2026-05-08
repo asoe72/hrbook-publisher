@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import TitleBar from './components/TitleBar';
 import SourcePathInput from './components/SourcePathInput';
-import TabPanel from './components/tabs/TabPanel';
+import TabPanels from './components/tabs/TabPanels';
 import { fetchAppVersion, requestReviewBook, requestBindBook } from './api/bookApi';
 
 ///@param[in]   pathMd  source-path 입력값
@@ -93,7 +93,7 @@ function App() {
                     <b>hrbook-publisher</b>
                 </h1>
                 <br />
-                <TabPanel
+                <TabPanels
                     pathMd={pathMd}
                     setPathMd={setPathMd}
 
