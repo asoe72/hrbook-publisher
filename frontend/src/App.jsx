@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import TitleBar from './components/TitleBar';
 import SourcePathInput from './components/SourcePathInput';
-import TabPanels from './components/tabs/TabPanels';
+import TabPanels from './components/panels/TabPanels';
 import { fetchAppVersion, requestReviewBook, requestBindBook } from './api/bookApi';
 
 ///@param[in]   pathMd  source-path 입력값
