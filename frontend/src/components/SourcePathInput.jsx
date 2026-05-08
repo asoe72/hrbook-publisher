@@ -1,7 +1,11 @@
-///@param[in]   value       현재 source-path 값
-///@param[in]   onChange    값 변경 콜백 (newValue: string)
+import { useStore } from '../store';
+
+
 ///@brief       source-path (.md files) 입력 필드
 function SourcePathInput({ value, onChange }) {
+
+    const { pathMd, setPathMd } = useStore();
+
     return (
         <div className="mb-3">
             source-path (.md files)
@@ -10,8 +14,8 @@ function SourcePathInput({ value, onChange }) {
                 type="text"
                 className="form-control mt-1"
                 style={{ width: '100%', color: '#111' }}
-                value={value}
-                onChange={e => onChange(e.target.value)}
+                value={pathMd}
+                onChange={e => setPathMd(e.target.value)}
                 placeholder="e.g. d:/doc-hrscript"
             />
         </div>

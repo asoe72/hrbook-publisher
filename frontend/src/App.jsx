@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useStore } from './store';
 import TitleBar from './components/TitleBar';
-import SourcePathInput from './components/SourcePathInput';
 import TabPanels from './components/panels/TabPanels';
 import { fetchAppVersion, requestReviewBook, requestBindBook } from './api/bookApi';
 
@@ -49,10 +48,8 @@ function handleApiResponse(res, successMsg) {
 ///@brief   최상위 App 컴포넌트 - 전체 상태 관리 및 API 호출 담당
 function App() {
 
-    const { pathMd, setPathMd } = useStore();
+    const { pathMd, contModel, version, setVersion } = useStore();
 
-    const [version, setVersion] = useState('...');
-    const [contModel, setContModel] = useState('Hi6');
     const [sourceType, setSourceType] = useState('local');
     const [remoteBookId, setRemoteBookId] = useState('');
     const [remoteVersion, setRemoteVersion] = useState('');
@@ -103,9 +100,6 @@ function App() {
                     setRemoteBookId={setRemoteBookId}
                     remoteVersion={remoteVersion}
                     setRemoteVersion={setRemoteVersion}
-
-                    contModel={contModel}
-                    onContModelChange={setContModel}
 
                     onReviewBook={handleReviewBook}
 
