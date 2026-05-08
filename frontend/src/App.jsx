@@ -16,6 +16,23 @@ function validatePathMd(pathMd) {
 }
 
 
+///@param[in]   bookId  remote book ID
+///@param[in]   version remote book version
+///@return      true: 유효, false: 빈 값 (경고 표시 후 false)
+///@brief       remote source (bookId, version) 유효성 검사
+function validateRemoteSource(bookId, version) {
+    if (bookId.trim() === '') {
+        alert('Please, set the source-book id');
+        return false;
+    }
+    if (version.trim() === '') {
+        alert('Please, set the source-book version');
+        return false;
+    }
+    return true;
+}
+
+
 ///@param[in]   res         서버 응답 객체 { message, data: { code } }
 ///@param[in]   successMsg  code===0 일 때 표시할 메시지
 ///@brief       API 응답 처리 - 성공/실패 여부에 따라 alert 표시
@@ -33,6 +50,9 @@ function App() {
     const [version, setVersion] = useState('...');
     const [pathMd, setPathMd] = useState('');
     const [contModel, setContModel] = useState('Hi6');
+    const [sourceType, setSourceType] = useState('local');
+    const [remoteBookId, setRemoteBookId] = useState('');
+    const [remoteVersion, setRemoteVersion] = useState('');
 
     useEffect(() => {
         fetchAppVersion()
@@ -41,9 +61,15 @@ function App() {
     }, []);
 
     async function handleReviewBook() {
-        if (!validatePathMd(pathMd)) return;
-        const res = await requestReviewBook(pathMd, contModel);
-        handleApiResponse(res, 'review-book completed!');
+        if (sourceType === 'local') {
+            if (!validatePathMd(pathMd)) return;
+            const res = await requestReviewBook(pathMd, contModel);
+            handleApiResponse(res, 'review-book completed!');
+        } else {
+            if (!validateRemoteSource(remoteBookId, remoteVersion)) return;
+            // remote review: Step 6에서 구현 예정
+            alert('remote review-book: not implemented yet');
+        }
     }
 
     async function handleBindBook() {
@@ -69,13 +95,20 @@ function App() {
                 <br />
                 <TabPanel
                     pathMd={pathMd}
-                    setPathMd={setPathMd}                               
+                    setPathMd={setPathMd}
+
+                    sourceType={sourceType}
+                    setSourceType={setSourceType}
+                    remoteBookId={remoteBookId}
+                    setRemoteBookId={setRemoteBookId}
+                    remoteVersion={remoteVersion}
+                    setRemoteVersion={setRemoteVersion}
 
                     contModel={contModel}
                     onContModelChange={setContModel}
-                    
+
                     onReviewBook={handleReviewBook}
-                    
+
                     onBindBook={handleBindBook}
                     onPrintBook={handlePrintBook}
                 />
