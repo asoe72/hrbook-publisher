@@ -197,24 +197,58 @@ async function checkHRBookLink(page, url) {
 }
 
 
+const AXIOS_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+};
+
 // --------------------------------------------------
 /// @param[in]	url		검사할 URL  e.g. 'https://example.com/some/path'
 /// @return
 ///				-		200					OK
 ///				-		4XX, 5XX		NG
+/// @brief  HEAD 요청 후 405/403 시 GET으로 재시도.
 // --------------------------------------------------
 async function checkExternalLink(url) {
+  // fragment(#...)는 서버로 전송되지 않으므로 제거
+  const urlWithoutFragment = url.split('#')[0];
+
   try {
-    const response = await axios.head(url, {
-			timeout: 10000,
-			headers: { 'User-Agent': 'Mozilla/5.0 ...' }
-		});
+    await axios.head(urlWithoutFragment, { timeout: 10000, headers: AXIOS_HEADERS });
     return 200;
-  } catch (err) {
-    if (err.response) {
-      return err.response.status;
+  } catch (headErr) {
+    const status = headErr.response?.status;
+    // HEAD를 차단(405/403/400)하는 서버는 GET으로 재시도
+    if (status === 405 || status === 403 || status === 400 || status === undefined) {
+      return await checkExternalLinkWithGet(urlWithoutFragment);
     }
-    return 400;
+    return status ?? 400;
+  }
+}
+
+
+// --------------------------------------------------
+/// @param[in]	url		검사할 URL  e.g. 'https://example.com/some/path'
+/// @return
+///				-		200					OK
+///				-		4XX, 5XX		NG
+/// @brief  GET 시도도 외부 링크 유효성 검사.
+///         CDN(Cloudflare 등)이 HEAD를 차단하는 경우를 위한 fallback
+// --------------------------------------------------
+async function checkExternalLinkWithGet(url)
+{
+  try {
+    await axios.get(url, {
+      timeout: 10000,
+      headers: AXIOS_HEADERS,
+      responseType: 'stream',   // body를 받지 않아 메모리 낭비 방지
+      maxRedirects: 5
+    });
+    return 200;
+  } catch (getErr) {
+    const status = getErr.response?.status;
+    // 404/410만 진짜 broken. 403(봇 차단), 429(rate limit), 5xx(서버 오류) 등은
+    // 페이지가 존재하지만 접근이 제한된 것이므로 broken으로 간주하지 않는다.
+    return (status === 404 || status === 410) ? status : 200;
   }
 }
 
