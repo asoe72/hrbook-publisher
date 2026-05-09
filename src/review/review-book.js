@@ -5,6 +5,7 @@ const puppeteer = require('puppeteer');
 const git_util = require('../util/git_util');
 const file_util = require('../util/file_util');
 const str_util = require('../util/str_util');
+const { printProblems } = require('./problems');
 const { reviewFile } = require('./review-file');
 
 
@@ -15,15 +16,23 @@ const EXCLUDED_NAMES = new Set([
 
 
 // ----------------------------------------------
+function initContext(basePathMd, rules) {
+  const context = { basePathMd, rules,
+    problems: [],
+    nChecked: 0, nOkFile: 0, nNgFile: 0, nModifiedFile: 0, nNgItem: 0, nModified: 0 };
+  
+  return context;
+}
+
+
+// ----------------------------------------------
 exports.reviewLocalBook = async function(basePathMd, variables, rules)
 {
   str_util.clearConsole();
   console.log('');
   console.log('# REVIEW ALL FILES ================');
 
-  const context = { basePathMd, rules,
-    nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
-
+  const context = initContext(basePathMd, rules);
   await reviewPathAll(context);
 
   printBookReport(context);
@@ -45,8 +54,7 @@ exports.reviewRemoteBook = async function(bookId, bookVer, variables, rules)
   cloneBook(pathOutMd, bookId, bookVer);
 
   const basePathMd = path.join(pathOutMd, bookId);
-  const context = { basePathMd, rules,
-    nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
+  const context = initContext(basePathMd, rules);
 
   await reviewPathAll(context);
 
@@ -117,6 +125,8 @@ async function reviewPath(context, _path)
 function printBookReport(context)
 {
   console.log(`----------------------------------------`);
+  printProblems(context);
+  console.log(`----------------------------------------`);
   console.log(`${context.nChecked} file(s) checked.`);
   console.log(chalk.green(`  * OK : ${context.nOkFile} file(s)`));
   if(context.nNgFile > 0) {
@@ -124,8 +134,8 @@ function printBookReport(context)
     console.log(chalk.yellow(`    => Review and correct if necessary.`));
   }
 
-  if(context.nModified > 0) {
-    console.log(chalk.yellow(`${context.nModified}`) + ` file(s) modified.\nRun the process again to check the result.`);
+  if(context.nModifiedFile > 0) {
+    console.log(chalk.cyan(`${context.nModifiedFile}`) + ` file(s) modified.\nRun the process again to check the result.`);
   }
   else {
     console.log('No files modified.');

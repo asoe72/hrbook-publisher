@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 const str_util = require("../../util/str_util");
+const { addProblem } = require('../problems');
 
 
 // https://unicodeplus.com/search 활용할 것
@@ -62,7 +63,7 @@ function applyRule_CheckSpecialChars(context, str)
 	if (!items.length) return;
 
 	context.nNgItem += items.length;
-	reportFoundSpecialChars(context, items, str);
+  addProblems_SpecialChars(context, items, str);
 }
 
 
@@ -77,7 +78,7 @@ function applyRule_ReplaceSpecialChars(context, str)
 	const normStr = normalizeSpecialChars(str);
 	if (normStr !== str) {
 		context.nModified++;
-		reportReplacedSpecialChars();
+    addProblem(context, 'N', 'modified', 'replaced some characters');
 	}
 	return normStr;
 }
@@ -154,26 +155,15 @@ function isInAscii(cp) {
 
 
 // --------------------------------------------------
-function reportFoundSpecialChars(context, items, str)
+function addProblems_SpecialChars(context, items, str)
 {
-	console.log('\n');
-	console.log(`  ### CHECK SPECIAL CHARS`);
-
-	for (const item of items) {
-		const { line, col } = str_util.lineColFromIndex(str, item.index);
-		const unicode = str_util.strUnicodeHexFromChar(item.char);
-		console.log('   - ' + chalk.yellow('[NG]') + ` (special character `
-			+ chalk.yellow(`'${item.char}'`) + `(${unicode}) at (Ln ${line}, Col ${col}))`);
-	}
-}
-
-
-// --------------------------------------------------
-function reportReplacedSpecialChars()
-{
-	console.log('\n');
-	console.log(`  ### REPLACE SPECIAL CHARS`);
-	console.log(chalk.green('    : replaced some characters'));
+	for(const item of items)
+  {
+    const { line, col } = str_util.lineColFromIndex(str, item.index);
+    const unicode = str_util.strUnicodeHexFromChar(item.char);
+    const msg = chalk.yellow(`'${item.char}'`) + `(${unicode}) at (Ln ${line}, Col ${col}))`;
+    addProblem(context, 'W', 'special-char', msg);
+  }
 }
 
 

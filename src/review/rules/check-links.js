@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-const chalk = require('chalk');
+const { addProblem } = require('../problems');
 const markdown_it = require("markdown-it");
 
 
@@ -10,7 +10,7 @@ async function applyRule_BrokenLinks(context, mdText) {
 
 	const brokenLinks = await brokenLinksFromMd(context, mdText);
   if(brokenLinks.length) {
-    reportLog(context, brokenLinks);
+    addProblems(context, brokenLinks);
     context.nNgItem += brokenLinks.length;
   }
   return brokenLinks;
@@ -254,13 +254,11 @@ async function checkExternalLinkWithGet(url)
 
 
 // --------------------------------------------------
-function reportLog(context, brokenLinks)
+function addProblems(context, brokenLinks)
 {
-  console.log('\n');
-  console.log(`  ### BROKEN LINKS`);
   for(const link of brokenLinks)
   {
-    console.log(`   - ` + chalk.yellow('[NG]') + ` ${link}`);
+    addProblem(context, 'W', 'broken-link', link);
   }
 }
 

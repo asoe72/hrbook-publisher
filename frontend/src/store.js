@@ -15,7 +15,7 @@ const useStore = create((set) => ({
 	setPathMd: (val) => set({ pathMd: val }),
 
 	// remote book
-	bookId: 'doc-endless',
+	bookId: 'doc-hi6-open-api',
 	setBookId: (val) => set({ bookId: val }),
 
 	bookVer: 'ko',

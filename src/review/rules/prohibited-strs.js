@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+const { addProblem } = require('../problems');
 const str_util = require("../../util/str_util");
 
 
@@ -26,7 +27,7 @@ function applyRule_ProhibitedStrs(context, str)
 
   if(foundLocs.length) {
     context.nNgItem += foundLocs.length;
-    reportLog(context, foundLocs);
+    addProblems(context, foundLocs);
   }
 
   return foundLocs;
@@ -52,18 +53,16 @@ function findProhibitedStr(context, str, prohibitedStr)
 
 
 // --------------------------------------------------
-function reportLog(context, locs)
+function addProblems(context, locs)
 {
-	console.log('\n');
-  console.log(`  ### PROHIBITED STRINGS`);
-
-  for(const loc of locs) {
+  for(const loc of locs)
+  {
     const { line, col, prohibitedStr } = loc;
-    console.log(`   - ` + chalk.yellow('[NG]') + ` (prohibited string `
-      + chalk.yellow(`'${prohibitedStr}'`) + ` at (Ln ${line}, Col ${col}))`
-    );
+    const msg = chalk.yellow(`'${prohibitedStr}'`) + ` at (Ln ${line}, Col ${col}))`;
+    addProblem(context, 'W', 'prohibited-str', msg);
   }
 }
+
 
 // ----------------------------------------------
 module.exports = {

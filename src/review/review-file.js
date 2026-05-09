@@ -26,9 +26,9 @@ async function reviewFile(pathname, context)
     return 0;
   }
 
-  console.log(` --------------------------------`);
+  //console.log(` --------------------------------`);
   const relPathname = path.relative(context.basePathMd, pathname);
-  console.log(` ## FILE: ${relPathname} : `);
+  console.log(` * ${relPathname} : `);
 
   context.nChecked++;
   
@@ -53,6 +53,7 @@ async function reviewFile(pathname, context)
   
   // 파일 저장
   if(context.nModified > 0) {
+    context.nModifiedFile++;
     saveWithBOM(pathname, reviewedMdText);
   }
 
