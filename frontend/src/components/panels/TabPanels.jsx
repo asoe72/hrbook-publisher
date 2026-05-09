@@ -31,53 +31,38 @@ function renderTabNav(activeTab, onSelect) {
 
 
 ///@param[in]   activeTab           현재 활성 탭 id
-///@param[in]   handlers            { onReviewBook, onBindBook, onPrintBook }
-///@param[in]   sourceType          source 타입 ('local' | 'remote')
-///@param[in]   setSourceType       source 타입 변경 콜백
 ///@param[in]   remoteBookId        remote book ID
 ///@param[in]   setRemoteBookId     remote book ID 변경 콜백
 ///@param[in]   remoteVersion       remote book version
 ///@param[in]   setRemoteVersion    remote book version 변경 콜백
 ///@brief       활성 탭에 해당하는 콘텐츠 컴포넌트 렌더링
-function renderTabContent(activeTab, handlers, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion) {
+function renderTabContent(activeTab, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion) {
     if (activeTab === 'review') {
         return <ReviewTabPanel
-            sourceType={sourceType}
-            setSourceType={setSourceType}
             remoteBookId={remoteBookId}
             setRemoteBookId={setRemoteBookId}
             remoteVersion={remoteVersion}
-            setRemoteVersion={setRemoteVersion}
-            onReviewBook={handlers.onReviewBook} />;
+            setRemoteVersion={setRemoteVersion} />;
     }
     else {
-        return <PublishTabPanel
-            onBindBook={handlers.onBindBook}
-            onPrintBook={handlers.onPrintBook} />;
+        return <PublishTabPanel/>;
     }
 }
 
 
-///@param[in]   onReviewBook        review-book 버튼 클릭 콜백
-///@param[in]   sourceType          source 타입 ('local' | 'remote')
-///@param[in]   setSourceType       source 타입 변경 콜백
 ///@param[in]   remoteBookId        remote book ID
 ///@param[in]   setRemoteBookId     remote book ID 변경 콜백
 ///@param[in]   remoteVersion       remote book version
 ///@param[in]   setRemoteVersion    remote book version 변경 콜백
-///@param[in]   onBindBook          bind-book 버튼 클릭 콜백
-///@param[in]   onPrintBook         print-book 버튼 클릭 콜백
 ///@brief       review / publish 2개 탭 패널 컨테이너 (기본 탭: publish)
-function TabPanels({ onReviewBook, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion, onBindBook, onPrintBook }) {
+function TabPanels({ remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion }) {
     const [activeTab, setActiveTab] = useState('publish');
-
-    const handlers = { onReviewBook, onBindBook, onPrintBook };
 
     return (
         <div>
             {renderTabNav(activeTab, setActiveTab)}
             <br/>
-            {renderTabContent(activeTab, handlers, sourceType, setSourceType, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion)}
+            {renderTabContent(activeTab, remoteBookId, setRemoteBookId, remoteVersion, setRemoteVersion)}
         </div>
     );
 }
