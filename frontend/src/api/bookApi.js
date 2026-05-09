@@ -42,4 +42,17 @@ async function requestBindBook(pathMd, contModel) {
     return res.json();
 }
 
-export { fetchAppVersion, requestReviewBook, requestBindBook };
+
+///@param[in]   res         서버 응답 객체 { message, data: { code } }
+///@param[in]   successMsg  code===0 일 때 표시할 메시지
+///@brief       API 응답 처리 - 성공/실패 여부에 따라 alert 표시
+function handleApiResponse(res, successMsg) {
+    if (res.data.code === 0) {
+        alert(successMsg);
+    } else {
+        alert(res.message);
+    }
+}
+
+
+export { fetchAppVersion, requestReviewBook, requestBindBook, handleApiResponse };
