@@ -15,13 +15,13 @@ const EXCLUDED_NAMES = new Set([
 
 
 // ----------------------------------------------
-exports.reviewLocalBook = async function(basePathMd, variables)
+exports.reviewLocalBook = async function(basePathMd, variables, rules)
 {
   str_util.clearConsole();
   console.log('');
-  console.log('# PROCESS ALL FILES ================');
+  console.log('# REVIEW ALL FILES ================');
 
-  const context = { basePathMd,
+  const context = { basePathMd, rules,
     nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
 
   await reviewPathAll(context);
@@ -35,20 +35,22 @@ exports.reviewLocalBook = async function(basePathMd, variables)
 
 
 // ----------------------------------------------
-exports.reviewRemoteBook = async function(bookId, bookVer, variables)
+exports.reviewRemoteBook = async function(bookId, bookVer, variables, rules)
 {
   str_util.clearConsole();
   console.log('');
-  console.log('# PROCESS ALL FILES ================');
+  console.log('# REVIEW ALL FILES ================');
 
   const pathOutMd = 'public/out-md/';
   cloneBook(pathOutMd, bookId, bookVer);
 
   const basePathMd = path.join(pathOutMd, bookId);
-  const context = { basePathMd,
+  const context = { basePathMd, rules,
     nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
 
   await reviewPathAll(context);
+
+  printBookReport(context);
 
   console.log(`\n--------------------------- COMPLETED.`);
 

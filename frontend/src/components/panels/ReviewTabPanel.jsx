@@ -2,6 +2,7 @@ import LocalSourceInput from '../source-input/LocalSourceInput';
 import SourceTypeRadio from '../source-input/SourceTypeRadio';
 import RemoteSourceInput from '../source-input/RemoteSourceInput';
 import ControllerModelSelect from '../ControllerModelSelect';
+import RulesGroupBox from '../review/RulesGroupBox';
 import { useStore } from '../../store';
 import { requestReviewLocalBook, requestReviewRemoteBook, handleApiResponse } from '../../api/bookApi';
 import { validatePathMd, validateRemoteSource } from '../../lib/validate';
@@ -9,20 +10,21 @@ import { validatePathMd, validateRemoteSource } from '../../lib/validate';
 
 ///@brief       review 탭 콘텐츠 - 교정 관련 버튼
 function ReviewTabPanel() {
-    
+
     const { sourceType, setSourceType, pathMd, setPathMd,
         bookId, setBookId, bookVer, setBookVer,
-        contModel, setContModel } = useStore();
+        contModel, setContModel,
+        reviewRules, setReviewRules } = useStore();
 
     async function handleReviewBook() {
         let res = 0;
         if (sourceType === 'local') {
             if (!validatePathMd(pathMd)) return;
-            res = await requestReviewLocalBook(pathMd, contModel);
-            
+            res = await requestReviewLocalBook(pathMd, contModel, reviewRules);
+
         } else {
             if (!validateRemoteSource(bookId, bookVer)) return;
-            res = await requestReviewRemoteBook(bookId, bookVer);            
+            res = await requestReviewRemoteBook(bookId, bookVer, reviewRules);
         }
         handleApiResponse(res, 'review-book completed!');
     }
@@ -45,6 +47,8 @@ function ReviewTabPanel() {
                     <i className="bi bi-file-text"></i>&nbsp;review-book
                 </button>
             </div>
+            <br/>
+            <RulesGroupBox rules={reviewRules} setRules={setReviewRules} />
         </div>
     );
 }

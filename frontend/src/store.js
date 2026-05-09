@@ -23,7 +23,16 @@ const useStore = create((set) => ({
 
 	// 현재 선택된 제어기 모델 ('Hi6'|'Hi7')
 	contModel: 'Hi6',
-	setContModel: (val) => set({ contModel: val })
+	setContModel: (val) => set({ contModel: val }),
+
+	// review rules 체크박스 상태
+	reviewRules: {
+		checkBrokenLinks: true,
+		checkSpecialChars: true,
+		replaceSpecialChars: true,
+		checkProhibitedStrs: true
+	},
+	setReviewRules: (val) => set({ reviewRules: val })
 }));
 
 export { useStore };

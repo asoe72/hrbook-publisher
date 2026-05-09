@@ -56,7 +56,8 @@ app.post('/review-local-book', async function(req, res) {
 
     var result = {};
     const vars = req.body.variables;
-    var iret = await reviewLocalBook(req.body.path_md, vars, result);
+    const rules = parseBoolRules(req.body.rules);
+    var iret = await reviewLocalBook(req.body.path_md, vars, rules, result);
     var msg;
     if(iret==0) {
         msg = 'review-local-book ok';
@@ -83,7 +84,8 @@ app.post('/review-remote-book', async function(req, res) {
 
     var result = {};
     const vars = req.body.variables;
-    var iret = await reviewRemoteBook(req.body.bookId, req.body.bookVer, vars, result);
+    const rules = parseBoolRules(req.body.rules);
+    var iret = await reviewRemoteBook(req.body.bookId, req.body.bookVer, vars, rules, result);
     var msg;
     if(iret==0) {
         msg = 'review-remote-book ok';
@@ -129,6 +131,22 @@ app.post('/bind-book', async function(req, res) {
         }
     })
 });
+
+
+// --------------------------------------------------
+///@param[in]   rulesRaw    form에서 파싱된 rules 객체 (값이 'true'/'false' 문자열). undefined 가능
+///@return      { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
+///@brief       form string 'true'/'false' → boolean 변환. 키가 없으면 true로 기본 처리
+// --------------------------------------------------
+function parseBoolRules(rulesRaw)
+{
+    const keys = ['checkBrokenLinks', 'checkSpecialChars', 'replaceSpecialChars', 'checkProhibitedStrs'];
+    const rules = {};
+    for (const key of keys) {
+        rules[key] = (rulesRaw?.[key] !== 'false');
+    }
+    return rules;
+}
 
 
 // ----------------------------------------------

@@ -8,18 +8,20 @@ async function fetchAppVersion() {
 
 
 // ----------------------------------------------
-///@param[in]   pathMd  소스 .md 파일 경로
+///@param[in]   pathMd      소스 .md 파일 경로
 ///@param[in]   contModel   제어기 모델 (e.g. 'Hi6', 'Hi7')
+///@param[in]   rules       { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
 ///@return      { message: string, data: { code: number } }
 ///@brief       POST /review-local-book - check, fix
 // ----------------------------------------------
-async function requestReviewLocalBook(pathMd, contModel) {
+async function requestReviewLocalBook(pathMd, contModel, rules) {
     const res = await fetch('/review-local-book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
             path_md: pathMd,
-            'variables[cont_model]': contModel
+            'variables[cont_model]': contModel,
+            ...rulesParams(rules)
         })
     });
     if (!res.ok) throw new Error('review-local-book request failed');
@@ -28,19 +30,33 @@ async function requestReviewLocalBook(pathMd, contModel) {
 
 
 // ----------------------------------------------
+///@param[in]   rules       { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
 ///@return      { message: string, data: { code: number } }
 ///@brief       POST /review-remote-book - check, fix
 // ----------------------------------------------
-async function requestReviewRemoteBook(bookId, bookVer) {
+async function requestReviewRemoteBook(bookId, bookVer, rules) {
     const res = await fetch('/review-remote-book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
-            bookId, bookVer
+            bookId, bookVer,
+            ...rulesParams(rules)
         })
     });
     if (!res.ok) throw new Error('review-remote-book request failed');
     return res.json();
+}
+
+
+// --------------------------------------------------
+///@param[in]   rules   { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
+///@return      URLSearchParams에 펼칠 수 있는 flat 객체
+///@brief       rules 객체를 'rules[key]' 형태의 form 파라미터로 변환
+// --------------------------------------------------
+function rulesParams(rules) {
+    return Object.fromEntries(
+        Object.entries(rules).map(([k, v]) => [`rules[${k}]`, String(v)])
+    );
 }
 
 

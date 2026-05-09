@@ -4,7 +4,7 @@ const { replaceVariablesInStrToValues } = require('../variables');
 
 // rules
 const { applyRule_BrokenLinks } = require('./rules/check-links');
-const { applyRule_SpecialChars } = require('./rules/special-char');
+const { applyRule_CheckSpecialChars, applyRule_ReplaceSpecialChars } = require('./rules/special-char');
 const { applyRule_ProhibitedStrs } = require('./rules/prohibited-strs');
 
 
@@ -62,26 +62,37 @@ async function reviewFile(pathname, context)
 
 // --------------------------------------------------
 ///@param[in]   mdText
-///@return    reviewedMdText
-//      -   1   OK
-//      -   0   NG text
-//      -   -1  NG
+///@return      reviewedMdText
+///@brief       context.rules에 따라 선택된 rule만 적용
 // --------------------------------------------------
 async function reviewText(context, mdText)
 {
   const nNgItemBefore = context.nNgItem;
+  const rules = context.rules;
 
   // 변수 대체
   const mdTextVarApplied = replaceVariablesInStrToValues(mdText, context.variables);
-  
-  // link 깨짐 확인
-  await applyRule_BrokenLinks(context, mdTextVarApplied);
 
-  // 특수문자 확인, 대체
-  const normText = applyRule_SpecialChars(context, mdText);
+  // link 깨짐 확인
+  if (rules.checkBrokenLinks) {
+    await applyRule_BrokenLinks(context, mdTextVarApplied);
+  }
+
+  // 비허용 특수문자 확인
+  if (rules.checkSpecialChars) {
+    applyRule_CheckSpecialChars(context, mdText);
+  }
+
+  // 특수문자 치환
+  let normText = mdText;
+  if (rules.replaceSpecialChars) {
+    normText = applyRule_ReplaceSpecialChars(context, mdText);
+  }
 
   // 금지 문자열 확인
-  applyRule_ProhibitedStrs(context, mdText);
+  if (rules.checkProhibitedStrs) {
+    applyRule_ProhibitedStrs(context, mdText);
+  }
 
   if (nNgItemBefore < context.nNgItem) {
     context.nNgFile++;

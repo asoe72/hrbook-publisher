@@ -52,29 +52,33 @@ const ALT_SPECIAL_CHAR = new Map([
 
 
 // --------------------------------------------------
+///@param[in]   context
 ///@param[in]   str
-///@return		정규화된 문자열
-///@brief		    pathname file이 지정한 확장자이면, format check 수행
+///@brief       비허용 특수문자를 감지하여 보고 (치환 없음)
 // --------------------------------------------------
-function applyRule_SpecialChars(context, str)
+function applyRule_CheckSpecialChars(context, str)
 {
-	// 검사만 함.
-	let items = findSpecialChars(str);
-	if(items.length) {
-		context.nNgItem += items.length;
-	}
+	const items = findSpecialChars(str);
+	if (!items.length) return;
 
-	// 대체 문자가 있는 것은 대체
-	let normStr = normalizeSpecialChars(str);
-	const replaced = (normStr != str);
-	if(replaced) {
+	context.nNgItem += items.length;
+	reportFoundSpecialChars(context, items, str);
+}
+
+
+// --------------------------------------------------
+///@param[in]   context
+///@param[in]   str
+///@return      치환된 문자열
+///@brief       대체 문자가 있는 특수문자를 치환하여 반환
+// --------------------------------------------------
+function applyRule_ReplaceSpecialChars(context, str)
+{
+	const normStr = normalizeSpecialChars(str);
+	if (normStr !== str) {
 		context.nModified++;
+		reportReplacedSpecialChars();
 	}
-
-	if(items.length || replaced) {
-		reportSpecialChars(context, items, str, replaced);
-	}	
-
 	return normStr;
 }
 
@@ -150,10 +154,10 @@ function isInAscii(cp) {
 
 
 // --------------------------------------------------
-function reportSpecialChars(context, items, str, replaced)
+function reportFoundSpecialChars(context, items, str)
 {
 	console.log('\n');
-  console.log(`  ### SPECIAL CHARS`);
+	console.log(`  ### CHECK SPECIAL CHARS`);
 
 	for (const item of items) {
 		const { line, col } = str_util.lineColFromIndex(str, item.index);
@@ -161,13 +165,19 @@ function reportSpecialChars(context, items, str, replaced)
 		console.log('   - ' + chalk.yellow('[NG]') + ` (special character `
 			+ chalk.yellow(`'${item.char}'`) + `(${unicode}) at (Ln ${line}, Col ${col}))`);
 	}
+}
 
-	if(replaced) {
-		console.log(chalk.green('    : replaced some characters'));
-	}
+
+// --------------------------------------------------
+function reportReplacedSpecialChars()
+{
+	console.log('\n');
+	console.log(`  ### REPLACE SPECIAL CHARS`);
+	console.log(chalk.green('    : replaced some characters'));
 }
 
 
 module.exports = {
-  applyRule_SpecialChars
+  applyRule_CheckSpecialChars,
+  applyRule_ReplaceSpecialChars
 }
