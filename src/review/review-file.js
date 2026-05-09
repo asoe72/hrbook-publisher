@@ -39,13 +39,14 @@ async function reviewFile(pathname, context)
   // 파일 읽기
   const mdText0 = fs.readFileSync(pathname, 'utf8');
 
-  if(hasBOM(mdText0)==false) {
+  const _hasBom = hasBOM(mdText0);
+  if(_hasBom==false) {
     chalk.yellow(`  ### BOM added`);
     context.nModified++;    // 추후, BOM 붙여서 저장해야 함.
   }
 
   // strip BOM
-  const mdText1 = hasBOM ? mdText0.replace('\ufeff', '') : mdText0;
+  const mdText1 = _hasBom ? mdText0.replace('\ufeff', '') : mdText0;
 
   // text review
   const reviewedMdText = await reviewText(context, mdText1);
@@ -74,8 +75,7 @@ async function reviewText(context, mdText)
   const mdTextVarApplied = replaceVariablesInStrToValues(mdText, context.variables);
   
   // link 깨짐 확인
-  const brokenLinks = await applyRule_BrokenLinks(context, mdTextVarApplied);
-  if (brokenLinks.length) isTextOk = false;
+  await applyRule_BrokenLinks(context, mdTextVarApplied);
 
   // 특수문자 확인, 대체
   const normText = applyRule_SpecialChars(context, mdText);

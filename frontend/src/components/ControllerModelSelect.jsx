@@ -1,5 +1,3 @@
-import { useStore } from '../store';
-
 const CONTROLLER_MODELS = ['Hi6', 'Hi7'];
 
 
