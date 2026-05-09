@@ -13,7 +13,8 @@ async function bindBook(path_md, variables, result)
 {
     const pathfile_toc = path.join(path_md, "SUMMARY.md");
     const pathfile_bookinfo = path.join(path_md, "bookinfo.json");
-    const path_html = 'public/out/';
+    const path_html_old = 'public/out/';
+    const path_html = 'public/out-html/';
 
     if(fs.existsSync( pathfile_toc )==false) {
         result.msg = pathfile_toc + ' not found.';
@@ -24,6 +25,7 @@ async function bindBook(path_md, variables, result)
         return -2;
     }
 
+    fs.rmSync(path_html_old, { recursive: true, force: true });
     fs.rmSync(path_html, { recursive: true, force: true });
     await md2html.convDir(path_md, path_html, variables);
     await bookbind.bind(path_html, path_md, variables, pathfile_toc, pathfile_bookinfo);

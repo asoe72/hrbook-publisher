@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const puppeteer = require('puppeteer');
+const git_util = require('../util/git_util');
+const file_util = require('../util/file_util');
 const str_util = require('../util/str_util');
 const { reviewFile } = require('./review-file');
 
@@ -19,10 +21,10 @@ exports.reviewLocalBook = async function(basePathMd, variables)
   console.log('');
   console.log('# PROCESS ALL FILES ================');
 
-  const context = { basePathMd, variables
-    , nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
+  const context = { basePathMd,
+    nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
 
-  await reviewPathAll(context, basePathMd, variables);
+  await reviewPathAll(context);
 
   printBookReport(context);
 
@@ -39,7 +41,14 @@ exports.reviewRemoteBook = async function(bookId, bookVer, variables)
   console.log('');
   console.log('# PROCESS ALL FILES ================');
 
-  console.log(`\n under-construction.`);
+  const pathOutMd = 'public/out-md/';
+  cloneBook(pathOutMd, bookId, bookVer);
+
+  const basePathMd = path.join(pathOutMd, bookId);
+  const context = { basePathMd,
+    nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
+
+  await reviewPathAll(context);
 
   console.log(`\n--------------------------- COMPLETED.`);
 
@@ -48,17 +57,36 @@ exports.reviewRemoteBook = async function(bookId, bookVer, variables)
 
 
 // ----------------------------------------------
-async function reviewPathAll(context, basePathMd, variables)
+async function cloneBook(pathOutMd, bookId, bookVer)
 {
-  const browser = await puppeteer.launch();
-  context.browserPage = await browser.newPage();
+  console.log(`\ncloning...`);
 
-  return await reviewPath(context, basePathMd);
+  fs.rmSync(pathOutMd, { recursive: true, force: true });
+  file_util.mkdir(pathOutMd);
+  const iret = git_util.cloneBook(pathOutMd, bookId, bookVer);
+  if(iret == 0) {
+    console.log(`\n : OK`);
+  }
+  else {
+    console.log(`\n : FAILED`);
+  }
 }
 
 
-///@param[in]   context   { basePathMd, basePathCur
-///               , nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
+// ----------------------------------------------
+async function reviewPathAll(context)
+{
+  console.log(`\nreviewing...`);
+
+  const browser = await puppeteer.launch();
+  context.browserPage = await browser.newPage();
+
+  return await reviewPath(context, context.basePathMd);
+}
+
+
+///@param[in]   context   { basePathMd,
+///               nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
 ///@param[in]   _path     현재까지 진행된 base 경로
 ///@return      review한 파일 개수 (skip file 제외)
 ///@brief		    _path 내의 모든 파일에 대해 reviewFile() 수행

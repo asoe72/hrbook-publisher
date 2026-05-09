@@ -54,14 +54,14 @@ describe('bindBook', () => {
     test('두 파일 모두 있으면 md2html.convDir 호출됨', async () => {
         mockFs.existsSync.mockReturnValue(true);
         await bindBook('/some/path', [], {});
-        expect(md2html.convDir).toHaveBeenCalledWith('/some/path', 'public/out/', []);
+        expect(md2html.convDir).toHaveBeenCalledWith('/some/path', 'public/out-html/', []);
     });
 
     test('두 파일 모두 있으면 bookbind.bind 호출됨', async () => {
         mockFs.existsSync.mockReturnValue(true);
         await bindBook('/some/path', ['v1'], {});
         expect(bookbind.bind).toHaveBeenCalledWith(
-            'public/out/',
+            'public/out-html/',
             '/some/path',
             ['v1'],
             path.join('/some/path', 'SUMMARY.md'),
@@ -69,9 +69,9 @@ describe('bindBook', () => {
         );
     });
 
-    test('두 파일 모두 있으면 public/out/ 폴더 삭제 후 진행', async () => {
+    test('두 파일 모두 있으면 public/out-html/ 폴더 삭제 후 진행', async () => {
         mockFs.existsSync.mockReturnValue(true);
         await bindBook('/some/path', [], {});
-        expect(mockFs.rmSync).toHaveBeenCalledWith('public/out/', { recursive: true, force: true });
+        expect(mockFs.rmSync).toHaveBeenCalledWith('public/out-html/', { recursive: true, force: true });
     });
 });

@@ -1,6 +1,29 @@
 ﻿const child_process = require("child_process");
 
 
+// ----------------------------------------------
+///@param[in]	repoPath		local 경로		
+///@param[in]	bookId			e.g. 'doc-endless'
+///@param[in]	bookVer			e.g. 'ko'
+///@return
+// 				-		0			ok
+// 				-		-1		ng
+// ----------------------------------------------
+exports.cloneBook = function(repoPath, bookId, bookVer) {
+	try {
+		const url = `https://github.com/hyundai-robotics/${bookId}.git`;
+		const ret = gitExec(
+			repoPath,
+			`git clone -b ${bookVer} ${url}`
+		);
+		return 0;
+	} catch (err) {
+		console.error("failed to clone:", err.message);
+		return -1;
+	}
+}
+
+
 ///@return		repoPath의 첫 commit date	e.g. '2022-01-19'
 exports.getFirstCommitDate= function(repoPath) {
 	try {
@@ -25,7 +48,7 @@ exports.getCurrentCommitDate = function(repoPath) {
 			repoPath,
 			"git log -1 --format=%cd --date=iso"
 		);				// e.g. "2025-12-30 09:25:28 +0900"
-		return timestamp.split(" ")[0];
+		return timestamp.split("  ")[0];
 	} catch (err) {
 		console.error("cannot get git info:", err.message);
 		return '';
