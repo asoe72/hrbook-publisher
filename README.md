@@ -2,29 +2,83 @@
 
 hrbook 기술 문서를 PDF 출력용 단일 HTML로 변환하는 도구입니다.
 
-GitBook 스타일의 디렉토리 구조(`SUMMARY.md` + 개별 `.md` 파일)를 입력받아,
-정규화 → HTML 변환 → 통합 HTML 생성의 단계를 거쳐 `book.html`을 생성합니다.
-생성된 `book.html`은 [Paged.js](https://pagedjs.org/) 등을 통해 PDF로 인쇄할 수 있습니다.
+GitBook 스타일의 디렉토리 구조(`SUMMARY.md` + 개별 `.md` 파일)를 입력받아
+정규화 → HTML 변환 → 통합 HTML 생성 단계를 거쳐 `book.html`을 생성합니다.
+생성된 `book.html`은 브라우저에서 [Paged.js](https://pagedjs.org/)를 통해 PDF로 인쇄할 수 있습니다.
 
 ---
 
 ## 목차
 
 - [설치](#설치)
+- [실행](#실행)
+- [Web UI](#web-ui)
 - [문서 디렉토리 구조](#문서-디렉토리-구조)
 - [bookinfo.json 설정](#bookinfojson-설정)
 - [SUMMARY.md 작성](#summarymd-작성)
 - [마크다운 특수 문법](#마크다운-특수-문법)
 - [CLI 사용법](#cli-사용법)
-- [HTTP API 사용법](#http-api-사용법)
+- [HTTP API](#http-api)
 - [변환 워크플로우](#변환-워크플로우)
 - [오류 코드](#오류-코드)
 
 ---
 
-## 문서 디렉토리 구조
+## 설치
 
-변환할 문서 디렉토리는 다음 구조를 따라야 합니다.
+```bash
+npm install
+npm install --prefix frontend
+```
+
+---
+
+## 실행
+
+### 개발 모드 (Express + Vite 동시 기동)
+
+```bash
+npm start
+```
+
+- Express 서버: `http://127.0.0.1:50000`
+- Vite 개발 서버: `http://localhost:5173` (기본값)
+
+### 서버만 기동
+
+```bash
+node server.js
+# Server Running at http://127.0.0.1:50000
+```
+
+### 프론트엔드 빌드
+
+```bash
+npm run build
+```
+
+---
+
+## Web UI
+
+브라우저에서 `http://localhost:5173` (개발) 또는 `http://127.0.0.1:50000` (빌드 후)에 접속합니다.
+
+### review 탭
+
+마크다운 문서의 링크 깨짐, 특수 문자, 금지 문자열 등을 검사합니다.
+
+| 소스 타입 | 설명 |
+|-----------|------|
+| `local` | 로컬 경로의 `.md` 디렉토리를 직접 검사 |
+| `remote` | Book ID / Book Ver 으로 원격 저장소 문서를 클론하여 검사 |
+
+### publish 탭
+
+로컬 문서를 `book.html`로 변환합니다. bind-book 완료 후 `print-book` 버튼으로 브라우저 인쇄 화면을 열 수 있습니다.
+
+---
+
+## 문서 디렉토리 구조
 
 ```
 <path_md>/
@@ -43,8 +97,6 @@ GitBook 스타일의 디렉토리 구조(`SUMMARY.md` + 개별 `.md` 파일)를 
 ---
 
 ## bookinfo.json 설정
-
-책의 메타데이터와 변수를 정의합니다.
 
 ```json
 {
@@ -69,8 +121,6 @@ GitBook 스타일의 디렉토리 구조(`SUMMARY.md` + 개별 `.md` 파일)를 
   }
 }
 ```
-
-### 주요 필드
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
@@ -103,9 +153,7 @@ GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대
 
 ## 마크다운 특수 문법
 
-### 힌트 박스 (Hint Box)
-
-경고, 위험, 정보 박스를 삽입합니다.
+### 힌트 박스
 
 ```markdown
 {% hint style="info" %}
@@ -121,7 +169,7 @@ GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대
 {% endhint %}
 ```
 
-### 파일 포함 (Include)
+### 파일 포함
 
 다른 마크다운 파일의 내용을 현재 문서에 삽입합니다.
 
@@ -147,7 +195,7 @@ GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대
 버전: ${version:lower}
 ```
 
-| 옵션 | 설명 |
+| 문법 | 설명 |
 |------|------|
 | `${변수명}` | 값 그대로 치환 |
 | `${변수명:upper}` | 대문자로 치환 |
@@ -157,100 +205,56 @@ GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대
 
 ## CLI 사용법
 
-전역 설치 후 `hrbook-publisher` 명령어를 사용합니다.
+### bind-book
+
+마크다운을 HTML로 변환하고 `book.html`을 생성합니다.
 
 ```bash
-npm install -g hrbook-publisher
+node cli.js bind-book --path_md="<문서_디렉토리_경로>"
 ```
 
-### 1단계: 문서 정규화
-
-마크다운 파일의 인코딩(UTF-8 BOM) 및 특수 문자를 표준화합니다.
-
-```bash
-hrbook-publisher normalize-book --path_md="<문서_디렉토리_경로>"
-```
-
-### 2단계: 북 바인딩 (HTML 생성)
-
-마크다운을 HTML로 변환하고 `book.html`로 통합합니다.
-
-```bash
-hrbook-publisher bind-book --path_md="<문서_디렉토리_경로>"
-```
-
-### 사용 예시
-
-```bash
-hrbook-publisher normalize-book --path_md="/home/user/my-book"
-hrbook-publisher bind-book --path_md="/home/user/my-book"
-```
-
-성공 시 다음 메시지가 출력됩니다.
+성공 시:
 
 ```
-normalize-book ok
 bind-book ok
 ```
 
 ### 출력 파일
 
-`bind-book` 실행 후 다음 파일이 생성됩니다.
-
 | 파일 | 설명 |
 |------|------|
 | `public/out/book.html` | PDF 인쇄용 통합 HTML (메인 출력) |
-| `public/out/<경로>/*.html` | 개별 마크다운 변환 HTML |
-| `<path_md>/book.md` | 통합 마크다운 (검색 인덱스용) |
+| `public/out-html/` | 개별 마크다운 변환 HTML |
+| `<path_md>/book.md` | 통합 마크다운 |
 
 ---
 
-## HTTP API 사용법
+## HTTP API
 
-웹 서버 모드로 실행하여 REST API로 사용할 수 있습니다.
-
-### 서버 시작
-
-```bash
-node node_modules/hrbook-publisher/server.js
-# Server Running at http://127.0.0.1:50000
-```
-
-### API 엔드포인트
-
-#### `GET /app-version`
-
-앱 버전을 반환합니다.
+### `GET /app-version`
 
 ```bash
 curl http://127.0.0.1:50000/app-version
 ```
 
 ```json
-{ "version": "1.17.5" }
+{ "version": "2.0.0" }
 ```
 
 ---
 
-#### `POST /normalize-book`
+### `POST /adjust-md`
 
-마크다운 파일을 정규화합니다.
+마크다운 파일을 정규화합니다 (특수 문자, 인코딩 표준화).
 
 ```bash
-curl -X POST http://127.0.0.1:50000/normalize-book \
+curl -X POST http://127.0.0.1:50000/adjust-md \
   -d "path_md=/home/user/my-book"
 ```
 
-```json
-{
-  "message": "normalize-book ok",
-  "data": { "code": 0 }
-}
-```
-
 ---
 
-#### `POST /bind-book`
+### `POST /bind-book`
 
 마크다운을 HTML로 변환하고 `book.html`을 생성합니다.
 
@@ -259,7 +263,7 @@ curl -X POST http://127.0.0.1:50000/bind-book \
   -d "path_md=/home/user/my-book"
 ```
 
-추가 변수를 전달할 수도 있습니다.
+추가 변수를 전달할 수 있습니다.
 
 ```bash
 curl -X POST http://127.0.0.1:50000/bind-book \
@@ -267,9 +271,36 @@ curl -X POST http://127.0.0.1:50000/bind-book \
   -d "variables[product_name]=NewProduct"
 ```
 
+---
+
+### `POST /review-local-book`
+
+로컬 문서를 검사합니다.
+
+```bash
+curl -X POST http://127.0.0.1:50000/review-local-book \
+  -d "path_md=/home/user/my-book"
+```
+
+---
+
+### `POST /review-remote-book`
+
+원격 저장소 문서를 클론하여 검사합니다.
+
+```bash
+curl -X POST http://127.0.0.1:50000/review-remote-book \
+  -d "bookId=doc-endless" \
+  -d "bookVer=ko"
+```
+
+---
+
+### 공통 응답 형식
+
 ```json
 {
-  "message": "bind-book ok",
+  "message": "<엔드포인트명> ok",
   "data": { "code": 0 }
 }
 ```
@@ -282,8 +313,7 @@ curl -X POST http://127.0.0.1:50000/bind-book \
 문서 디렉토리 (*.md + bookinfo.json + SUMMARY.md)
         │
         ▼
-[1] normalize-book
-    - UTF-8 BOM 추가
+[1] adjust-md  (선택)
     - 특수 문자 정규화 (비표준 대시, 따옴표 등 → 표준 문자)
         │
         ▼
