@@ -7,12 +7,14 @@ async function fetchAppVersion() {
 }
 
 
+// ----------------------------------------------
 ///@param[in]   pathMd  소스 .md 파일 경로
 ///@param[in]   contModel   제어기 모델 (e.g. 'Hi6', 'Hi7')
 ///@return      { message: string, data: { code: number } }
-///@brief       POST /review-book - check, fix
-async function requestReviewBook(pathMd, contModel) {
-    const res = await fetch('/review-book', {
+///@brief       POST /review-local-book - check, fix
+// ----------------------------------------------
+async function requestReviewLocalBook(pathMd, contModel) {
+    const res = await fetch('/review-local-book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -20,15 +22,34 @@ async function requestReviewBook(pathMd, contModel) {
             'variables[cont_model]': contModel
         })
     });
-    if (!res.ok) throw new Error('review-book request failed');
+    if (!res.ok) throw new Error('review-local-book request failed');
     return res.json();
 }
 
 
+// ----------------------------------------------
+///@return      { message: string, data: { code: number } }
+///@brief       POST /review-remote-book - check, fix
+// ----------------------------------------------
+async function requestReviewRemoteBook(bookId, bookVer) {
+    const res = await fetch('/review-remote-book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            bookId, bookVer
+        })
+    });
+    if (!res.ok) throw new Error('review-remote-book request failed');
+    return res.json();
+}
+
+
+// ----------------------------------------------
 ///@param[in]   pathMd      소스 .md 파일 경로
 ///@param[in]   contModel   제어기 모델 (e.g. 'Hi6', 'Hi7')
 ///@return      { message: string, data: { code: number } }
 ///@brief       POST /bind-book - 책 묶기 요청
+// ----------------------------------------------
 async function requestBindBook(pathMd, contModel) {
     const res = await fetch('/bind-book', {
         method: 'POST',
@@ -43,9 +64,11 @@ async function requestBindBook(pathMd, contModel) {
 }
 
 
+// ----------------------------------------------
 ///@param[in]   res         서버 응답 객체 { message, data: { code } }
 ///@param[in]   successMsg  code===0 일 때 표시할 메시지
 ///@brief       API 응답 처리 - 성공/실패 여부에 따라 alert 표시
+// ----------------------------------------------
 function handleApiResponse(res, successMsg) {
     if (res.data.code === 0) {
         alert(successMsg);
@@ -55,4 +78,4 @@ function handleApiResponse(res, successMsg) {
 }
 
 
-export { fetchAppVersion, requestReviewBook, requestBindBook, handleApiResponse };
+export { fetchAppVersion, requestReviewLocalBook, requestReviewRemoteBook, requestBindBook, handleApiResponse };

@@ -13,7 +13,7 @@ const EXCLUDED_NAMES = new Set([
 
 
 // ----------------------------------------------
-exports.reviewBook = async function(basePathMd, variables)
+exports.reviewLocalBook = async function(basePathMd, variables)
 {
   str_util.clearConsole();
   console.log('');
@@ -25,6 +25,21 @@ exports.reviewBook = async function(basePathMd, variables)
   await reviewPathAll(context, basePathMd, variables);
 
   printBookReport(context);
+
+  console.log(`\n--------------------------- COMPLETED.`);
+
+  return 0;
+}
+
+
+// ----------------------------------------------
+exports.reviewRemoteBook = async function(bookId, bookVer, variables)
+{
+  str_util.clearConsole();
+  console.log('');
+  console.log('# PROCESS ALL FILES ================');
+
+  console.log(`\n under-construction.`);
 
   console.log(`\n--------------------------- COMPLETED.`);
 

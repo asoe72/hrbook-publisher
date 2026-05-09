@@ -3,7 +3,7 @@ import SourceTypeRadio from '../source-input/SourceTypeRadio';
 import RemoteSourceInput from '../source-input/RemoteSourceInput';
 import ControllerModelSelect from '../ControllerModelSelect';
 import { useStore } from '../../store';
-import { requestReviewBook, handleApiResponse } from '../../api/bookApi';
+import { requestReviewLocalBook, requestReviewRemoteBook, handleApiResponse } from '../../api/bookApi';
 import { validatePathMd, validateRemoteSource } from '../../lib/validate';
 
 
@@ -15,15 +15,16 @@ function ReviewTabPanel() {
         contModel, setContModel } = useStore();
 
     async function handleReviewBook() {
+        let res = 0;
         if (sourceType === 'local') {
             if (!validatePathMd(pathMd)) return;
-            const res = await requestReviewBook(pathMd, contModel);
-            handleApiResponse(res, 'review-book completed!');
+            res = await requestReviewLocalBook(pathMd, contModel);
+            
         } else {
             if (!validateRemoteSource(bookId, bookVer)) return;
-            // remote review: Step 6에서 구현 예정
-            alert('remote review-book: not implemented yet');
+            res = await requestReviewRemoteBook(bookId, bookVer);            
         }
+        handleApiResponse(res, 'review-book completed!');
     }
 
     return (

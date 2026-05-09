@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { reviewBook } = require('./src/review/review-book');
+const { reviewLocalBook, reviewRemoteBook } = require('./src/review/review-book');
 const md_adjuster = require("./src/md_adjuster");
 const { bindBook } = require('./src/book_commands');
 
@@ -17,12 +17,14 @@ app.use(bodyParser.urlencoded({
 
 
 
+// ----------------------------------------------
 app.get('/app-version', function(req, res) {
     const { version } = require('./package.json');
     res.send({ version });
 });
 
 
+// ----------------------------------------------
 app.post('/adjust-md', function(req, res) {
 	console.log('adjust-md');
 
@@ -48,15 +50,16 @@ app.post('/adjust-md', function(req, res) {
 });
 
 
-app.post('/review-book', async function(req, res) {
-	console.log('review-book');
+// ----------------------------------------------
+app.post('/review-local-book', async function(req, res) {
+	console.log('review-local-book');
 
     var result = {};
     const vars = req.body.variables;
-    var iret = await reviewBook(req.body.path_md, vars, result);
+    var iret = await reviewLocalBook(req.body.path_md, vars, result);
     var msg;
     if(iret==0) {
-        msg = 'review-book ok';
+        msg = 'review-local-book ok';
     }
     else if(iret==-1 || iret==-2) {
         msg = result.msg;
@@ -74,6 +77,34 @@ app.post('/review-book', async function(req, res) {
 });
 
 
+// ----------------------------------------------
+app.post('/review-remote-book', async function(req, res) {
+	console.log('review-remote-book');
+
+    var result = {};
+    const vars = req.body.variables;
+    var iret = await reviewRemoteBook(req.body.bookId, req.body.bookVer, vars, result);
+    var msg;
+    if(iret==0) {
+        msg = 'review-remote-book ok';
+    }
+    else if(iret==-1 || iret==-2) {
+        msg = result.msg;
+    }
+    else {
+        msg = 'error code=' + iret;
+    }
+
+    res.send({
+        message: msg,
+        data: {
+            code: iret
+        }
+    })
+});
+
+
+// ----------------------------------------------
 app.post('/bind-book', async function(req, res) {
 	console.log('bind-book');
 

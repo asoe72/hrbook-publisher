@@ -15,10 +15,10 @@ const useStore = create((set) => ({
 	setPathMd: (val) => set({ pathMd: val }),
 
 	// remote book
-	bookId: '',
+	bookId: 'doc-endless',
 	setBookId: (val) => set({ bookId: val }),
 
-	bookVer: '',
+	bookVer: 'ko',
 	setBookVer: (val) => set({ bookVer: val }),
 
 	// 현재 선택된 제어기 모델 ('Hi6'|'Hi7')
