@@ -11,17 +11,17 @@ function validatePathMd(pathMd) {
 }
 
 
-///@param[in]   bookId  remote book ID
-///@param[in]   version remote book version
+///@param[in]   bookId      remote book ID (repository)
+///@param[in]   bookVer     remote book version (branch)
 ///@return      true: 유효, false: 빈 값 (경고 표시 후 false)
-///@brief       remote source (bookId, version) 유효성 검사
-function validateRemoteSource(bookId, version) {
+///@brief       remote source (bookId, bookVer) 유효성 검사
+function validateRemoteSource(bookId, bookVer) {
     if (bookId.trim() === '') {
-        alert('Please, set the source-book id');
+        alert('Please, set the source-book id (repository-name)');
         return false;
     }
-    if (version.trim() === '') {
-        alert('Please, set the source-book version');
+    if (bookVer.trim() === '') {
+        alert('Please, set the source-book version (branch-name)');
         return false;
     }
     return true;

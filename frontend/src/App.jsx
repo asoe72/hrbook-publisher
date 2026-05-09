@@ -8,9 +8,6 @@ import TabPanels from './components/panels/TabPanels';
 ///@brief   최상위 App 컴포넌트 - 전체 상태 관리 및 API 호출 담당
 function App() {
 
-    const [remoteBookId, setRemoteBookId] = useState('');
-    const [remoteVersion, setRemoteVersion] = useState('');
-
     return (
         <>
             <TitleBar />
@@ -21,12 +18,7 @@ function App() {
                     <b>hrbook-publisher</b>
                 </h1>
                 <br />
-                <TabPanels
-                    remoteBookId={remoteBookId}
-                    setRemoteBookId={setRemoteBookId}
-                    remoteVersion={remoteVersion}
-                    setRemoteVersion={setRemoteVersion}
-                />
+                <TabPanels/>
             </div>
         </>
     );
