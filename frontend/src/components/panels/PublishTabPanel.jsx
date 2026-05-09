@@ -1,4 +1,4 @@
-import SourcePathInput from '../SourcePathInput';
+import LocalSourceInput from '../source-input/LocalSourceInput';
 import ControllerModelSelect from '../ControllerModelSelect';
 import { useStore } from '../../store';
 import { requestBindBook, handleApiResponse } from '../../api/bookApi';
@@ -23,7 +23,8 @@ function PublishTabPanel() {
 
     return (
         <div className="pt-3">
-            <SourcePathInput path={pathMd} setPath={setPathMd} />
+            <br/>
+            <LocalSourceInput path={pathMd} setPath={setPathMd} />
             <ControllerModelSelect contModel={contModel} setContModel={setContModel} />
             <div className="d-flex gap-2">
                 <button type="button" className="btn btn-secondary" onClick={handleBindBook}>

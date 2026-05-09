@@ -1,6 +1,6 @@
 
 ///@brief       source-path (.md files) 입력 필드
-function SourcePathInput({ path, setPath }) {
+function LocalSourceInput({ path, setPath }) {
 
     return (
         <div className="mb-3">
@@ -18,4 +18,4 @@ function SourcePathInput({ path, setPath }) {
     );
 }
 
-export default SourcePathInput;
+export default LocalSourceInput;

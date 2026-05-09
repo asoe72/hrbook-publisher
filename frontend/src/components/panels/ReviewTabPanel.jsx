@@ -1,6 +1,6 @@
-import SourcePathInput from '../SourcePathInput';
-import SourceTypeRadio from '../SourceTypeRadio';
-import RemoteSourceInput from '../RemoteSourceInput';
+import LocalSourceInput from '../source-input/LocalSourceInput';
+import SourceTypeRadio from '../source-input/SourceTypeRadio';
+import RemoteSourceInput from '../source-input/RemoteSourceInput';
 import ControllerModelSelect from '../ControllerModelSelect';
 import { useStore } from '../../store';
 import { requestReviewBook, handleApiResponse } from '../../api/bookApi';
@@ -30,7 +30,7 @@ function ReviewTabPanel() {
         <div className="pt-3">
             <SourceTypeRadio value={sourceType} onChange={setSourceType} />
             {sourceType === 'local'
-                ? <SourcePathInput path={pathMd} setPath={setPathMd} />
+                ? <LocalSourceInput path={pathMd} setPath={setPathMd} />
                 : <RemoteSourceInput
                     bookId={bookId}
                     setBookId={setBookId}
