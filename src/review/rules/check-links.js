@@ -8,54 +8,56 @@ const markdown_it = require("markdown-it");
 // --------------------------------------------------
 async function applyRule_BrokenLinks(context, mdText) {
 
-	const brokenLinks = await brokenLinksFromMd(context, mdText);
-  if(brokenLinks.length) {
-    addProblems(context, brokenLinks);
-    context.nNgItem += brokenLinks.length;
+	const brokenItems = await brokenLinksFromMd(context, mdText);
+  if(brokenItems.length) {
+    addProblems(context, brokenItems);
+    context.nNgItem += brokenItems.length;
   }
-  return brokenLinks;
+  return brokenItems;
 }
 
 
 // --------------------------------------------------
 /// @param[in]	context
 /// @param[in]	mdText	검사할 text
-/// @return		brokenLinks[] 배열
+/// @return		brokenItems[] 배열    [ { url, line }, ... ]
 /// @brief		mdText 내에서 모든 []() 요소와 ![]() 요소들의 link를 확인하여, brokenLinks[] 배열을 리턴한다.
 // --------------------------------------------------
 async function brokenLinksFromMd(context, mdText) {
 
-  const links = linksFromMd(mdText);
-  const brokenLinks = [];
+  const items = linksFromMd(mdText);
+  const brokenItems = [];
 
-	for(const url of links) {
+	for(const item of items) {
 		try {
-			const broken = await isBrokenLink(context, url);
+			const broken = await isBrokenLink(context, item.url);
 			if(broken) {
-				brokenLinks.push(url);
+				brokenItems.push(item);
 			}
 		} catch (err) {
-			console.error(`Error checking ${url}:`, err.message);
-			brokenLinks.push(url);
+			console.error(`Error checking ${item.url}:`, err.message);
+			brokenItems.push(item);
     }
 	}
-	return brokenLinks;
+	return brokenItems;
 }
 
 
 // --------------------------------------------------
 /// @param[in]	mdText	검사할 text
-/// @return		links[] 배열
+/// @return		items[] 배열 [ { url, line }, ... ]
 /// @brief		mdText 내의 모든 []() 요소와 ![]() 요소들의 link로 구성된 links[] 배열을 리턴한다.
 // --------------------------------------------------
 function linksFromMd(mdText) {
 
   const md_it = new markdown_it();
   const tokens = md_it.parse(mdText, {});
-  const links = [];
+  const items = [];
 
   tokens.forEach((token) => {
+
     if (token.children) {
+      const line = token.map ? (token.map[0] + 1) : null;   // 1-based line#
       token.children.forEach((child) => {
         let attr = null;
         if (child.type === 'link_open') {
@@ -71,13 +73,13 @@ function linksFromMd(mdText) {
         }
         if (attr) {
           const url = attr[1];
-          links.push(url);
+          items.push({ url, line });
         }
       });
     }
   });
 
-	return links;
+	return items;
 }
 
 
@@ -254,11 +256,12 @@ async function checkExternalLinkWithGet(url)
 
 
 // --------------------------------------------------
-function addProblems(context, brokenLinks)
+function addProblems(context, brokenItems)
 {
-  for(const link of brokenLinks)
+  for(const item of brokenItems)
   {
-    addProblem(context, 'W', 'broken-link', link);
+    const location = { line: item.line };
+    addProblem(context, 'E', 'broken-link', item.url, location);
   }
 }
 

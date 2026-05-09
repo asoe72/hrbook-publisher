@@ -11,11 +11,12 @@ function addInfo(context, msg)
 
 
 // --------------------------------------------------
-///@param[in]   cat		category ('E', 'W', 'N')
+///@param[in]   cat					category ('E'|'W'|'N')
+///@param[in]   location		{ line, col } or null
 // --------------------------------------------------
-function addProblem(context, cat, header, msg)
+function addProblem(context, cat, header, msg, location)
 {
-	const problem = { pathname: context.pathname, cat, header, msg };
+	const problem = { pathname: context.pathname, cat, header, msg, location };
 	context.problems.push(problem);
 }
 
@@ -67,7 +68,14 @@ function printProblem(problem)
 		coloredHd = chalk.cyan(strHd);
 	}
 
-  console.log(`   - ` + coloredHd + ` ${problem.msg}`);
+	let strLocation = '';
+	if(problem.location) {
+		const { line, col } = problem.location;
+		if (col) strLocation = ` at (Ln ${line}, Col ${col}))`;
+		else strLocation = ` at (Ln ${line}))`;
+	}
+
+  console.log(`   - ` + coloredHd + ` ${problem.msg}` + strLocation);
 }
 
 

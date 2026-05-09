@@ -14,23 +14,23 @@ const PROHIBITED_STRS = new Set([
 
 // ----------------------------------------------
 ///@param[in]   str
-///@return    foundLocs
+///@return    items
 ///@brief     str내에서 PROHIBITED_STRS 배열의 금지 문자열들이 있으면 처리
 // ----------------------------------------------
 function applyRule_ProhibitedStrs(context, str)
 {
-  let foundLocs = [];
+  let items = [];
   for(const prohibitedStr of PROHIBITED_STRS) {
-    const foundLocsSub = findProhibitedStr(context, str, prohibitedStr);
-    foundLocs = [...foundLocs, ...foundLocsSub];
+    const itemsSub = findProhibitedStr(context, str, prohibitedStr);
+    items = [...items, ...itemsSub];
   }
 
-  if(foundLocs.length) {
-    context.nNgItem += foundLocs.length;
-    addProblems(context, foundLocs);
+  if(items.length) {
+    context.nNgItem += items.length;
+    addProblems(context, items);
   }
 
-  return foundLocs;
+  return items;
 }
 
 
@@ -39,27 +39,26 @@ function findProhibitedStr(context, str, prohibitedStr)
 {
   let idx = str.indexOf(prohibitedStr);
 
-  const foundLocs = [];
+  const items = [];
   while (idx !== -1) {
-    const loc = str_util.lineColFromIndex(str, idx);
-    loc.prohibitedStr = prohibitedStr;
-    foundLocs.push(loc);
+    const location = str_util.lineColFromIndex(str, idx);
+    items.push({ prohibitedStr, location });
     
     idx = str.indexOf(prohibitedStr, idx + prohibitedStr.length);
   }
 
-  return foundLocs;
+  return items;
 }
 
 
 // --------------------------------------------------
-function addProblems(context, locs)
+function addProblems(context, items)
 {
-  for(const loc of locs)
+  for(const item of items)
   {
-    const { line, col, prohibitedStr } = loc;
-    const msg = chalk.yellow(`'${prohibitedStr}'`) + ` at (Ln ${line}, Col ${col}))`;
-    addProblem(context, 'W', 'prohibited-str', msg);
+    const { location, prohibitedStr } = item;
+    const msg = chalk.yellow(`'${prohibitedStr}'`);
+    addProblem(context, 'W', 'prohibited-str', msg, location);
   }
 }
 

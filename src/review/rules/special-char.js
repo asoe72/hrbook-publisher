@@ -63,7 +63,7 @@ function applyRule_CheckSpecialChars(context, str)
 	if (!items.length) return;
 
 	context.nNgItem += items.length;
-  addProblems_SpecialChars(context, items, str);
+  addProblems_SpecialChars(context, items);
 }
 
 
@@ -96,7 +96,8 @@ function findSpecialChars(str)
   for (const ch of str) {
     const cp = ch.codePointAt(0);
     if(!isPermittedChar(ch) && !isHangul(cp) && !isInAscii(cp)) {
-      items.push({ char: ch, index });
+      const location = str_util.lineColFromIndex(str, index);
+      items.push({ char: ch, location });
     }
     index += ch.length;
   }
@@ -155,14 +156,13 @@ function isInAscii(cp) {
 
 
 // --------------------------------------------------
-function addProblems_SpecialChars(context, items, str)
+function addProblems_SpecialChars(context, items)
 {
 	for(const item of items)
   {
-    const { line, col } = str_util.lineColFromIndex(str, item.index);
     const unicode = str_util.strUnicodeHexFromChar(item.char);
-    const msg = chalk.yellow(`'${item.char}'`) + `(${unicode}) at (Ln ${line}, Col ${col}))`;
-    addProblem(context, 'W', 'special-char', msg);
+    const msg = chalk.yellow(`'${item.char}'`) + `(${unicode})`;
+    addProblem(context, 'W', 'special-char', msg, item.location);
   }
 }
 
