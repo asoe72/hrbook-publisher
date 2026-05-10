@@ -4,7 +4,7 @@ import RemoteSourceInput from '../source-input/RemoteSourceInput';
 import ControllerModelSelect from '../ControllerModelSelect';
 import RulesGroupBox from '../review/RulesGroupBox';
 import { useStore } from '../../store';
-import { requestReviewLocalBook, requestReviewRemoteBook, handleApiResponse } from '../../api/bookApi';
+import { requestReviewLocalBook, requestReviewRemoteBook, requestReviewRemoteBookAll, handleApiResponse } from '../../api/bookApi';
 import { validatePathMd, validateRemoteSource } from '../../lib/validate';
 
 
@@ -22,25 +22,44 @@ function ReviewTabPanel() {
             if (!validatePathMd(pathMd)) return;
             res = await requestReviewLocalBook(pathMd, contModel, reviewRules);
 
-        } else {
+        } else if (sourceType === 'remote-book') {
             if (!validateRemoteSource(bookId, bookVer)) return;
             res = await requestReviewRemoteBook(bookId, bookVer, reviewRules);
+
+        } else if (sourceType === 'remote-books-all') {
+            res = await requestReviewRemoteBookAll(reviewRules);
         }
         handleApiResponse(res, 'review-book completed!');
     }
 
+
+    // ----------------------------------------------
+    function renderSourceInput()
+    {
+        if(sourceType === 'local') {
+            return <LocalSourceInput path={pathMd} setPath={setPathMd} />;
+        }
+        else if(sourceType === 'remote-book') {
+            return <RemoteSourceInput
+                        bookId={bookId}
+                        setBookId={setBookId}
+                        bookVer={bookVer}
+                        setBookVer={setBookVer}
+                        />
+        }
+        else return null;
+    }
+
+
+    // ----------------------------------------------
     return (
         <div className="pt-3">
-            <SourceTypeRadio value={sourceType} onChange={setSourceType} />
-            {sourceType === 'local'
-                ? <LocalSourceInput path={pathMd} setPath={setPathMd} />
-                : <RemoteSourceInput
-                    bookId={bookId}
-                    setBookId={setBookId}
-                    bookVer={bookVer}
-                    setBookVer={setBookVer}
-                  />
-            }
+            <SourceTypeRadio
+                value={sourceType}
+                onChange={setSourceType}
+                options={['local', 'remote-book', 'remote-books-all']}
+            />
+            { renderSourceInput() }
             <ControllerModelSelect contModel={contModel} setContModel={setContModel} />
             <div className="d-flex gap-2">
                 <button type="button" className="btn btn-secondary" onClick={handleReviewBook}>

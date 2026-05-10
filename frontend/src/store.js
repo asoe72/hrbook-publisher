@@ -6,7 +6,7 @@ const useStore = create((set) => ({
 	appVersion: '...',
 	setAppVersion: (val) => set({ appVersion: val }),
 
-	// source-type ('local'|'remote')
+	// source-type ('local'|'remote-book|'remote-books-all')
 	sourceType: 'local',
 	setSourceType: (val) => set({ sourceType: val }),
 

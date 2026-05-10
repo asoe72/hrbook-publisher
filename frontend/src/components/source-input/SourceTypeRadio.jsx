@@ -1,10 +1,11 @@
-///@param[in]   value       현재 선택값 ('local' | 'remote')
-///@param[in]   onChange    선택 변경 콜백 (newValue: 'local' | 'remote')
-///@brief       source 타입 선택 radio 버튼 (local / remote)
-function SourceTypeRadio({ value, onChange }) {
+///@param[in]   value       현재 선택값 ('local' | 'remote-book' | 'remote-books-all')
+///@param[in]   onChange    선택 변경 콜백 (newValue: string)
+///@param[in]   options     라디오 버튼 선택지 배열
+///@brief       source 타입 선택 radio 버튼
+function SourceTypeRadio({ value, onChange, options }) {
     return (
         <div className="mb-2">
-            {['local', 'remote'].map(type => (
+            {options.map(type => (
                 <div key={type} className="form-check form-check-inline">
                     <input
                         className="form-check-input"

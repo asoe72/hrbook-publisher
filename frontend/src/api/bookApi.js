@@ -61,6 +61,22 @@ function rulesParams(rules) {
 
 
 // ----------------------------------------------
+///@param[in]   rules   { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
+///@return      { message: string, data: { code: number } }
+///@brief       POST /review-remote-books-all - bookinfos.json에서 전체 book 목록을 받아 순차 review
+// ----------------------------------------------
+async function requestReviewRemoteBookAll(rules) {
+    const res = await fetch('/review-remote-books-all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ ...rulesParams(rules) })
+    });
+    if (!res.ok) throw new Error('review-remote-books-all request failed');
+    return res.json();
+}
+
+
+// ----------------------------------------------
 ///@param[in]   pathMd      소스 .md 파일 경로
 ///@param[in]   contModel   제어기 모델 (e.g. 'Hi6', 'Hi7')
 ///@return      { message: string, data: { code: number } }
@@ -94,4 +110,4 @@ function handleApiResponse(res, successMsg) {
 }
 
 
-export { fetchAppVersion, requestReviewLocalBook, requestReviewRemoteBook, requestBindBook, handleApiResponse };
+export { fetchAppVersion, requestReviewLocalBook, requestReviewRemoteBook, requestReviewRemoteBookAll, requestBindBook, handleApiResponse };
