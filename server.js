@@ -2,8 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const str_util = require('./src/util/str_util');
 
-const { reviewLocalBook, reviewRemoteBook } = require('./src/review/review-book');
+const { reviewLocalBook, reviewRemoteBook, reviewRemoteBookAll } = require('./src/review/review-book');
 const md_adjuster = require("./src/md_adjuster");
 const { bindBook } = require('./src/book_commands');
 
@@ -54,6 +55,8 @@ app.post('/adjust-md', function(req, res) {
 app.post('/review-local-book', async function(req, res) {
 	console.log('review-local-book');
 
+    str_util.clearConsole();
+
     var result = {};
     const vars = req.body.variables;
     const rules = parseBoolRules(req.body.rules);
@@ -81,6 +84,8 @@ app.post('/review-local-book', async function(req, res) {
 // ----------------------------------------------
 app.post('/review-remote-book', async function(req, res) {
 	console.log('review-remote-book');
+    
+    str_util.clearConsole();
 
     var result = {};
     const vars = req.body.variables;
@@ -95,6 +100,32 @@ app.post('/review-remote-book', async function(req, res) {
     }
     else {
         msg = 'error code=' + iret;
+    }
+
+    res.send({
+        message: msg,
+        data: {
+            code: iret
+        }
+    })
+});
+
+
+// ----------------------------------------------
+app.post('/review-remote-books-all', async function(req, res) {
+	console.log('review-remote-books-all');
+
+    str_util.clearConsole();
+
+    var result = {};
+    const rules = parseBoolRules(req.body.rules);
+    var iret = await reviewRemoteBookAll(rules, result);
+    var msg;
+    if(iret==0) {
+        msg = 'review-remote-books-all ok';
+    }
+    else {
+        msg = result.msg || ('error code=' + iret);
     }
 
     res.send({

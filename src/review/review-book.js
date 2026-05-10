@@ -1,12 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const axios = require('axios');
 const puppeteer = require('puppeteer');
 const git_util = require('../util/git_util');
 const file_util = require('../util/file_util');
-const str_util = require('../util/str_util');
 const { printProblems } = require('./problems');
 const { reviewFile } = require('./review-file');
+
+const BOOKINFOS_URL = 'https://raw.githubusercontent.com/hyundai-robotics/hrbookinfos/refs/heads/master/bookinfos.json';
+const PATH_OUT_MD = 'public/out-md/';
 
 
 // 제외할 폴더 or 파일명 목록
@@ -28,7 +31,6 @@ function initContext(basePathMd, rules) {
 // ----------------------------------------------
 exports.reviewLocalBook = async function(basePathMd, variables, rules)
 {
-  str_util.clearConsole();
   console.log('');
   console.log('# REVIEW ALL FILES ================');
 
@@ -46,7 +48,6 @@ exports.reviewLocalBook = async function(basePathMd, variables, rules)
 // ----------------------------------------------
 exports.reviewRemoteBook = async function(bookId, bookVer, variables, rules)
 {
-  str_util.clearConsole();
   console.log('');
   console.log('# REVIEW ALL FILES ================');
 
@@ -140,4 +141,59 @@ function printBookReport(context)
   else {
     console.log('No files modified.');
   }
+}
+
+
+// --------------------------------------------------
+///@param[in]   destPath    저장할 폴더 경로 (e.g. 'public/out-md/')
+///@return      bookinfos 배열 (파싱된 JSON)
+///@brief       BOOKINFOS_URL에서 bookinfos.json을 다운로드하여 destPath에 저장
+// --------------------------------------------------
+async function downloadBookinfos(destPath)
+{
+  console.log(`\ndownloading bookinfos.json...`);
+  file_util.mkdir(destPath);
+  const response = await axios.get(BOOKINFOS_URL);
+  const filePath = path.join(destPath, 'bookinfos.json');
+  fs.writeFileSync(filePath, JSON.stringify(response.data, null, 2));
+  console.log(` : OK (${response.data.length} entries)`);
+  return response.data;
+}
+
+
+// --------------------------------------------------
+///@param[in]   bookinfos   bookinfos.json 배열
+///@return      { bookId, bookVer }[] — 필터 통과한 항목들
+///@brief       url 속성 항목, products에 'manipulator' 포함 항목 제외
+// --------------------------------------------------
+function filterBookPairs(bookinfos)
+{
+  return bookinfos
+    .filter(item => !item.url)
+    .filter(item => !(item.products && item.products.includes('manipulator')))
+    .map(item => ({ bookId: item['book_id'], bookVer: item['ver_id'] }));
+}
+
+
+// --------------------------------------------------
+///@param[in]   rules   { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
+///@brief       bookinfos.json의 전체 book 목록을 받아 순차적으로 reviewRemoteBook() 수행
+// --------------------------------------------------
+exports.reviewRemoteBookAll = async function(rules)
+{
+  console.log('');
+  console.log('# REVIEW ALL REMOTE BOOKS ================');
+
+  const bookinfos = await downloadBookinfos(PATH_OUT_MD);
+  const pairs = filterBookPairs(bookinfos);
+
+  console.log(`\n${pairs.length} book(s) to review.`);
+
+  for (const { bookId, bookVer } of pairs) {
+    console.log(`\n=== ${bookId} / ${bookVer} ===`);
+    await exports.reviewRemoteBook(bookId, bookVer, null, rules);
+  }
+
+  console.log(`\n--------------------------- ALL COMPLETED.`);
+  return 0;
 }
