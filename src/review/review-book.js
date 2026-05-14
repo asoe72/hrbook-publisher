@@ -5,6 +5,7 @@ const axios = require('axios');
 const puppeteer = require('puppeteer');
 const git_util = require('../util/git_util');
 const file_util = require('../util/file_util');
+const log_util = require('../util/log_util');
 const { printProblems } = require('./problems');
 const { reviewFile } = require('./review-file');
 
@@ -31,15 +32,17 @@ function initContext(basePathMd, rules) {
 // ----------------------------------------------
 exports.reviewLocalBook = async function(basePathMd, variables, rules)
 {
-  console.log('');
-  console.log('# REVIEW ALL FILES ================');
+  log_util.init();
+
+  log_util.log('');
+  log_util.log('# REVIEW ALL FILES ================');
 
   const context = initContext(basePathMd, rules);
   await reviewPathAll(context);
 
   printBookReport(context);
 
-  console.log(`\n--------------------------- COMPLETED.`);
+  log_util.log(`\n--------------------------- COMPLETED.`);
 
   return 0;
 }
@@ -48,8 +51,8 @@ exports.reviewLocalBook = async function(basePathMd, variables, rules)
 // ----------------------------------------------
 exports.reviewRemoteBook = async function(bookId, bookVer, variables, rules)
 {
-  console.log('');
-  console.log('# REVIEW ALL FILES ================');
+  log_util.log('');
+  log_util.log('# REVIEW ALL FILES ================');
 
   const pathOutMd = 'public/out-md/';
   cloneBook(pathOutMd, bookId, bookVer);
@@ -61,7 +64,7 @@ exports.reviewRemoteBook = async function(bookId, bookVer, variables, rules)
 
   printBookReport(context);
 
-  console.log(`\n--------------------------- COMPLETED.`);
+  log_util.log(`\n--------------------------- COMPLETED.`);
 
   return 0;
 }
@@ -70,16 +73,16 @@ exports.reviewRemoteBook = async function(bookId, bookVer, variables, rules)
 // ----------------------------------------------
 async function cloneBook(pathOutMd, bookId, bookVer)
 {
-  console.log(`\ncloning...`);
+  log_util.log(`\ncloning...`);
 
   fs.rmSync(pathOutMd, { recursive: true, force: true });
   file_util.mkdir(pathOutMd);
   const iret = git_util.cloneBook(pathOutMd, bookId, bookVer);
   if(iret == 0) {
-    console.log(`\n : OK`);
+    log_util.log(`\n : OK`);
   }
   else {
-    console.log(`\n : FAILED`);
+    log_util.log(`\n : FAILED`);
   }
 }
 
@@ -87,7 +90,7 @@ async function cloneBook(pathOutMd, bookId, bookVer)
 // ----------------------------------------------
 async function reviewPathAll(context)
 {
-  console.log(`\nreviewing...`);
+  log_util.log(`\nreviewing...`);
 
   const browser = await puppeteer.launch();
   context.browserPage = await browser.newPage();
@@ -125,21 +128,21 @@ async function reviewPath(context, _path)
 ///@brief		    결과 보고 출력
 function printBookReport(context)
 {
-  console.log(`----------------------------------------`);
+  log_util.log(`----------------------------------------`);
   printProblems(context);
-  console.log(`----------------------------------------`);
-  console.log(`${context.nChecked} file(s) checked.`);
-  console.log(chalk.green(`  * OK : ${context.nOkFile} file(s)`));
+  log_util.log(`----------------------------------------`);
+  log_util.log(`${context.nChecked} file(s) checked.`);
+  log_util.log(chalk.green(`  * OK : ${context.nOkFile} file(s)`));
   if(context.nNgFile > 0) {
-    console.log(chalk.yellow(`  * NG : ${context.nNgFile} file(s), ${context.nNgItem} item(s)`));
-    console.log(chalk.yellow(`    => Review and correct if necessary.`));
+    log_util.log(chalk.yellow(`  * NG : ${context.nNgFile} file(s), ${context.nNgItem} item(s)`));
+    log_util.log(chalk.yellow(`    => Review and correct if necessary.`));
   }
 
   if(context.nModifiedFile > 0) {
-    console.log(chalk.cyan(`${context.nModifiedFile}`) + ` file(s) modified.\nRun the process again to check the result.`);
+    log_util.log(chalk.cyan(`${context.nModifiedFile}`) + ` file(s) modified.\nRun the process again to check the result.`);
   }
   else {
-    console.log('No files modified.');
+    log_util.log('No files modified.');
   }
 }
 
@@ -151,12 +154,12 @@ function printBookReport(context)
 // --------------------------------------------------
 async function downloadBookinfos(destPath)
 {
-  console.log(`\ndownloading bookinfos.json...`);
+  log_util.log(`\ndownloading bookinfos.json...`);
   file_util.mkdir(destPath);
   const response = await axios.get(BOOKINFOS_URL);
   const filePath = path.join(destPath, 'bookinfos.json');
   fs.writeFileSync(filePath, JSON.stringify(response.data, null, 2));
-  console.log(` : OK (${response.data.length} entries)`);
+  log_util.log(` : OK (${response.data.length} entries)`);
   return response.data;
 }
 
@@ -191,20 +194,20 @@ function filterBookInfos(bookinfos)
 // --------------------------------------------------
 exports.reviewRemoteBookAll = async function(rules)
 {
-  console.log('');
-  console.log('# REVIEW ALL REMOTE BOOKS ================');
+  log_util.log('');
+  log_util.log('# REVIEW ALL REMOTE BOOKS ================');
 
   const bookinfos = await downloadBookinfos(PATH_OUT_MD);
   const items = filterBookInfos(bookinfos);
 
-  console.log(`\n${items.length} book(s) to review.`);
+  log_util.log(`\n${items.length} book(s) to review.`);
 
   for (const { bookId, bookVer, bookTitle } of items) {
-    console.log(`\n=== ${bookId} / ${bookVer} ===`);
-    console.log(`    ${bookTitle}`);
+    log_util.log(`\n=== ${bookId} / ${bookVer} ===`);
+    log_util.log(`    ${bookTitle}`);
     await exports.reviewRemoteBook(bookId, bookVer, null, rules);
   }
 
-  console.log(`\n--------------------------- ALL COMPLETED.`);
+  log_util.log(`\n--------------------------- ALL COMPLETED.`);
   return 0;
 }

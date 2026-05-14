@@ -1,5 +1,6 @@
 const path = require('path');
 const chalk = require('chalk');
+const log_util = require('../util/log_util');
 
 
 // --------------------------------------------------
@@ -45,9 +46,9 @@ function printRelPathnameIsDifferent(context, problem, pathnameCur)
 {
 	if (pathnameCur === problem.pathname) return pathnameCur;
 
-	console.log(` --------------------------------`);
+	log_util.log(` --------------------------------`);
 	const relPathname = path.relative(context.basePathMd, problem.pathname);
-	console.log(` in file, ${relPathname} : `);
+	log_util.log(` in file, ${relPathname} : `);
 	
 	return problem.pathname;
 }
@@ -75,7 +76,7 @@ function printProblem(problem)
 		else strLocation = ` at (Ln ${line}))`;
 	}
 
-  console.log(`   - ` + coloredHd + ` ${problem.msg}` + strLocation);
+  log_util.log(`   - ` + coloredHd + ` ${problem.msg}` + strLocation);
 }
 
 

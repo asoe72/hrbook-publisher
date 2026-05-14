@@ -4,6 +4,7 @@ doc/_memo.txt
 backup/
 _raw/
 out/
+out-md/
 out-html/
 node_modules/
 frontend/node_modules/

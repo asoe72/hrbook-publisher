@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const log_util = require('../util/log_util');
 const { replaceVariablesInStrToValues } = require('../variables');
 
 // rules
@@ -29,7 +30,7 @@ async function reviewFile(pathname, context)
 
   //console.log(` --------------------------------`);
   const relPathname = path.relative(context.basePathMd, pathname);
-  process.stdout.write(`\r\x1b[K * ${relPathname}`);
+  log_util.logToSameRow(` * ${relPathname}`);
 
   context.nChecked++;
   
