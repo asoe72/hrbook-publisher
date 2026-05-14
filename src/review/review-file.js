@@ -29,7 +29,7 @@ async function reviewFile(pathname, context)
 
   //console.log(` --------------------------------`);
   const relPathname = path.relative(context.basePathMd, pathname);
-  console.log(` * ${relPathname} : `);
+  process.stdout.write(`\r\x1b[K * ${relPathname}`);
 
   context.nChecked++;
   
