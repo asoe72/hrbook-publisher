@@ -166,12 +166,22 @@ async function downloadBookinfos(destPath)
 ///@return      { bookId, bookVer }[] — 필터 통과한 항목들
 ///@brief       url 속성 항목, products에 'manipulator' 포함 항목 제외
 // --------------------------------------------------
-function filterBookPairs(bookinfos)
+function filterBookInfos(bookinfos)
 {
   return bookinfos
-    .filter(item => !item.url)
-    .filter(item => !(item.products && item.products.includes('manipulator')))
-    .map(item => ({ bookId: item['book_id'], bookVer: item['ver_id'] }));
+    .filter(item => {
+      const verId = item['ver_id'];
+      const noUrl = !item.url;
+      const isKoreanEnglish = verId?.startsWith('ko') || verId?.startsWith('en');
+      const isManipulator = item.products && item.products.includes('manipulator');
+      
+      return (noUrl && isKoreanEnglish && !isManipulator);
+      
+    }).map(item => ({
+      bookId: item['book_id'],
+      bookVer: item['ver_id'],
+      bookTitle: item['title']
+    }));
 }
 
 
@@ -185,12 +195,13 @@ exports.reviewRemoteBookAll = async function(rules)
   console.log('# REVIEW ALL REMOTE BOOKS ================');
 
   const bookinfos = await downloadBookinfos(PATH_OUT_MD);
-  const pairs = filterBookPairs(bookinfos);
+  const items = filterBookInfos(bookinfos);
 
-  console.log(`\n${pairs.length} book(s) to review.`);
+  console.log(`\n${items.length} book(s) to review.`);
 
-  for (const { bookId, bookVer } of pairs) {
+  for (const { bookId, bookVer, bookTitle } of items) {
     console.log(`\n=== ${bookId} / ${bookVer} ===`);
+    console.log(`    ${bookTitle}`);
     await exports.reviewRemoteBook(bookId, bookVer, null, rules);
   }
 
