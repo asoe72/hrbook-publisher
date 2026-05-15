@@ -4,17 +4,17 @@
 // ----------------------------------------------
 ///@param[in]	repoPath		local 경로		
 ///@param[in]	bookId			e.g. 'doc-endless'
-///@param[in]	bookVer			e.g. 'ko'
+///@param[in]	verId			e.g. 'ko'
 ///@return
 // 				-		0			ok
 // 				-		-1		ng
 // ----------------------------------------------
-exports.cloneBook = function(repoPath, bookId, bookVer) {
+exports.cloneBook = function(repoPath, bookId, verId) {
 	try {
 		const url = `https://github.com/hyundai-robotics/${bookId}.git`;
 		const ret = gitExec(
 			repoPath,
-			`git clone -b ${bookVer} ${url}`
+			`git clone -b ${verId} ${url}`
 		);
 		return 0;
 	} catch (err) {

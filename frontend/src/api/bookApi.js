@@ -34,12 +34,12 @@ async function requestReviewLocalBook(pathMd, contModel, rules) {
 ///@return      { message: string, data: { code: number } }
 ///@brief       POST /review-remote-book - check, fix
 // ----------------------------------------------
-async function requestReviewRemoteBook(bookId, bookVer, rules) {
+async function requestReviewRemoteBook(bookId, verId, rules) {
     const res = await fetch('/review-remote-book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
-            bookId, bookVer,
+            bookId, verId,
             ...rulesParams(rules)
         })
     });

@@ -18,8 +18,8 @@ const useStore = create((set) => ({
 	bookId: 'doc-hi6-open-api',
 	setBookId: (val) => set({ bookId: val }),
 
-	bookVer: 'ko',
-	setBookVer: (val) => set({ bookVer: val }),
+	verId: 'ko',
+	setVerId: (val) => set({ verId: val }),
 
 	// 현재 선택된 제어기 모델 ('Hi6'|'Hi7')
 	contModel: 'Hi6',

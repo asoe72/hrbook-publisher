@@ -291,7 +291,7 @@ curl -X POST http://127.0.0.1:50000/review-local-book \
 ```bash
 curl -X POST http://127.0.0.1:50000/review-remote-book \
   -d "bookId=doc-endless" \
-  -d "bookVer=ko"
+  -d "verId=ko"
 ```
 
 ---

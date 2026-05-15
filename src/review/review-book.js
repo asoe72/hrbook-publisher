@@ -49,13 +49,13 @@ exports.reviewLocalBook = async function(basePathMd, variables, rules)
 
 
 // ----------------------------------------------
-exports.reviewRemoteBook = async function(bookId, bookVer, variables, rules)
+exports.reviewRemoteBook = async function(bookId, verId, variables, rules)
 {
   log_util.log('');
   log_util.log('# REVIEW ALL FILES ================');
 
   const pathOutMd = 'public/out-md/';
-  cloneBook(pathOutMd, bookId, bookVer);
+  cloneBook(pathOutMd, bookId, verId);
 
   const basePathMd = path.join(pathOutMd, bookId);
   const context = initContext(basePathMd, rules);
@@ -71,13 +71,13 @@ exports.reviewRemoteBook = async function(bookId, bookVer, variables, rules)
 
 
 // ----------------------------------------------
-async function cloneBook(pathOutMd, bookId, bookVer)
+async function cloneBook(pathOutMd, bookId, verId)
 {
   log_util.log(`\ncloning...`);
 
   fs.rmSync(pathOutMd, { recursive: true, force: true });
   file_util.mkdir(pathOutMd);
-  const iret = git_util.cloneBook(pathOutMd, bookId, bookVer);
+  const iret = git_util.cloneBook(pathOutMd, bookId, verId);
   if(iret == 0) {
     log_util.log(`\n : OK`);
   }
@@ -166,7 +166,7 @@ async function downloadBookinfos(destPath)
 
 // --------------------------------------------------
 ///@param[in]   bookinfos   bookinfos.json 배열
-///@return      { bookId, bookVer }[] — 필터 통과한 항목들
+///@return      { bookId, verId }[] — 필터 통과한 항목들
 ///@brief       url 속성 항목, products에 'manipulator' 포함 항목 제외
 // --------------------------------------------------
 function filterBookInfos(bookinfos)
@@ -182,7 +182,7 @@ function filterBookInfos(bookinfos)
       
     }).map(item => ({
       bookId: item['book_id'],
-      bookVer: item['ver_id'],
+      verId: item['ver_id'],
       bookTitle: item['title']
     }));
 }
@@ -202,10 +202,10 @@ exports.reviewRemoteBookAll = async function(rules)
 
   log_util.log(`\n${items.length} book(s) to review.`);
 
-  for (const { bookId, bookVer, bookTitle } of items) {
-    log_util.log(`\n=== ${bookId} / ${bookVer} ===`);
+  for (const { bookId, verId, bookTitle } of items) {
+    log_util.log(`\n=== ${bookId} / ${verId} ===`);
     log_util.log(`    ${bookTitle}`);
-    await exports.reviewRemoteBook(bookId, bookVer, null, rules);
+    await exports.reviewRemoteBook(bookId, verId, null, rules);
   }
 
   log_util.log(`\n--------------------------- ALL COMPLETED.`);

@@ -12,7 +12,7 @@ import { validatePathMd, validateRemoteSource } from '../../lib/validate';
 function ReviewTabPanel() {
 
     const { sourceType, setSourceType, pathMd, setPathMd,
-        bookId, setBookId, bookVer, setBookVer,
+        bookId, setBookId, verId, setVerId,
         contModel, setContModel,
         reviewRules, setReviewRules } = useStore();
 
@@ -23,8 +23,8 @@ function ReviewTabPanel() {
             res = await requestReviewLocalBook(pathMd, contModel, reviewRules);
 
         } else if (sourceType === 'remote-book') {
-            if (!validateRemoteSource(bookId, bookVer)) return;
-            res = await requestReviewRemoteBook(bookId, bookVer, reviewRules);
+            if (!validateRemoteSource(bookId, verId)) return;
+            res = await requestReviewRemoteBook(bookId, verId, reviewRules);
 
         } else if (sourceType === 'remote-books-all') {
             res = await requestReviewRemoteBookAll(reviewRules);
@@ -43,8 +43,8 @@ function ReviewTabPanel() {
             return <RemoteSourceInput
                         bookId={bookId}
                         setBookId={setBookId}
-                        bookVer={bookVer}
-                        setBookVer={setBookVer}
+                        verId={verId}
+                        setVerId={setVerId}
                         />
         }
         else return null;

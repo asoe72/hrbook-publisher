@@ -90,7 +90,7 @@ app.post('/review-remote-book', async function(req, res) {
     var result = {};
     const vars = req.body.variables;
     const rules = parseBoolRules(req.body.rules);
-    var iret = await reviewRemoteBook(req.body.bookId, req.body.bookVer, vars, rules, result);
+    var iret = await reviewRemoteBook(req.body.bookId, req.body.verId, vars, rules, result);
     var msg;
     if(iret==0) {
         msg = 'review-remote-book ok';

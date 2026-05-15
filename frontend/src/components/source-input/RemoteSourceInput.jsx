@@ -1,6 +1,6 @@
 
 ///@brief       remote source 입력 필드 (book ID + version)
-function RemoteSourceInput({ bookId, setBookId, bookVer, setBookVer }) {
+function RemoteSourceInput({ bookId, setBookId, verId, setVerId }) {
     return (
         <div className="mb-3">
             source-book
@@ -23,8 +23,8 @@ function RemoteSourceInput({ bookId, setBookId, bookVer, setBookVer }) {
                     type="text"
                     className="form-control"
                     style={{ width: '8rem', color: '#111' }}
-                    value={bookVer}
-                    onChange={e => setBookVer(e.target.value)}
+                    value={verId}
+                    onChange={e => setVerId(e.target.value)}
                     placeholder="e.g. ko"
                 />
             </div>
