@@ -17,7 +17,7 @@ function PublishTabPanel() {
     }
 
     function handlePrintBook() {
-        const win = window.open('out/book.html', '_blank');
+        const win = window.open('out-html/book.html', '_blank');
         win.focus();
     }
 
