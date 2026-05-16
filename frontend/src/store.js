@@ -32,7 +32,14 @@ const useStore = create((set) => ({
 		replaceSpecialChars: true,
 		checkProhibitedStrs: true
 	},
-	setReviewRules: (val) => set({ reviewRules: val })
+	setReviewRules: (val) => set({ reviewRules: val }),
+
+	// review filters 체크박스 상태
+	reviewFilters: {
+		languages: { english: true, korean: true, chinese: false },
+		products:  { hi5a: false, hi6: false, hi7: true, manipulator: false, common: true }
+	},
+	setReviewFilters: (val) => set({ reviewFilters: val })
 }));
 
 export { useStore };

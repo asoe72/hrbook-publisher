@@ -2,6 +2,7 @@ import LocalSourceInput from '../source-input/LocalSourceInput';
 import SourceTypeRadio from '../source-input/SourceTypeRadio';
 import RemoteSourceInput from '../source-input/RemoteSourceInput';
 import ControllerModelSelect from '../ControllerModelSelect';
+import FiltersGroupBox from '../review/FiltersGroupBox';
 import RulesGroupBox from '../review/RulesGroupBox';
 import { useStore } from '../../store';
 import { requestReviewLocalBook, requestReviewRemoteBook, requestReviewRemoteBookAll, handleApiResponse } from '../../api/bookApi';
@@ -14,7 +15,8 @@ function ReviewTabPanel() {
     const { sourceType, setSourceType, pathMd, setPathMd,
         bookId, setBookId, verId, setVerId,
         contModel, setContModel,
-        reviewRules, setReviewRules } = useStore();
+        reviewRules, setReviewRules,
+        reviewFilters, setReviewFilters } = useStore();
 
     async function handleReviewBook() {
         let res = 0;
@@ -27,7 +29,7 @@ function ReviewTabPanel() {
             res = await requestReviewRemoteBook(bookId, verId, reviewRules);
 
         } else if (sourceType === 'remote-books-all') {
-            res = await requestReviewRemoteBookAll(reviewRules);
+            res = await requestReviewRemoteBookAll(reviewRules, reviewFilters);
         }
         handleApiResponse(res, 'review-book completed!');
     }
@@ -52,6 +54,16 @@ function ReviewTabPanel() {
 
 
     // ----------------------------------------------
+    function renderFilters()
+    {
+        if(sourceType === 'remote-books-all') {
+            return <FiltersGroupBox filters={reviewFilters} setFilters={setReviewFilters} />
+        }
+        else return null;
+    }
+
+
+    // ----------------------------------------------
     return (
         <div className="pt-3">
             <SourceTypeRadio
@@ -60,6 +72,7 @@ function ReviewTabPanel() {
                 options={['local', 'remote-book', 'remote-books-all']}
             />
             { renderSourceInput() }
+            { renderFilters() }            
             <ControllerModelSelect contModel={contModel} setContModel={setContModel} />
             <div className="d-flex gap-2">
                 <button type="button" className="btn btn-secondary" onClick={handleReviewBook}>
