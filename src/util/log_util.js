@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const pathnameLog = 'public/out-md/result.log';
+const pathnameLog = 'public/out-result/result.log';
 
 
 // --------------------------------------------------

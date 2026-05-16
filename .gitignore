@@ -6,6 +6,7 @@ _raw/
 out/
 out-md/
 out-html/
+out-result/
 node_modules/
 frontend/node_modules/
 

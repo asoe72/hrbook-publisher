@@ -55,7 +55,8 @@ exports.reviewRemoteBook = async function(bookId, verId, variables, rules)
   log_util.log('# REVIEW ALL FILES ================');
 
   const pathOutMd = 'public/out-md/';
-  cloneBook(pathOutMd, bookId, verId);
+  const cloneRet = await cloneBook(pathOutMd, bookId, verId);
+  if (cloneRet !== 0) return cloneRet;
 
   const basePathMd = path.join(pathOutMd, bookId);
   const context = initContext(basePathMd, rules);
@@ -70,12 +71,21 @@ exports.reviewRemoteBook = async function(bookId, verId, variables, rules)
 }
 
 
-// ----------------------------------------------
+// --------------------------------------------------
+///@return  0: ok, -1: 디렉터리 삭제 실패 (파일 잠김 등), -2: clone 실패
+// --------------------------------------------------
 async function cloneBook(pathOutMd, bookId, verId)
 {
   log_util.log(`\ncloning...`);
 
-  fs.rmSync(pathOutMd, { recursive: true, force: true });
+  try {
+    fs.rmSync(pathOutMd, { recursive: true, force: true });
+  } catch (e) {
+    log_util.log(chalk.yellow(`\n [경고] '${pathOutMd}' 삭제 실패 — 다른 프로세스가 파일을 점유 중인지 확인하십시오.`));
+    log_util.log(chalk.yellow(`  해당 폴더를 수동으로 삭제한 뒤 다시 시도하세요.`));
+    return -1;
+  }
+
   file_util.mkdir(pathOutMd);
   const iret = git_util.cloneBook(pathOutMd, bookId, verId);
   if(iret == 0) {
@@ -83,7 +93,9 @@ async function cloneBook(pathOutMd, bookId, verId)
   }
   else {
     log_util.log(`\n : FAILED`);
+    return -2;
   }
+  return 0;
 }
 
 

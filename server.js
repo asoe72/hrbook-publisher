@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const str_util = require('./src/util/str_util');
+const log_util = require('./src/util/log_util');
 
 const { reviewLocalBook, reviewRemoteBook, reviewRemoteBookAll } = require('./src/review/review-book');
 const md_adjuster = require("./src/md_adjuster");
@@ -87,6 +88,7 @@ app.post('/review-remote-book', async function(req, res) {
 	console.log('review-remote-book');
     
     str_util.clearConsole();
+    log_util.init();
 
     var result = {};
     const vars = req.body.variables;
@@ -117,6 +119,7 @@ app.post('/review-remote-books-all', async function(req, res) {
 	console.log('review-remote-books-all');
 
     str_util.clearConsole();
+    log_util.init();
 
     const { rules, filters } = req.body;
     var iret = await reviewRemoteBookAll(rules, filters);
