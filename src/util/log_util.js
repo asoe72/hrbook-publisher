@@ -38,9 +38,6 @@ exports.log = function(msg)
 exports.logToSameRow = function(msg)
 {
 	process.stdout.write(`\r\x1b[K${msg}`);
-
-	const strippedMsg = stripAnsi(msg);
-	logToFile(strippedMsg);
 }
 
 
