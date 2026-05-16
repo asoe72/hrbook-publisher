@@ -43,7 +43,7 @@ exports.pullBook = function(repoPath) {
 // 				-		0			ok
 // 				-		-1		ng
 // ----------------------------------------------
-exports.updateBookToLocal = function(repoPath, bookId, verId) {
+exports.cloneBook = function(repoPath, bookId, verId) {
 	try {
 		const url = `https://github.com/hyundai-robotics/${bookId}.git`;
 		const ret = gitExec(

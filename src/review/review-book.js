@@ -122,7 +122,7 @@ function doCloneBook(pathOutMd, bookId, verId)
   }
 
   file_util.mkdir(pathOutMd);
-  const iret = git_util.updateBookToLocal(pathOutMd, bookId, verId);
+  const iret = git_util.cloneBook(pathOutMd, bookId, verId);
   if (iret === 0) {
     log_util.log(`\n : OK`);
   } else {
