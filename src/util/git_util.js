@@ -1,15 +1,49 @@
 ﻿const child_process = require("child_process");
 
 
+// --------------------------------------------------
+///@return		true: repoPath가 유효한 git repo, false: 아님
+// --------------------------------------------------
+exports.isGitRepo = function(repoPath) {
+	try {
+		child_process.execSync('git rev-parse --git-dir', {
+			cwd: repoPath,
+			encoding: 'utf8',
+			stdio: 'pipe'
+		});
+		return true;
+	} catch (err) {
+		return false;
+	}
+}
+
+
+// --------------------------------------------------
+///@param[in]	repoPath		git repo 경로 (e.g. 'public/out-md/doc-endless')
+///@return
+///				-		0			ok
+///				-		-1		ng
+// --------------------------------------------------
+exports.pullBook = function(repoPath) {
+	try {
+		gitExec(repoPath, 'git pull');
+		return 0;
+	} catch (err) {
+		console.error("failed to pull:", err.message);
+		return -1;
+	}
+}
+
+
 // ----------------------------------------------
-///@param[in]	repoPath		local 경로		
+///@param[in]	repoPath		local 경로
 ///@param[in]	bookId			e.g. 'doc-endless'
 ///@param[in]	verId			e.g. 'ko'
 ///@return
 // 				-		0			ok
 // 				-		-1		ng
 // ----------------------------------------------
-exports.cloneBook = function(repoPath, bookId, verId) {
+exports.updateBookToLocal = function(repoPath, bookId, verId) {
 	try {
 		const url = `https://github.com/hyundai-robotics/${bookId}.git`;
 		const ret = gitExec(

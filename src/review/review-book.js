@@ -55,7 +55,7 @@ exports.reviewRemoteBook = async function(bookId, verId, variables, rules)
   log_util.log('# REVIEW ALL FILES ================');
 
   const pathOutMd = 'public/out-md/';
-  const cloneRet = await cloneBook(pathOutMd, bookId, verId);
+  const cloneRet = await updateBookToLocal(pathOutMd, bookId, verId);
   if (cloneRet !== 0) return cloneRet;
 
   const basePathMd = path.join(pathOutMd, bookId);
@@ -73,25 +73,59 @@ exports.reviewRemoteBook = async function(bookId, verId, variables, rules)
 
 // --------------------------------------------------
 ///@return  0: ok, -1: 디렉터리 삭제 실패 (파일 잠김 등), -2: clone 실패
+///@brief   기존 git repo이면 pull, 없으면 clone 수행
 // --------------------------------------------------
-async function cloneBook(pathOutMd, bookId, verId)
+async function updateBookToLocal(pathOutMd, bookId, verId)
 {
-  log_util.log(`\ncloning...`);
+  const bookPath = path.join(pathOutMd, bookId);
+
+  if (git_util.isGitRepo(bookPath)) {
+    log_util.log(`\npulling ${bookId}/${verId}...`);
+    if (tryPullBook(bookPath) === 0) return 0;
+    log_util.log(chalk.yellow(`  clone으로 재시도합니다.`));
+  } else {
+    log_util.log(`\ncloning ${bookId}/${verId}...`);
+  }
+
+  return doCloneBook(pathOutMd, bookId, verId);
+}
+
+
+// --------------------------------------------------
+///@param[in]   bookPath    git repo 경로 (e.g. 'public/out-md/doc-endless')
+///@return      0: ok, -1: pull 실패
+// --------------------------------------------------
+function tryPullBook(bookPath)
+{
+  const iret = git_util.pullBook(bookPath);
+  if (iret === 0) {
+    log_util.log(`\n : OK`);
+  }
+  return iret;
+}
+
+
+// --------------------------------------------------
+///@return  0: ok, -1: 디렉터리 삭제 실패 (파일 잠김 등), -2: clone 실패
+///@brief   book 디렉터리 삭제 후 fresh clone 수행
+// --------------------------------------------------
+function doCloneBook(pathOutMd, bookId, verId)
+{
+  const bookPath = path.join(pathOutMd, bookId);
 
   try {
-    fs.rmSync(pathOutMd, { recursive: true, force: true });
+    fs.rmSync(bookPath, { recursive: true, force: true });
   } catch (e) {
-    log_util.log(chalk.yellow(`\n [경고] '${pathOutMd}' 삭제 실패 — 다른 프로세스가 파일을 점유 중인지 확인하십시오.`));
+    log_util.log(chalk.yellow(`\n [경고] '${bookPath}' 삭제 실패 — 다른 프로세스가 파일을 점유 중인지 확인하십시오.`));
     log_util.log(chalk.yellow(`  해당 폴더를 수동으로 삭제한 뒤 다시 시도하세요.`));
     return -1;
   }
 
   file_util.mkdir(pathOutMd);
-  const iret = git_util.cloneBook(pathOutMd, bookId, verId);
-  if(iret == 0) {
+  const iret = git_util.updateBookToLocal(pathOutMd, bookId, verId);
+  if (iret === 0) {
     log_util.log(`\n : OK`);
-  }
-  else {
+  } else {
     log_util.log(`\n : FAILED`);
     return -2;
   }
