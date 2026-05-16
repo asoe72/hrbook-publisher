@@ -154,6 +154,9 @@ function checkRelativePathLink(context, url) {
   let filePath = url.split('?')[0].split('#')[0];
   if (!filePath) return true;
 
+  // URL 인코딩된 파일명(e.g. %EA%B7%B8%EB%A6%BC...)을 실제 파일명으로 변환
+  try { filePath = decodeURIComponent(filePath); } catch { /* 변환 불가 시 원본 유지 */ }
+
   const absPath = path.resolve(context.pathCur, filePath);
   return fs.existsSync(absPath);
 }
@@ -261,7 +264,9 @@ function addProblems(context, brokenItems)
   for(const item of brokenItems)
   {
     const location = { line: item.line };
-    addProblem(context, 'E', 'broken-link', item.url, location);
+    let displayUrl = item.url;
+    try { displayUrl = decodeURIComponent(item.url); } catch { /* 변환 불가 시 원본 유지 */ }
+    addProblem(context, 'E', 'broken-link', displayUrl, location);
   }
 }
 
