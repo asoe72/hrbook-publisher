@@ -164,41 +164,76 @@ async function downloadBookinfos(destPath)
 }
 
 
+const LANG_PREFIX = { english: 'en', korean: 'ko', chinese: 'zh' };
+
+
+// --------------------------------------------------
+///@param[in]   verId       bookinfos의 ver_id (e.g. 'ko', 'en-Hi6')
+///@param[in]   filters     { languages: { english: true, korean: true, chinese: false } }
+///@return      filters에서 true인 언어 중 하나의 접두어로 verId가 시작하는지 여부
+// --------------------------------------------------
+function passesLanguageFilter(verId, filters)
+{
+  const permittedIds = 
+    Object.entries(filters.languages)     // [ [ 'english', true ], ['korean', true ], ['chinese', false ] ]
+    .filter(([, enabled]) => enabled)     // true인 것만, [ [ 'english', true ], ['korean', true ] ]
+    .map(([lang]) => LANG_PREFIX[lang]);  // [ 'en', 'ko' ]
+  return permittedIds.some(id => verId?.startsWith(id));
+}
+
+
+// --------------------------------------------------
+///@param[in]   item        bookinfos 항목 (item.products: [ 'hi6', 'hi7' ])
+///@param[in]   filters     { products: { hi5a: false, hi6: false, hi7: true } }
+///@return      item.products가 없거나, item.products와 filters.products간 교집합이 있는지 여부
+// --------------------------------------------------
+function passesProductFilter(item, filters)
+{
+  if (!item.products || item.products.length === 0) return true;
+  const selected =
+    Object.entries(filters.products)    // [ [ 'hi5a', false ], ['hi6', true ], ['hi7', true ] ]
+      .filter(([, enabled]) => enabled) // [ ['hi6', true ], ['hi7', true ] ]
+      .map(([key]) => key);    // [ 'hi6', 'hi7' ]
+  
+  return item.products.some(p => selected.includes(p));
+}
+
+
 // --------------------------------------------------
 ///@param[in]   bookinfos   bookinfos.json 배열
-///@return      { bookId, verId }[] — 필터 통과한 항목들
-///@brief       url 속성 항목, products에 'manipulator' 포함 항목 제외
+///@param[in]   filters     { languages: { [key]: boolean }, products: { [key]: boolean } }
+///@return      { bookId, verId, bookTitle }[] — 필터 통과한 항목들
+///@brief       url 속성 항목 제외 후 language/product 필터 적용
 // --------------------------------------------------
-function filterBookInfos(bookinfos)
+function filterBookInfos(bookinfos, filters)
 {
   return bookinfos
     .filter(item => {
-      const verId = item['ver_id'];
-      const noUrl = !item.url;
-      const isKoreanEnglish = verId?.startsWith('ko') || verId?.startsWith('en');
-      const isManipulator = item.products && item.products.includes('manipulator');
-      
-      return (noUrl && isKoreanEnglish && !isManipulator);
-      
-    }).map(item => ({
-      bookId: item['book_id'],
-      verId: item['ver_id'],
+      if (item.url) return false;
+      if (!passesLanguageFilter(item['ver_id'], filters)) return false;
+      if (!passesProductFilter(item, filters)) return false;
+      return true;
+    })
+    .map(item => ({
+      bookId:    item['book_id'],
+      verId:     item['ver_id'],
       bookTitle: item['title']
     }));
 }
 
 
 // --------------------------------------------------
-///@param[in]   rules   { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
+///@param[in]   rules       { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
+///@param[in]   filters     { languages: { [key]: boolean }, products: { [key]: boolean } }
 ///@brief       bookinfos.json의 전체 book 목록을 받아 순차적으로 reviewRemoteBook() 수행
 // --------------------------------------------------
-exports.reviewRemoteBookAll = async function(rules)
+exports.reviewRemoteBookAll = async function(rules, filters)
 {
   log_util.log('');
   log_util.log('# REVIEW ALL REMOTE BOOKS ================');
 
   const bookinfos = await downloadBookinfos(PATH_OUT_MD);
-  const items = filterBookInfos(bookinfos);
+  const items = filterBookInfos(bookinfos, filters);
 
   log_util.log(`\n${items.length} book(s) to review.`);
 
