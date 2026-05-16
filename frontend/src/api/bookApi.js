@@ -61,15 +61,16 @@ function rulesParams(rules) {
 
 
 // ----------------------------------------------
-///@param[in]   rules   { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
+///@param[in]   rules       { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
+///@param[in]   filters     { languages: { [key]: boolean }, products: { [key]: boolean } }
 ///@return      { message: string, data: { code: number } }
 ///@brief       POST /review-remote-books-all - bookinfos.json에서 전체 book 목록을 받아 순차 review
 // ----------------------------------------------
-async function requestReviewRemoteBookAll(rules) {
+async function requestReviewRemoteBookAll(rules, filters) {
     const res = await fetch('/review-remote-books-all', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ ...rulesParams(rules) })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rules, filters })
     });
     if (!res.ok) throw new Error('review-remote-books-all request failed');
     return res.json();

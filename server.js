@@ -11,10 +11,11 @@ const { bindBook } = require('./src/book_commands');
 var app = express();
 
 app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ 
+app.use(bodyParser.urlencoded({
     limit:"10mb",
-    extended: true 
+    extended: true
 }));
+app.use(express.json());
 
 
 
@@ -117,15 +118,14 @@ app.post('/review-remote-books-all', async function(req, res) {
 
     str_util.clearConsole();
 
-    var result = {};
-    const rules = parseBoolRules(req.body.rules);
-    var iret = await reviewRemoteBookAll(rules, result);
+    const { rules, filters } = req.body;
+    var iret = await reviewRemoteBookAll(rules, filters);
     var msg;
     if(iret==0) {
         msg = 'review-remote-books-all ok';
     }
     else {
-        msg = result.msg || ('error code=' + iret);
+        msg = 'error code=' + iret;
     }
 
     res.send({
