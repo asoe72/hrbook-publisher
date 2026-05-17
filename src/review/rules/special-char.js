@@ -9,6 +9,7 @@ const PERMITTED_CHARS = new Set([
   '→', '↑', '↓', '🠔', '←', '↔', '◁','▷',  // 화살표
   '·', '≤', '≥', '±', '∞', '²',  // 수학기호
   '°', '˚', '㎡', '㎟', '℃', 'Ω',   // 단위
+  '🔗', '🌐', '📎',   // 링크, 첨부
   '◎', '⊙'  // 표식
 ]);
 
@@ -17,7 +18,7 @@ const PERMITTED_CHAR_RANGE = [
   [ 0x2460, 0x2473],    // CIRCLED NUMBER
   [ 0x24B6, 0x24F4],    // CIRCLED LATIN, CIRCLED DIGIT ZERO, NEGATIVE CIRCLED NUMBER
   [ 0x2500, 0x256C],    // BOX DRAWINGS
-  [ 0x03B1, 0x03C9]     // GREEK SMALL LETTER ALPHA ~ OMEGA
+  [ 0x0370, 0x03E1]     // GREEK LETTERS
 ];
 
 
