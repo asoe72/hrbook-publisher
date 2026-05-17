@@ -3,6 +3,7 @@ const path = require('path');
 const chalk = require('chalk');
 const log_util = require('../util/log_util');
 const { replaceVariablesInStrToValues } = require('../variables');
+const { extractPageConfig } = require('../page_config');
 
 // rules
 const { applyRule_BrokenLinks } = require('./rules/check-links');
@@ -49,6 +50,9 @@ async function reviewFile(pathname, context)
 
   // strip BOM
   const mdText1 = _hasBom ? mdText0.replace('\ufeff', '') : mdText0;
+
+  // page-config 인식
+  context.pageConfig = extractPageConfig(mdText1);
 
   // text review
   const reviewedMdText = await reviewText(context, mdText1);

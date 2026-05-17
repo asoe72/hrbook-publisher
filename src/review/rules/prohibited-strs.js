@@ -19,8 +19,10 @@ const PROHIBITED_STRS = new Set([
 // ----------------------------------------------
 function applyRule_ProhibitedStrs(context, str)
 {
+  const permittedStrs = context.pageConfig?.permittedStr ?? [];
   let items = [];
   for(const prohibitedStr of PROHIBITED_STRS) {
+    if (permittedStrs.includes(prohibitedStr)) continue;
     const itemsSub = findProhibitedStr(context, str, prohibitedStr);
     items = [...items, ...itemsSub];
   }
