@@ -19,12 +19,30 @@ const EXCLUDED_NAMES = new Set([
 ]);
 
 
+// --------------------------------------------------
+///@param[in]   basePathMd    book의 .md 루트 경로
+///@return      파싱된 bookinfo 객체, 파일 없거나 파싱 실패 시 {}
+// --------------------------------------------------
+function loadBookinfo(basePathMd)
+{
+  const pathfile = path.join(basePathMd, 'bookinfo.json');
+  if (!fs.existsSync(pathfile)) return {};
+  try {
+    const str = file_util.removeBom(fs.readFileSync(pathfile, 'utf8'));
+    return JSON.parse(str);
+  } catch (e) {
+    return {};
+  }
+}
+
+
 // ----------------------------------------------
 function initContext(basePathMd, rules) {
   const context = { basePathMd, rules,
+    bookinfo: loadBookinfo(basePathMd),
     problems: [],
     nChecked: 0, nOkFile: 0, nNgFile: 0, nModifiedFile: 0, nNgItem: 0, nModified: 0 };
-  
+
   return context;
 }
 

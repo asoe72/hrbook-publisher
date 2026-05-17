@@ -12,6 +12,18 @@ const PROHIBITED_STRS = new Set([
   '[**', '**]' ]);
 
 
+// --------------------------------------------------
+///@return  bookinfo.permittedStrs + pageConfig.permittedStrs 합산 배열
+// --------------------------------------------------
+function buildPermittedStrs(context)
+{
+  return [
+    ...(context.bookinfo?.permittedStrs ?? []),
+    ...(context.pageConfig?.permittedStrs ?? []),
+  ];
+}
+
+
 // ----------------------------------------------
 ///@param[in]   str
 ///@return    items
@@ -19,7 +31,7 @@ const PROHIBITED_STRS = new Set([
 // ----------------------------------------------
 function applyRule_ProhibitedStrs(context, str)
 {
-  const permittedStrs = context.pageConfig?.permittedStr ?? [];
+  const permittedStrs = buildPermittedStrs(context);
   let items = [];
   for(const prohibitedStr of PROHIBITED_STRS) {
     if (permittedStrs.includes(prohibitedStr)) continue;
