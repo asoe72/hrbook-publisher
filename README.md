@@ -11,16 +11,17 @@ GitBook 스타일의 디렉토리 구조(`SUMMARY.md` + 개별 `.md` 파일)를 
 ## 목차
 
 - [설치](#설치)
-- [실행](#실행)
-- [Web UI](#web-ui)
-- [문서 디렉토리 구조](#문서-디렉토리-구조)
-- [bookinfo.json 설정](#bookinfojson-설정)
-- [SUMMARY.md 작성](#summarymd-작성)
-- [마크다운 특수 문법](#마크다운-특수-문법)
-- [CLI 사용법](#cli-사용법)
-- [HTTP API](#http-api)
-- [변환 워크플로우](#변환-워크플로우)
-- [오류 코드](#오류-코드)
+- [사용법](#사용법)
+  - [Web UI](#web-ui)
+  - [문서 디렉토리 구조](#문서-디렉토리-구조)
+  - [bookinfo.json 설정](#bookinfojson-설정)
+  - [SUMMARY.md 작성](#summarymd-작성)
+  - [마크다운 특수 문법](#마크다운-특수-문법)
+  - [페이지별 설정 (page-config)](#페이지별-설정-page-config)
+  - [오류 코드](#오류-코드)
+- [API](#api)
+- [CLI](#cli)
+- [설계](#설계)
 
 ---
 
@@ -30,10 +31,6 @@ GitBook 스타일의 디렉토리 구조(`SUMMARY.md` + 개별 `.md` 파일)를 
 npm install
 npm install --prefix frontend
 ```
-
----
-
-## 실행
 
 ### 개발 모드 (Express + Vite 동시 기동)
 
@@ -59,11 +56,13 @@ npm run build
 
 ---
 
-## Web UI
+## 사용법
+
+### Web UI
 
 브라우저에서 `http://localhost:5173` (개발) 또는 `http://127.0.0.1:50000` (빌드 후)에 접속합니다.
 
-### review 탭
+#### review 탭
 
 마크다운 문서의 링크 깨짐, 특수 문자, 금지 문자열 등을 검사합니다.
 
@@ -72,13 +71,13 @@ npm run build
 | `local` | 로컬 경로의 `.md` 디렉토리를 직접 검사 |
 | `remote` | Book ID / Book Ver 으로 원격 저장소 문서를 클론하여 검사 |
 
-### publish 탭
+#### publish 탭
 
 로컬 문서를 `book.html`로 변환합니다. bind-book 완료 후 `print-book` 버튼으로 브라우저 인쇄 화면을 열 수 있습니다.
 
 ---
 
-## 문서 디렉토리 구조
+### 문서 디렉토리 구조
 
 ```
 <path_md>/
@@ -96,7 +95,7 @@ npm run build
 
 ---
 
-## bookinfo.json 설정
+### bookinfo.json 설정
 
 ```json
 {
@@ -107,6 +106,7 @@ npm run build
   "langCode": "ko",
   "tocTitle": "목차",
   "tocTitleElements": ["h1", "h2"],
+  "permittedStrs": ["Hi6"],
   "references": [
     {
       "title": "참고 문서 제목",
@@ -131,12 +131,13 @@ npm run build
 | `langCode` | string | 언어 코드 (`ko`, `en`, `zh` 등) |
 | `tocTitle` | string | 목차 섹션 제목 |
 | `tocTitleElements` | array | 목차에 포함할 헤딩 레벨 (기본값: `["h1", "h2"]`) |
+| `permittedStrs` | array | review 시 금지 문자열 검사에서 제외할 문자열 목록 (book 전체 적용) |
 | `references` | array | 참고문헌 목록 |
 | `variables` | object | 마크다운 내 `${변수명}` 치환에 사용할 값 |
 
 ---
 
-## SUMMARY.md 작성
+### SUMMARY.md 작성
 
 GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대로 변환됩니다.
 
@@ -151,9 +152,9 @@ GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대
 
 ---
 
-## 마크다운 특수 문법
+### 마크다운 특수 문법
 
-### 힌트 박스
+#### 힌트 박스
 
 ```markdown
 {% hint style="info" %}
@@ -169,7 +170,7 @@ GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대
 {% endhint %}
 ```
 
-### 파일 포함
+#### 파일 포함
 
 다른 마크다운 파일의 내용을 현재 문서에 삽입합니다.
 
@@ -177,7 +178,7 @@ GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대
 {% include file="en/precautions.md" %}
 ```
 
-### URL 포함
+#### URL 포함
 
 외부 URL의 HTML 콘텐츠를 삽입합니다.
 
@@ -185,7 +186,7 @@ GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대
 {% include url="https://example.com/content.html" %}
 ```
 
-### 변수 치환
+#### 변수 치환
 
 `bookinfo.json`의 `variables`에 정의된 값으로 치환됩니다.
 
@@ -203,33 +204,37 @@ GitBook 형식의 목차 파일입니다. 링크된 `.md` 파일들이 순서대
 
 ---
 
-## CLI 사용법
+### 페이지별 설정 (page-config)
 
-### bind-book
+개별 `.md` 파일 안에 `<script id="page-config">` 블록을 삽입하면, 해당 파일에만 적용되는 설정을 지정할 수 있습니다.
 
-마크다운을 HTML로 변환하고 `book.html`을 생성합니다.
-
-```bash
-node cli.js bind-book --path_md="<문서_디렉토리_경로>"
+```markdown
+<script id="page-config" type="application/json">
+{
+  "permittedStrs": ["Hi6"]
+}
+</script>
 ```
 
-성공 시:
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `permittedStrs` | array | review 시 금지 문자열 검사에서 제외할 문자열 목록 (해당 페이지에만 적용) |
 
-```
-bind-book ok
-```
-
-### 출력 파일
-
-| 파일 | 설명 |
-|------|------|
-| `public/out/book.html` | PDF 인쇄용 통합 HTML (메인 출력) |
-| `public/out-html/` | 개별 마크다운 변환 HTML |
-| `<path_md>/book.md` | 통합 마크다운 |
+> **우선순위**: 페이지별 `page-config` > `bookinfo.json`의 `permittedStrs` > 시스템 금지 문자열(`PROHIBITED_STRS`)
 
 ---
 
-## HTTP API
+### 오류 코드
+
+| 코드 | 설명 |
+|------|------|
+| `0` | 성공 |
+| `-1` | `SUMMARY.md` 파일을 찾을 수 없음 |
+| `-2` | `bookinfo.json` 파일을 찾을 수 없음 |
+
+---
+
+## API
 
 ### `GET /app-version`
 
@@ -307,7 +312,35 @@ curl -X POST http://127.0.0.1:50000/review-remote-book \
 
 ---
 
-## 변환 워크플로우
+## CLI
+
+### bind-book
+
+마크다운을 HTML로 변환하고 `book.html`을 생성합니다.
+
+```bash
+node cli.js bind-book --path_md="<문서_디렉토리_경로>"
+```
+
+성공 시:
+
+```
+bind-book ok
+```
+
+### 출력 파일
+
+| 파일 | 설명 |
+|------|------|
+| `public/out/book.html` | PDF 인쇄용 통합 HTML (메인 출력) |
+| `public/out-html/` | 개별 마크다운 변환 HTML |
+| `<path_md>/book.md` | 통합 마크다운 |
+
+---
+
+## 설계
+
+### 변환 워크플로우
 
 ```
 문서 디렉토리 (*.md + bookinfo.json + SUMMARY.md)
@@ -332,16 +365,6 @@ public/out/book.html
         ▼
 [3] 브라우저에서 열기 → Paged.js로 PDF 인쇄
 ```
-
----
-
-## 오류 코드
-
-| 코드 | 설명 |
-|------|------|
-| `0` | 성공 |
-| `-1` | `SUMMARY.md` 파일을 찾을 수 없음 |
-| `-2` | `bookinfo.json` 파일을 찾을 수 없음 |
 
 ---
 
