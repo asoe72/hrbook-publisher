@@ -37,8 +37,8 @@ function loadBookinfo(basePathMd)
 
 
 // ----------------------------------------------
-function initContext(basePathMd, rules) {
-  const context = { basePathMd, rules,
+function initContext(basePathMd, variables, rules) {
+  const context = { basePathMd, variables, rules,
     bookinfo: loadBookinfo(basePathMd),
     problems: [],
     nChecked: 0, nOkFile: 0, nNgFile: 0, nModifiedFile: 0, nNgItem: 0, nModified: 0 };
@@ -55,7 +55,7 @@ exports.reviewLocalBook = async function(basePathMd, variables, rules)
   log_util.log('');
   log_util.log('# REVIEW ALL FILES ================');
 
-  const context = initContext(basePathMd, rules);
+  const context = initContext(basePathMd, variables, rules);
   await reviewPathAll(context);
 
   printBookReport(context);
@@ -77,7 +77,7 @@ exports.reviewRemoteBook = async function(bookId, verId, variables, rules)
   if (cloneRet !== 0) return cloneRet;
 
   const basePathMd = path.join(pathOutMd, bookId);
-  const context = initContext(basePathMd, rules);
+  const context = initContext(basePathMd, variables, rules);
 
   await reviewPathAll(context);
 

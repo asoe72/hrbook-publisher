@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const { addProblem } = require('../problems');
+const { replaceVariablesInStrToValues } = require('../../variables');
 const markdown_it = require("markdown-it");
 
 
@@ -29,6 +30,9 @@ async function brokenLinksFromMd(context, mdText) {
   const brokenItems = [];
 
 	for(const item of items) {
+    // URL 인코딩된 경로(e.g. %EA%B7%B8%EB%A6%BC...)를 원본 경로로 변환
+    try { item.url = decodeURIComponent(item.url); } catch { /* 변환 불가 시 원본 유지 */ }
+
 		try {
 			const broken = await isBrokenLink(context, item.url);
 			if(broken) {
@@ -56,7 +60,7 @@ function linksFromMd(mdText) {
 
   tokens.forEach((token) => {
 
-    if (token.children) {
+    if (token.children) { 
       const line = token.map ? (token.map[0] + 1) : null;   // 1-based line#
       token.children.forEach((child) => {
         let attr = null;
@@ -101,16 +105,19 @@ async function isBrokenLink(context, url) {
 /// @return   OK 여부
 // --------------------------------------------------
 async function checkLink(context, url) {
-  if(isRelativePathUrl(url)) {
-    return await checkRelativePathLink(context, url);
+
+  let url2 = replaceVariablesInStrToValues(url, context.variables);
+
+  if(isRelativePathUrl(url2)) {
+    return await checkRelativePathLink(context, url2);
   }
   else {
     let status;
-    if(isHRBookUrl(url)) {
-      status = await checkHRBookLink(context.browserPage, url);
+    if(isHRBookUrl(url2)) {
+      status = await checkHRBookLink(context.browserPage, url2);
     }
     else {
-      status = await checkExternalLink(url);
+      status = await checkExternalLink(url2);
     }
     return (status == 200);
   }
@@ -153,9 +160,6 @@ function checkRelativePathLink(context, url) {
   // ? query 및 # anchor 제거
   let filePath = url.split('?')[0].split('#')[0];
   if (!filePath) return true;
-
-  // URL 인코딩된 파일명(e.g. %EA%B7%B8%EB%A6%BC...)을 실제 파일명으로 변환
-  try { filePath = decodeURIComponent(filePath); } catch { /* 변환 불가 시 원본 유지 */ }
 
   let absPath = path.resolve(context.pathCur, filePath);
   const ext = path.extname(absPath);
@@ -268,9 +272,7 @@ function addProblems(context, brokenItems)
   for(const item of brokenItems)
   {
     const location = { line: item.line };
-    let displayUrl = item.url;
-    try { displayUrl = decodeURIComponent(item.url); } catch { /* 변환 불가 시 원본 유지 */ }
-    addProblem(context, 'E', 'broken-link', displayUrl, location);
+    addProblem(context, 'E', 'broken-link', item.url, location);
   }
 }
 
