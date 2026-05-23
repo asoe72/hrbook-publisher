@@ -157,7 +157,11 @@ function checkRelativePathLink(context, url) {
   // URL 인코딩된 파일명(e.g. %EA%B7%B8%EB%A6%BC...)을 실제 파일명으로 변환
   try { filePath = decodeURIComponent(filePath); } catch { /* 변환 불가 시 원본 유지 */ }
 
-  const absPath = path.resolve(context.pathCur, filePath);
+  let absPath = path.resolve(context.pathCur, filePath);
+  const ext = path.extname(absPath);
+  if (ext=="") {
+    absPath += '.md';
+  }
   return fs.existsSync(absPath);
 }
 
