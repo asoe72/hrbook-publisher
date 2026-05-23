@@ -13,15 +13,19 @@ function parsePageConfigJson(jsonStr)
 
 
 // --------------------------------------------------
+///@param[in]   context     pageConfig 속성을 담을 객체
 ///@param[in]   mdText      .md 파일 전체 텍스트
-///@return      pageConfig 객체, 태그 없으면 {}
-///@brief       <script id="page-config"> 블록을 추출하여 JSON으로 파싱
+///@return      <script id="page-config"> 블록을 제거한 나머지 텍스트
+///@brief       <script id="page-config"> 블록을 추출하여 JSON으로 파싱한 후 context에 pageConfig 속성으로 담는다.
 // --------------------------------------------------
-function extractPageConfig(mdText)
+function extractPageConfig(context, mdText)
 {
   const match = mdText.match(/<script\s+id="page-config"[^>]*>([\s\S]*?)<\/script>/);
-  if (!match) return {};
-  return parsePageConfigJson(match[1].trim());
+  if (!match) return mdText;
+  
+  context.pageConfig = parsePageConfigJson(match[1].trim());
+
+  return mdText.replace(match[0], '');
 }
 
 

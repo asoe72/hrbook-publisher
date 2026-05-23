@@ -52,10 +52,10 @@ async function reviewFile(pathname, context)
   const mdText1 = _hasBom ? mdText0.replace('\ufeff', '') : mdText0;
 
   // page-config 인식
-  context.pageConfig = extractPageConfig(mdText1);
+  const mdText2 = extractPageConfig(context, mdText1);
 
   // text review
-  const reviewedMdText = await reviewText(context, mdText1);
+  const reviewedMdText = await reviewText(context, mdText2);
   
   // 파일 저장
   if(context.nModified > 0) {
