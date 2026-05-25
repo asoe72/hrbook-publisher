@@ -279,7 +279,7 @@ function preprocHtml_removeEmpty_thead(str)
 // 						book_id/branch_id 정보를 얻을 수가 없어서, 같은 책에 대한 절대경로 URL을 생성하기 힘들다. 일단은 그냥 제거하는 것으로 처리함.
 function preprocMd_removeRelativeUrls(str)
 {
-	const re = /<a\s+[^>]*href="\.\.\/[^"]*"[^>]*>(.*?)<\/a>/g;
+	const re = /<a\s+[^>]*href="(?!https?:\/\/)[^"]*"[^>]*>(.*?)<\/a>/g;
 	return str.replace(re, '<b>$1</b>');
 }
 
