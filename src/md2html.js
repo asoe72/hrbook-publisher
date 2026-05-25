@@ -14,7 +14,7 @@ exports.convFile = async function(pathfile_md, pathfile_html, variables)
 {
 	var str_md = fs.readFileSync(pathfile_md, 'utf8');	// utf16 bom이 붙어 리턴된다. 원인불명.
 	str_md = file_util.removeBom(str_md);
-	str_md = await preprocMd(str_md);
+	str_md = await preprocMd(str_md, variables);
 	const str_md2 = replaceVariablesInStrToValues(str_md, variables);
 	const str_body = getHtmlFromMd(str_md2);
 	const str_body2 = replaceVariablesInStrToValues(str_body, variables);
@@ -92,10 +92,11 @@ async function convFileSub(path_md, path_html, fname, variables)
 
 
 ///@param[in]	str
+///@param[in]	variables
 ///@return		preprocessed md text
-async function preprocMd(str)
+async function preprocMd(str, variables)
 {
-	let str2 = preprocMd_hyperLinkInTag(str);
+	let str2 = preprocMd_hyperLinkInTag(str, variables);
 	str2 = await replaceIncludeFiles(str2);
 	str2 = await replaceIncludeUrls(str2);
 	str2 = preprocMd_inHintStyle(str2);
@@ -156,12 +157,31 @@ function preprocMd_hintStyle_sub(str, level)
 ///@param[in]	str		`<td>자세한 내용은 [Hi6 로봇제어기 조작설명서](https://hrbook-hrc.web.app/#/view/doc-hi6-operation/ko-tp630/)를 참조하세요.</td>`
 ///@return		`<td>자세한 내용은 "<a href="https://hrbook-hrc.web.app/#/view/doc-hi6-operation/ko-tp630/">Hi6 로봇제어기 조작설명서</a>를 참조하세요.</td>`
 ///@brief		html tag 내부의 link는 md->html 변환이 제대로 안 되므로, 이 함수로 전처리 수행함.
-function preprocMd_hyperLinkInTag(str)
+function preprocMd_hyperLinkInTag(str, variables)
 {
-	let re = /\[(.*?)]\((https:\/\/.*?)\)/g;
+	// https://, http://, 상대경로(./  ../) 모두 처리. ![]() 이미지 문법은 제외.
+	let re = /(?<!!)\[(.*?)]\(((?:https?:\/\/|\.{1,2}\/)[^)]*)\)/g;
 
-	let str2 = str.replace(re, `<a href="$2">$1</a>`);
+	let str2 = str.replace(re, (match, text, href) => {
+		const href2 = attachContModelQueryifNot(href, variables);
+		return `<a href="${href2}">${text}</a>`;
+	});
 	return str2;
+}
+
+
+///@param[in]	_path				'../3-endless/3-2-rcode/1-r350-manual-reset.md'
+///@param[in]	variables		cont_model 속성을 포함하는 객체
+///@return								'../3-endless/3-2-rcode/1-r350-manual-reset.md?cont_model=Hi7'
+///@brief		_path에 cont_path query가 이미 있으면 그대로 두고, 없으면 지정해준다.
+function attachContModelQueryifNot(_path, variables)
+{
+	const cont_model = variables?.cont_model;
+	if (!cont_model) return _path;
+	if (_path.includes('cont_model=')) return _path;
+
+	const sep = _path.includes('?') ? '&' : '?';
+	return _path + sep + `cont_model=${cont_model}`;
 }
 
 

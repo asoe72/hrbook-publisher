@@ -10,7 +10,7 @@ V60.26-00 부터 지원됩니다.
 
 * 유효
 
-참고하세요; [3.2.1 R350](../3-endless/3-2-rcode/1-r350-manual-reset.md?cont_model=${cont_model}), [3.2.2 R354](../3-endless/3-2-rcode/2-r354-manual-zero.md?cont_model=${cont_model}) 를 참고하세요.
+참고하세요; [3.2.1 R350](../3-endless/3-2-rcode/1-r350-manual-reset.md), [3.2.2 R354](../3-endless/3-2-rcode/2-r354-manual-zero.md?cont_model=${cont_model}) 를 참고하세요.
 
 * 무효
 

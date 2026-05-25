@@ -15,7 +15,7 @@ V60.26-00 부터 지원됩니다.
 
 * 유효
 
-참고하세요; [3.2.1 R350](../3-endless/3-2-rcode/1-r350-manual-reset.md?cont_model=${cont_model}), [3.2.2 R354](../3-endless/3-2-rcode/2-r354-manual-zero.md?cont_model=${cont_model}) 를 참고하세요.
+참고하세요; [3.2.1 R350](../3-endless/3-2-rcode/1-r350-manual-reset.md), [3.2.2 R354](../3-endless/3-2-rcode/2-r354-manual-zero.md?cont_model=${cont_model}) 를 참고하세요.
 
 * 무효
 
@@ -80,6 +80,8 @@ R350 코드에 의한 수동 리셋 기능은 로봇이 정지하고 있을 때 
 | :-------------------: | :-------------------: | :-------------------: |
 | R350                  |        0              | 모든 축에 대한 리셋    |
 | R350                  |   엔드리스 축 번호     | 지정한 축에 대한 리셋  |
+
+자세한 내용은 "[3.2 R코드](https://hrbook-hrc.web.app/#/view/doc-industrial-communication/ko-${cont_model}/1-cifx-pci-communication/4-cifx-pci-monitoring-industrial-communication/README?cont_model=${cont_model})을 참조하십시오.
 [__SOURCE](3-endless/3-2-rcode/2-r354-manual-zero.md)
 # 3.2.2 R354 엔드리스 Zero 실행
 R354 코드에 의한 수동 제로 기능은 로봇이 정지하고 있을 때 프로그램 명령(endless zero)을 대신하여 수동 혹은 자동모드에서 사용자가 축 위치를 0deg로 설정하고자 할 때 사용합니다.Copyright ⓒ
@@ -88,3 +90,5 @@ R354 코드에 의한 수동 제로 기능은 로봇이 정지하고 있을 때 
 | :-------------------: | :-------------------: | :-------------------: |
 | R354                  |        0              | 모든 축에 대한 Zero    |
 | R354  Hi6 Hi7                 |   엔드리스 축 번호     | 지정한 축에 대한 Zero  |
+
+자세한 내용은 "[3.2 R코드](../README.md?cont_model=${cont_model})"를 참조하십시오.
