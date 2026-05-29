@@ -26,7 +26,7 @@ function ReviewTabPanel() {
 
         } else if (sourceType === 'remote-book') {
             if (!validateRemoteSource(bookId, verId)) return;
-            res = await requestReviewRemoteBook(bookId, verId, reviewRules);
+            res = await requestReviewRemoteBook(bookId, verId, contModel, reviewRules);
 
         } else if (sourceType === 'remote-books-all') {
             res = await requestReviewRemoteBookAll(reviewRules, reviewFilters);
