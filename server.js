@@ -55,9 +55,8 @@ app.post('/adjust-md', function(req, res) {
 
 // ----------------------------------------------
 app.post('/review-local-book', async function(req, res) {
-	console.log('review-local-book');
-
     str_util.clearConsole();
+	console.log('review-local-book');
 
     var result = {};
     const vars = req.body.variables;
@@ -85,9 +84,8 @@ app.post('/review-local-book', async function(req, res) {
 
 // ----------------------------------------------
 app.post('/review-remote-book', async function(req, res) {
-	console.log('review-remote-book');
-    
     str_util.clearConsole();
+	console.log('review-remote-book');
     log_util.init();
 
     var result = {};
@@ -116,9 +114,8 @@ app.post('/review-remote-book', async function(req, res) {
 
 // ----------------------------------------------
 app.post('/review-remote-books-all', async function(req, res) {
-	console.log('review-remote-books-all');
-
     str_util.clearConsole();
+	console.log('review-remote-books-all');
     log_util.init();
 
     const { rules, filters } = req.body;

@@ -50,7 +50,5 @@ exports.strUnicodeHexFromChar = (ch) =>
 ///@brief		화면 지우기
 exports.clearConsole = () =>
 {
-	if (process.stdout.isTTY) {
-		process.stdout.write('\x1Bc');
-	}
+	process.stdout.write('\x1Bc');
 }
