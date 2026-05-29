@@ -11,7 +11,7 @@
     "test": "jest",
     "dev": "npm run dev --prefix frontend",
     "build": "npm run build --prefix frontend",
-    "start": "concurrently --names \"express,vite\" --prefix-colors \"white,cyan\" \"node server.js\" \"npm run dev --prefix frontend\""
+    "start": "concurrently --names \"BCK,FRT\" --prefix-colors \"white,cyan\" \"node server.js\" \"npm run dev --prefix frontend\""
   },
   "author": "Choi, Won-Hyuk <asoe72@gmail.com>",
   "license": "Commercial",
