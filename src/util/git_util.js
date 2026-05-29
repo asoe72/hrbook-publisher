@@ -35,6 +35,22 @@ exports.pullBook = function(repoPath) {
 }
 
 
+// --------------------------------------------------
+///@param[in]	repoPath		git repo 경로
+///@param[in]	verId			checkout할 branch명 (e.g. 'ko', 'en')
+///@return		0: ok, -1: ng (branch 없음 등)
+// --------------------------------------------------
+exports.checkoutBranch = function(repoPath, verId) {
+	try {
+		gitExec(repoPath, `git checkout ${verId}`);
+		return 0;
+	} catch (err) {
+		console.error("failed to checkout:", err.message);
+		return -1;
+	}
+}
+
+
 // ----------------------------------------------
 ///@param[in]	repoPath		local 경로
 ///@param[in]	bookId			e.g. 'doc-endless'

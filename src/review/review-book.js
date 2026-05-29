@@ -99,7 +99,7 @@ async function updateBookToLocal(pathOutMd, bookId, verId)
 
   if (git_util.isGitRepo(bookPath)) {
     log_util.log(`\npulling ${bookId}/${verId}...`);
-    if (tryPullBook(bookPath) === 0) return 0;
+    if (tryPullBook(bookPath, verId) === 0) return 0;
     log_util.log(chalk.yellow(`  clone으로 재시도합니다.`));
   } else {
     log_util.log(`\ncloning ${bookId}/${verId}...`);
@@ -111,10 +111,12 @@ async function updateBookToLocal(pathOutMd, bookId, verId)
 
 // --------------------------------------------------
 ///@param[in]   bookPath    git repo 경로 (e.g. 'public/out-md/doc-endless')
-///@return      0: ok, -1: pull 실패
+///@param[in]   verId       checkout할 branch명 (e.g. 'ko', 'en')
+///@return      0: ok, -1: checkout 또는 pull 실패
 // --------------------------------------------------
-function tryPullBook(bookPath)
+function tryPullBook(bookPath, verId)
 {
+  if (git_util.checkoutBranch(bookPath, verId) !== 0) return -1;
   const iret = git_util.pullBook(bookPath);
   if (iret === 0) {
     log_util.log(`\n : OK`);
