@@ -215,6 +215,51 @@ function printBookReport(context)
 
 // --------------------------------------------------
 ///@param[in]   destPath    저장할 폴더 경로 (e.g. 'public/out-md/')
+///@return      bookinfos 배열 — 로컬 캐시 있으면 읽고, 없으면 download
+// --------------------------------------------------
+async function loadBookinfosWithCache(destPath)
+{
+  const filePath = path.join(destPath, 'bookinfos.json');
+  if (fs.existsSync(filePath)) {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  }
+  return await downloadBookinfos(destPath);
+}
+
+
+// --------------------------------------------------
+///@param[in]   bookinfos   bookinfos.json 배열
+///@param[in]   bookId      조회할 book_id
+///@return      unique ver_id 목록 (string[])
+// --------------------------------------------------
+function extractUniqueVersions(bookinfos, bookId)
+{
+  const seen = new Set();   // 중복 제거
+  const result = [];
+  for (const item of bookinfos) {
+    if (item['book_id'] === bookId && item['ver_id'] && !seen.has(item['ver_id'])) {
+      seen.add(item['ver_id']);
+      result.push(item['ver_id']);
+    }
+  }
+  return result;
+}
+
+
+// --------------------------------------------------
+///@param[in]   bookId      조회할 book_id
+///@return      unique ver_id 목록 (string[])
+///@brief       bookinfos.json(캐시 우선)에서 bookId에 해당하는 version 목록 반환
+// --------------------------------------------------
+exports.getVersionsByBookId = async function(bookId)
+{
+  const bookinfos = await loadBookinfosWithCache(PATH_OUT_MD);
+  return extractUniqueVersions(bookinfos, bookId);
+}
+
+
+// --------------------------------------------------
+///@param[in]   destPath    저장할 폴더 경로 (e.g. 'public/out-md/')
 ///@return      bookinfos 배열 (파싱된 JSON)
 ///@brief       BOOKINFOS_URL에서 bookinfos.json을 다운로드하여 destPath에 저장
 // --------------------------------------------------

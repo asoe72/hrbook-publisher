@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const str_util = require('./src/util/str_util');
 const log_util = require('./src/util/log_util');
 
-const { reviewLocalBook, reviewRemoteBook, reviewRemoteBookAll } = require('./src/review/review-book');
+const { reviewLocalBook, reviewRemoteBook, reviewRemoteBookAll, getVersionsByBookId } = require('./src/review/review-book');
 const md_adjuster = require("./src/md_adjuster");
 const { bindBook } = require('./src/book_commands');
 
@@ -50,6 +50,14 @@ app.post('/adjust-md', function(req, res) {
             code: iret
         }
     })
+});
+
+
+// ----------------------------------------------
+app.get('/book-versions', async function(req, res) {
+    const { bookId } = req.query;
+    const versions = await getVersionsByBookId(bookId || '');
+    res.json({ versions });
 });
 
 

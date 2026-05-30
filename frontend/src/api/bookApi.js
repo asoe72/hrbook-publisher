@@ -8,6 +8,18 @@ async function fetchAppVersion() {
 
 
 // ----------------------------------------------
+///@param[in]   bookId      조회할 book_id (repository name)
+///@return      { versions: string[] }
+///@brief       GET /book-versions — bookId에 해당하는 unique version 목록 조회
+// ----------------------------------------------
+async function fetchBookVersions(bookId) {
+    const res = await fetch(`/book-versions?bookId=${encodeURIComponent(bookId)}`);
+    if (!res.ok) throw new Error('Failed to fetch book versions');
+    return res.json();
+}
+
+
+// ----------------------------------------------
 ///@param[in]   pathMd      소스 .md 파일 경로
 ///@param[in]   contModel   제어기 모델 (e.g. 'Hi6', 'Hi7')
 ///@param[in]   rules       { checkBrokenLinks, checkSpecialChars, replaceSpecialChars, checkProhibitedStrs }
@@ -112,4 +124,4 @@ function handleApiResponse(res, successMsg) {
 }
 
 
-export { fetchAppVersion, requestReviewLocalBook, requestReviewRemoteBook, requestReviewRemoteBookAll, requestBindBook, handleApiResponse };
+export { fetchAppVersion, fetchBookVersions, requestReviewLocalBook, requestReviewRemoteBook, requestReviewRemoteBookAll, requestBindBook, handleApiResponse };
