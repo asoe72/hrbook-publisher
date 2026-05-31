@@ -8,15 +8,10 @@ const file_util = require('../util/file_util');
 const log_util = require('../util/log_util');
 const { printProblems } = require('./problems');
 const { reviewFile } = require('./review-file');
+const markdown_it = require('markdown-it');
 
 const BOOKINFOS_URL = 'https://raw.githubusercontent.com/hyundai-robotics/hrbookinfos/refs/heads/master/bookinfos.json';
 const PATH_OUT_MD = 'public/out-md/';
-
-
-// 제외할 폴더 or 파일명 목록
-const EXCLUDED_NAMES = new Set([
-  '.git', 'book.md', 'index.json'
-]);
 
 
 // --------------------------------------------------
@@ -53,7 +48,7 @@ exports.reviewLocalBook = async function(basePathMd, variables, rules)
   log_util.init();
 
   log_util.log('');
-  log_util.log('# REVIEW ALL FILES ================');
+  log_util.log('# REVIEW .md links in SUMMARY.md ================');
 
   const context = initContext(basePathMd, variables, rules);
   await reviewPathAll(context);
@@ -70,7 +65,7 @@ exports.reviewLocalBook = async function(basePathMd, variables, rules)
 exports.reviewRemoteBook = async function(bookId, verId, variables, rules)
 {
   log_util.log('');
-  log_util.log('# REVIEW ALL FILES ================');
+  log_util.log('# REVIEW .md links in SUMMARY.md ================');
 
   const pathOutMd = 'public/out-md/';
   const cloneRet = await updateBookToLocal(pathOutMd, bookId, verId);
@@ -153,7 +148,77 @@ function doCloneBook(pathOutMd, bookId, verId)
 }
 
 
-// ----------------------------------------------
+// --------------------------------------------------
+///@param[in]   basePathMd    book의 .md 루트 경로
+///@return      SUMMARY.md 텍스트 (BOM 제거), 파일 없으면 null
+// --------------------------------------------------
+function readSummaryText(basePathMd)
+{
+  const summaryPath = path.join(basePathMd, 'SUMMARY.md');
+  if (!fs.existsSync(summaryPath)) return null;
+  return file_util.removeBom(fs.readFileSync(summaryPath, 'utf8'));
+}
+
+
+// --------------------------------------------------
+///@param[in]   text      SUMMARY.md 텍스트
+///@param[in]   baseDir   SUMMARY.md가 위치한 디렉터리 (절대경로)
+///@return      절대경로 배열 — text 내 상대경로 .md 링크만 추출
+// --------------------------------------------------
+function extractMdPathsFromText(text, baseDir)
+{
+  const tokens = new markdown_it().parse(text, {});
+  const paths = [];
+
+  for (const token of tokens) {
+    if (!token.children) continue;
+    for (const child of token.children) {
+      if (child.type !== 'link_open') continue;
+      const hrefAttr = child.attrs?.find(a => a[0] === 'href');
+      if (!hrefAttr) continue;
+      const href = hrefAttr[1].split('?')[0].split('#')[0].trim();
+      if (href.startsWith('http://') || href.startsWith('https://')) continue;
+      if (!href.toLowerCase().endsWith('.md')) continue;
+      paths.push(path.resolve(baseDir, href));
+    }
+  }
+  return paths;
+}
+
+
+// --------------------------------------------------
+///@param[in]   basePathMd    book의 .md 루트 경로
+///@return      절대경로 배열 — SUMMARY.md 자체 + SUMMARY.md에 링크된 .md 파일들
+///             SUMMARY.md가 없으면 빈 배열 반환
+// --------------------------------------------------
+function getMdFilesFromSummary(basePathMd)
+{
+  const summaryPath = path.resolve(basePathMd, 'SUMMARY.md');
+  const text = readSummaryText(basePathMd);
+  if (text === null) return [];
+
+  // (SUMMARY.md 자체도 포함.)
+  return [summaryPath, ...extractMdPathsFromText(text, basePathMd)];
+}
+
+
+// --------------------------------------------------
+///@brief   SUMMARY.md에 나열된 .md 파일들을 순서대로 review
+// --------------------------------------------------
+async function reviewMdFilesFromSummary(context)
+{
+  const mdFiles = getMdFilesFromSummary(context.basePathMd);
+  if (mdFiles.length === 0) {
+    log_util.log(chalk.yellow(`  [경고] SUMMARY.md를 찾을 수 없습니다: ${context.basePathMd}`));
+    return;
+  }
+  for (const filepath of mdFiles) {
+    await reviewFile(filepath, context);
+  }
+}
+
+
+// --------------------------------------------------
 async function reviewPathAll(context)
 {
   log_util.log(`\nreviewing...`);
@@ -161,33 +226,7 @@ async function reviewPathAll(context)
   const browser = await puppeteer.launch();
   context.browserPage = await browser.newPage();
 
-  return await reviewPath(context, context.basePathMd);
-}
-
-
-///@param[in]   context   { basePathMd,
-///               nChecked: 0, nOkFile: 0, nNgFile: 0, nNgItem: 0, nModified: 0 };
-///@param[in]   _path     현재까지 진행된 base 경로
-///@return      review한 파일 개수 (skip file 제외)
-///@brief		    _path 내의 모든 파일에 대해 reviewFile() 수행
-async function reviewPath(context, _path)
-{
-  const entries = fs.readdirSync(_path, { withFileTypes: true });
-  
-  for (const entry of entries) {
-    const pathname = path.join(_path, entry.name);
-
-    if(EXCLUDED_NAMES.has(entry.name)) {
-      continue;
-    }
-
-    if (entry.isDirectory()) {
-      await reviewPath(context, pathname);
-    }
-    else if (entry.isFile()) {
-      await reviewFile(pathname, context);
-    }
-  }
+  return await reviewMdFilesFromSummary(context);
 }
 
 
