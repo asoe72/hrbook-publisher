@@ -1,3 +1,4 @@
+const path = require('path');
 const chalk = require('chalk');
 const { addProblem } = require('../problems');
 const str_util = require("../../util/str_util");
@@ -31,6 +32,8 @@ function buildPermittedStrs(context)
 // ----------------------------------------------
 function applyRule_ProhibitedStrs(context, str)
 {
+  if (path.basename(context.pathname) === 'SUMMARY.md') return [];
+
   const permittedStrs = buildPermittedStrs(context);
   let items = [];
   for(const prohibitedStr of PROHIBITED_STRS) {
