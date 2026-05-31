@@ -230,11 +230,12 @@ async function checkExternalLink(url) {
     return 200;
   } catch (headErr) {
     const status = headErr.response?.status;
-    // HEAD를 차단(405/403/400)하는 서버는 GET으로 재시도
-    if (status === 405 || status === 403 || status === 400 || status === undefined) {
+    // HEAD를 차단하거나 오류 반환(405/403/400/5xx 등)하는 서버는 GET으로 재시도.
+    // 404/410만 진짜 broken으로 확정; 나머지는 GET에서 최종 판단.
+    if (status !== 404 && status !== 410) {
       return await checkExternalLinkWithGet(urlWithoutFragment);
     }
-    return status ?? 400;
+    return status;
   }
 }
 
