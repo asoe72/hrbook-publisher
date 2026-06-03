@@ -25,20 +25,32 @@ function buildPermittedStrs(context)
 }
 
 
+// --------------------------------------------------
+///@return  이미지 링크(![](...))를 동일 길이 공백으로 치환한 문자열
+///         문자 인덱스를 유지해 location 왜곡 방지
+// --------------------------------------------------
+function maskImageLinks(str)
+{
+  return str.replace(/!\[[^\]]*\]\([^)]*\)/g, match => ' '.repeat(match.length));
+}
+
+
 // ----------------------------------------------
 ///@param[in]   str
 ///@return    items
 ///@brief     str내에서 PROHIBITED_STRS 배열의 금지 문자열들이 있으면 처리
+///           그림 링크(![](...))는 검사 제외
 // ----------------------------------------------
 function applyRule_ProhibitedStrs(context, str)
 {
   if (path.basename(context.pathname) === 'SUMMARY.md') return [];
 
   const permittedStrs = buildPermittedStrs(context);
+  const strToCheck = maskImageLinks(str);   // 그림 링크(![](...))는 검사 제외
   let items = [];
   for(const prohibitedStr of PROHIBITED_STRS) {
     if (permittedStrs.includes(prohibitedStr)) continue;
-    const itemsSub = findProhibitedStr(context, str, prohibitedStr);
+    const itemsSub = findProhibitedStr(context, strToCheck, prohibitedStr);
     items = [...items, ...itemsSub];
   }
 
