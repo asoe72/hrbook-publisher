@@ -27,7 +27,7 @@
     "puppeteer": "^24.42.0"
   },
   "devDependencies": {
-    "concurrently": "^9.0.0",
+    "concurrently": "^9.2.1",
     "jest": "^30.3.0",
     "supertest": "^7.2.2"
   }
