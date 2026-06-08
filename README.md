@@ -22,6 +22,7 @@ GitBook 스타일의 디렉토리 구조(`SUMMARY.md` + 개별 `.md` 파일)를 
 - [API](#api)
 - [CLI](#cli)
 - [설계](#설계)
+- [라이선스](#라이선스)
 
 ---
 
@@ -69,11 +70,27 @@ npm run build
 | 소스 타입 | 설명 |
 |-----------|------|
 | `local` | 로컬 경로의 `.md` 디렉토리를 직접 검사 |
-| `remote` | Book ID / Book Ver 으로 원격 저장소 문서를 클론하여 검사 |
+| `remote-book` | Book ID / Book Ver 으로 원격 저장소 문서 1개를 클론하여 검사 |
+| `remote-books-all` | 등록된 전체 book 목록을 순차적으로 클론하여 일괄 검사 |
+
+`remote-books-all` 선택 시 **filters** 패널이 표시됩니다. 언어(english / korean / chinese)와 제품(hi5a / hi6 / hi7 / manipulator / common) 단위로 검사 대상을 필터링할 수 있습니다.
+
+**rules** 패널에서 수행할 검사 항목을 켜거나 끌 수 있습니다.
+
+| 규칙 | 설명 |
+|------|------|
+| `check broken links` | 깨진 링크 검사 |
+| `check special characters` | 비표준 특수 문자 검사 |
+| `replace special characters` | 비표준 특수 문자를 표준 문자로 치환 |
+| `check prohibited strings` | 금지 문자열 검사 |
+
+**cont_model** 셀렉터로 제어기 모델(Hi6 / Hi7)을 선택하면 해당 모델에 맞는 금지 문자열 기준이 적용됩니다.
 
 #### publish 탭
 
-로컬 문서를 `book.html`로 변환합니다. bind-book 완료 후 `print-book` 버튼으로 브라우저 인쇄 화면을 열 수 있습니다.
+로컬 문서를 `book.html`로 변환합니다. bind-book 완료 후 `print-book` 버튼으로 `public/out-html/book.html`을 새 탭에서 열어 브라우저 인쇄를 진행할 수 있습니다.
+
+**cont_model** 셀렉터로 제어기 모델을 선택하면 변환 시 `${cont_model}` 변수가 해당 값으로 치환됩니다.
 
 ---
 
@@ -248,6 +265,20 @@ curl http://127.0.0.1:50000/app-version
 
 ---
 
+### `GET /book-versions`
+
+bookId에 해당하는 verId 목록을 조회합니다.
+
+```bash
+curl "http://127.0.0.1:50000/book-versions?bookId=doc-endless"
+```
+
+```json
+{ "versions": ["ko", "en", "zh"] }
+```
+
+---
+
 ### `POST /adjust-md`
 
 마크다운 파일을 정규화합니다 (특수 문자, 인코딩 표준화).
@@ -268,11 +299,12 @@ curl -X POST http://127.0.0.1:50000/bind-book \
   -d "path_md=/home/user/my-book"
 ```
 
-추가 변수를 전달할 수 있습니다.
+변수를 추가로 전달할 수 있습니다.
 
 ```bash
 curl -X POST http://127.0.0.1:50000/bind-book \
   -d "path_md=/home/user/my-book" \
+  -d "variables[cont_model]=Hi6" \
   -d "variables[product_name]=NewProduct"
 ```
 
@@ -284,7 +316,12 @@ curl -X POST http://127.0.0.1:50000/bind-book \
 
 ```bash
 curl -X POST http://127.0.0.1:50000/review-local-book \
-  -d "path_md=/home/user/my-book"
+  -d "path_md=/home/user/my-book" \
+  -d "variables[cont_model]=Hi6" \
+  -d "rules[checkBrokenLinks]=true" \
+  -d "rules[checkSpecialChars]=true" \
+  -d "rules[replaceSpecialChars]=false" \
+  -d "rules[checkProhibitedStrs]=true"
 ```
 
 ---
@@ -296,7 +333,35 @@ curl -X POST http://127.0.0.1:50000/review-local-book \
 ```bash
 curl -X POST http://127.0.0.1:50000/review-remote-book \
   -d "bookId=doc-endless" \
-  -d "verId=ko"
+  -d "verId=ko" \
+  -d "variables[cont_model]=Hi6" \
+  -d "rules[checkBrokenLinks]=true" \
+  -d "rules[checkSpecialChars]=true" \
+  -d "rules[replaceSpecialChars]=false" \
+  -d "rules[checkProhibitedStrs]=true"
+```
+
+---
+
+### `POST /review-remote-books-all`
+
+등록된 전체 book 목록을 순차적으로 클론하여 일괄 검사합니다. `rules`와 `filters`를 JSON으로 전달합니다.
+
+```bash
+curl -X POST http://127.0.0.1:50000/review-remote-books-all \
+  -H "Content-Type: application/json" \
+  -d '{
+    "rules": {
+      "checkBrokenLinks": true,
+      "checkSpecialChars": true,
+      "replaceSpecialChars": false,
+      "checkProhibitedStrs": true
+    },
+    "filters": {
+      "languages": { "english": true, "korean": true, "chinese": false },
+      "products":  { "hi6": true, "hi7": false, "hi5a": false, "manipulator": false, "common": false }
+    }
+  }'
 ```
 
 ---
@@ -309,6 +374,13 @@ curl -X POST http://127.0.0.1:50000/review-remote-book \
   "data": { "code": 0 }
 }
 ```
+
+| rules 키 | 설명 |
+|----------|------|
+| `checkBrokenLinks` | 깨진 링크 검사 |
+| `checkSpecialChars` | 비표준 특수 문자 검사 |
+| `replaceSpecialChars` | 비표준 특수 문자를 표준 문자로 치환 |
+| `checkProhibitedStrs` | 금지 문자열 검사 |
 
 ---
 
@@ -332,8 +404,8 @@ bind-book ok
 
 | 파일 | 설명 |
 |------|------|
-| `public/out/book.html` | PDF 인쇄용 통합 HTML (메인 출력) |
-| `public/out-html/` | 개별 마크다운 변환 HTML |
+| `public/out-html/book.html` | PDF 인쇄용 통합 HTML (메인 출력) |
+| `public/out-html/*.html` | 개별 마크다운 변환 HTML |
 | `<path_md>/book.md` | 통합 마크다운 |
 
 ---
@@ -360,7 +432,7 @@ bind-book ok
     - _assets/ 이미지 복사
         │
         ▼
-public/out/book.html
+public/out-html/book.html
         │
         ▼
 [3] 브라우저에서 열기 → Paged.js로 PDF 인쇄
