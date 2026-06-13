@@ -7,9 +7,12 @@ Imminent danger: Incompliance may cause the death of or serious injuries to the 
 {% endhint %}
 
 * Read the contents of the product installation in the manual and follow the instructions when installing the robot product and other devices.
+* Operating errors or unintended actions while the robot is powered on may cause sudden robot movement, which can result in the operator being caught, trapped, or crushed by the robot structure or surrounding equipment, leading to serious injury or death.
+* Signals received from external devices, higher-level control systems, or networks are outside the manufacturer's direct control. Any malfunctions or accidents arising from the configuration, control, or management of such external signals fall under the responsibility of the user and the system integrator.
 * If a fatal error occurs in the software, stop using it immediately, and contact our customer support team.
 * If there is a problem with the product, such as failure or damage, stop using it immediately and contact the customer support team for inquiry.
 * Operational errors or misoperations while the robot is energized can cause sudden movements of the robot, potentially leading to the operator's body becoming caught or crushed between the robot structure or surrounding equipment, resulting in death or serious injury.
+* In the event of an abnormal condition, approaching the robot without first stopping it and disconnecting its power supply is strictly prohibited, as it may result in a serious injury or fatal accident.
 
 
 ### Warning
@@ -22,20 +25,14 @@ Potential danger: Incompliance may cause injuries to the operator or damage to p
 
 * The safety equipment to be used after being connected to the controller must be connected to the safety contact terminal or to the configurable digital I/O set, which is to be set as the safety I/O, in double signals. When the equipment is connected to common contact terminals or in a single signal, the regulated safety level cannot be satisfied.
 * Do not put your fingers or other body parts behind the controller's inner bracket. There is a risk of electric shock or injury.
-* 
-  If you are a robot application system manufacturer or a robot user, you should fully understand the contents of the manual and complete the product operation training.
-
+* If you are a robot application system manufacturer or a robot user, you should fully understand the contents of the manual and complete the product operation training.
 * For the safety of workers and users, you must prepare appropriate safety facilities, such as safety fences, before installing the product.
 * Check the specification information and perform fastening by using appropriate fixing screws. Loosened screws may lead to separation of the robot, causing it to fall or suffer damage.
 * Be careful not to let conductive foreign substances, such as liquid, dust, or metal powder, enter the connection sections \(power and cables\). Moreover, do not poke the connection parts with a pointed object or apply excessive force to them when connecting them. Corrosion or temporary short-circuiting of the connection terminals may cause the product to explode or suffer a fire.
 * Check the wiring information and connect the devices using the appropriate terminals corresponding to the type of individual devices. In particular, if a safety device is connected to a general terminal, the safety function cannot be guaranteed, so you must connect it to the terminal designed for safety devices.
 * Never use a damaged cable and do not disconnect the power while the product is in use. It may cause electric shock, fire, failure, or injury.
-* 
-  If the product is used for a long time, it may generate heat and cause injury, such as burns. If you need to touch the product, turn off the power and leave it for at least one hour to let it cool sufficiently before carrying out works.
-
-* 
-  Use the teach pendant while paying attention to the movement of the robot.
-
+* If the product is used for a long time, it may generate heat and cause injury, such as burns. If you need to touch the product, turn off the power and leave it for at least one hour to let it cool sufficiently before carrying out works.
+* Use the teach pendant while paying attention to the movement of the robot.
 * If the teach pendant warns of a fatal error, stop the robot with the emergency stop switch immediately, identify the cause, and resolve the error. If the error cannot be resolved, please contact our customer support team for an inquiry.
 * Never install, modify, disassemble, or repair the product without our permission. It may cause a failure or an accident. In addition, we are not responsible for any damage to or breaking of the product if you do not follow the instructions.
 
@@ -61,7 +58,10 @@ Low-level danger factor: Incompliance may result in minor injury to the operator
 * If you use lifting equipment to transport the product, follow the safety regulations and equipment usage guidelines in the concerned country and region.
 * When transporting the product, fully understand the transportation-related contents of the manual and comply with the instructions. We are not responsible for any damage to or breaking of the product because of transportation by the customer.
 
+--------------
 
-
-
-
+* In addition to the general safety warnings provided in this manual, individual safety warnings are repeatedly stated in the manuals for specific functions. For hazards, restrictions, and precautions associated with a particular function, the warnings provided in the corresponding function manual shall take precedence. Users must review and comply with all applicable warnings before installing, operating, teaching, maintaining, or modifying the settings of the robot or controller.
+* Only operation performed in accordance with the conditions, procedures, and instructions specified in this manual shall be considered normal use. Any operation, teaching, maintenance, access, configuration change, or bypass of safety functions not specified in this manual constitutes abnormal use. The manufacturer shall not be liable for any personal injury, death, or property damage resulting from such abnormal use.
+* This manual provides instructions for the use of the robot and controller only. Safety fencing, interlocks, external safety PLCs, cell design, and risk assessments are the responsibility of the system integrator and the user, and are outside the scope of the manufacturer's responsibility.
+* Bypassing safety signals, installing temporary jumpers (I/O bypasses), disabling, or otherwise defeating safety functions is strictly prohibited, as such actions may cause unexpected robot motion and lead to serious injury or death.
+* This manual is intended for qualified personnel who have sufficient knowledge of the structure and hazards of industrial robots and who have completed the required safety training. Access to and operation of the robot by unqualified personnel or personnel who have not completed the required safety training is prohibited.
