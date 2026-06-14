@@ -81,7 +81,7 @@ function ReviewTabPanel() {
                 </button>
             </div>
             <br/>
-            <RulesGroupBox rules={reviewRules} setRules={setReviewRules} />
+            <RulesGroupBox rules={reviewRules} setRules={setReviewRules} sourceType={sourceType} />
         </div>
     );
 }

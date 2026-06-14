@@ -179,7 +179,7 @@ app.post('/bind-book', async function(req, res) {
 // --------------------------------------------------
 function parseBoolRules(rulesRaw)
 {
-    const keys = ['checkBrokenLinks', 'checkSpecialChars', 'replaceSpecialChars', 'checkProhibitedStrs'];
+    const keys = ['checkBrokenLinks', 'checkSpecialChars', 'replaceSpecialChars', 'checkProhibitedStrs', 'compareSummary'];
     const rules = {};
     for (const key of keys) {
         rules[key] = (rulesRaw?.[key] !== 'false');

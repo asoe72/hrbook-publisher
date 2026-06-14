@@ -30,7 +30,8 @@ const useStore = create((set) => ({
 		checkBrokenLinks: true,
 		checkSpecialChars: true,
 		replaceSpecialChars: true,
-		checkProhibitedStrs: true
+		checkProhibitedStrs: true,
+		compareSummary: false
 	},
 	setReviewRules: (val) => set({ reviewRules: val }),
 

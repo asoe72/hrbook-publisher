@@ -8,9 +8,11 @@ const file_util = require('../util/file_util');
 const log_util = require('../util/log_util');
 const { printProblems } = require('./problems');
 const { reviewFile } = require('./review-file');
+const { applyRule_CompareSummary } = require('./rules/compare-summary');
 const markdown_it = require('markdown-it');
 
-const BOOKINFOS_URL = 'https://raw.githubusercontent.com/hyundai-robotics/hrbookinfos/refs/heads/master/bookinfos.json';
+const GITHUB_ORG_BASE = 'https://raw.githubusercontent.com/hyundai-robotics';
+const BOOKINFOS_URL = GITHUB_ORG_BASE + '/hrbookinfos/refs/heads/master/bookinfos.json';
 const PATH_OUT_MD = 'public/out-md/';
 
 
@@ -75,6 +77,11 @@ exports.reviewRemoteBook = async function(bookId, verId, variables, rules)
   const context = initContext(basePathMd, variables, rules);
 
   await reviewPathAll(context);
+
+  if (rules?.compareSummary) {
+    const versions = await exports.getVersionsByBookId(bookId);
+    await applyRule_CompareSummary(context, bookId, versions);
+  }
 
   printBookReport(context);
 
