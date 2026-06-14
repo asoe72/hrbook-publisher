@@ -33,6 +33,8 @@ npm install
 npm install --prefix frontend
 ```
 
+> **Windows 사용자**: `install.bat`을 실행하면 위 과정을 일괄 처리합니다.
+
 ### 개발 모드 (Express + Vite 동시 기동)
 
 ```bash
@@ -41,6 +43,8 @@ npm start
 
 - Express 서버: `http://127.0.0.1:50000`
 - Vite 개발 서버: `http://localhost:5173` (기본값)
+
+> **Windows 사용자**: `run.bat`을 실행하면 개발 모드로 기동합니다.
 
 ### 서버만 기동
 
@@ -83,6 +87,7 @@ npm run build
 | `check special characters` | 비표준 특수 문자 검사 |
 | `replace special characters` | 비표준 특수 문자를 표준 문자로 치환 |
 | `check prohibited strings` | 금지 문자열 검사 |
+| `compare SUMMARY.md of ko/, en/` | ko/en SUMMARY.md 링크 일치 여부 비교 (`remote-book` 소스에서만 표시) |
 
 **cont_model** 셀렉터로 제어기 모델(Hi6 / Hi7)을 선택하면 해당 모델에 맞는 금지 문자열 기준이 적용됩니다.
 
@@ -338,8 +343,11 @@ curl -X POST http://127.0.0.1:50000/review-remote-book \
   -d "rules[checkBrokenLinks]=true" \
   -d "rules[checkSpecialChars]=true" \
   -d "rules[replaceSpecialChars]=false" \
-  -d "rules[checkProhibitedStrs]=true"
+  -d "rules[checkProhibitedStrs]=true" \
+  -d "rules[compareSummary]=false"
 ```
+
+원격 저장소에서 클론한 문서는 `public/out-md/<bookId>/`에 저장됩니다.
 
 ---
 
@@ -381,6 +389,7 @@ curl -X POST http://127.0.0.1:50000/review-remote-books-all \
 | `checkSpecialChars` | 비표준 특수 문자 검사 |
 | `replaceSpecialChars` | 비표준 특수 문자를 표준 문자로 치환 |
 | `checkProhibitedStrs` | 금지 문자열 검사 |
+| `compareSummary` | ko/en SUMMARY.md 링크 일치 여부 비교 (`review-remote-book` 전용) |
 
 ---
 
@@ -402,11 +411,12 @@ bind-book ok
 
 ### 출력 파일
 
-| 파일 | 설명 |
+| 경로 | 설명 |
 |------|------|
 | `public/out-html/book.html` | PDF 인쇄용 통합 HTML (메인 출력) |
 | `public/out-html/*.html` | 개별 마크다운 변환 HTML |
 | `<path_md>/book.md` | 통합 마크다운 |
+| `public/out-md/<bookId>/` | remote-book 검사 시 클론된 마크다운 문서 |
 
 ---
 

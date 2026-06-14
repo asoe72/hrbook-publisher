@@ -1,0 +1,98 @@
+## TODO
+- remote clone한 폴더 열기
+- workers 비동기 실행으로 속도 개선
+- .ejs 활용 조건분기
+- cloning 시간 오래 걸리므로 대기 메시지 (큰 repository는 오래 걸릴 수 있으므로 대기 바랍니다.)
+
+- 다 완료
+
+- doc-hi6-open-api/en/ (이동형SI)
+  * 3.1.2 `project_info`  한글로 작성되어 있음.
+
+- doc-modbus (정하정CI)
+  * 1.2 모드버스 기능 - ../_assets/image3.png 그림 없음.
+
+- doc-hi7-troubleshoot (유한승CI)
+  * 4.4. E50101. (O축) 엔코더 명령 필드 설정 이상
+    - '엔코더 통신실패 횟수 표시 기능 메뉴얼'이 무엇인지 hyperlink로 지정 필요
+
+- doc-positioner-sync (정상윤CI)
+
+ ko/, en/ 둘 다
+ * 5-add-axis-move-independent-execution\5-1-system-setting.md----------------------------------------
+ --------------------------------
+ in file, 2-system_settings\2-2-robot-calibration.md :
+   - [broken-link] https://hrbook-hrc.web.app/#/view/doc-hi6-operation/ko-tp630/7-setting/7-auto-calibration/README?cont_model=Hi6 at (Ln 3))
+ --------------------------------
+ in file, 2-system_settings\2-3-positioner-calibration\1_1axis-positioner-calibration-teaching.md :
+   - [broken-link] ../../_assets/image9.png at (Ln 9))
+ --------------------------------
+ in file, 2-system_settings\2-3-positioner-calibration\2_2axis-positioner-calibration-teaching.md :
+   - [broken-link] ../../_assets/image10.png at (Ln 8))
+ --------------------------------
+ in file, 2-system_settings\2-3-positioner-calibration\3_positioner-calibration-execution.md :
+   - [broken-link] ../../_assets/image11.png at (Ln 6))
+   - [broken-link] ../../_assets/image12.png at (Ln 15))
+ --------------------------------
+ in file, 3-manual-operation\3-1-positioner-independent-jog-mode.md :
+   - [broken-link] ../_assets/image13.png at (Ln 4))
+ --------------------------------
+ in file, 3-manual-operation\3-2-positioner-sync-jog-mode.md :
+   - [broken-link] ../_assets/image14.png at (Ln 5))
+   - [broken-link] ../_assets/image14-1.png at (Ln 16))
+ --------------------------------
+ in file, 4-program-creation\4-3-positioner-linear-interpolation-example.md :
+   - [broken-link] ../_assets/image15.png at (Ln 5))
+   - [broken-link] ../_assets/image16.png at (Ln 18))
+   - [broken-link] ../_assets/image17.png at (Ln 29))
+   - [broken-link] ../_assets/image18.png at (Ln 42))
+   - [broken-link] ../_assets/image19.png at (Ln 55))
+   - [broken-link] ../_assets/image20.png at (Ln 67))
+----------------------------------------
+
+- doc-ros2-driver (권효준CI?)
+  *  README.md (V70.00-00** 버전은 2026년 2Q 중 공식 릴리스가 예정? -> 이미 출시됨.)
+              호환 제어기는 Hi6 시리즈이며, ... Hi7 모델의 경우 출시 예정 -> 아직 미출시?
+  * # 1. 개요 도 마찬가지  -> 문구 업데이트 필요
+  * # 1.1 지원 제어기 모델 -> 캐비닛 종류 열거 의미 있나? Hi6/Hi7 중 캐비닛 종류에 따라 지원 안되는 모델도 있나?
+   -> README.md
+  * # 1.3 시스템 요구사항 도 마찬가지
+
+  * # 3.1 HDR ROS2 드라이버 launch
+    제어기 IP주소가 192.168.1.150 이라는 전제하에 쓴 글인데, 현장에 많은 수의 로봇이 있고 IP주소는 각기 다를 수 있음.
+    "제어기 IP주소 설정이 default값인 192.168.1.150 라고 가정할 때," 라는 문구로 시작하는게 좋겠음.
+
+
+- doc-safespace2.0 (김민정CI)
+
+  * # 4.1.3 툴 데이터 설정 - ![](../../_assets/image20.jpeg) 파일 없음.
+
+- doc-spot-weld /en 브랜치 (강상민CI)
+  * ### 3.1.4 State flag
+   - [broken-link] ../../_assets/image_39_eng.PNG at (Ln 22))
+
+- doc-svtool-change
+  * # 2.1 사용환경 설정
+    Hi6 제어기의 경우, 시스템 입출력 신호중 사용자 신호는 각각 SI[48~51]/SO[48~51]로 대응됩니다.
+     -> 무엇이 SI[48~51]/SO[48~51]에 대응? 의미를 모르겠음.
+
+'이 설명서에 대하여' README.md개정
+
+## DONE
+- review 다시 하면 cls 할 것
+- version (branch) list 열거
+- version (branch) combobox
+
+
+## 상용구
+<script id="page-config" type="application/json">
+{
+	"permittedStrs": ["Hi6", "Hi7"]
+}
+</script>
+
+danger, warning, info
+
+{% hint style="warning" %}
+\[경고\] 잠재적인 위험: 준수하지 않았을 경우 작업자가 상해를 입거나 제품이 크게 손상되는 등 재산상의 손해를 입을 수 있습니다.
+{% endhint %}
