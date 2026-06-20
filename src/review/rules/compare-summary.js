@@ -36,11 +36,21 @@ async function fetchSummaryText(bookId, branchName)
 
 // --------------------------------------------------
 ///@param[in]   text    SUMMARY.md 텍스트
+///@return      HTML 주석 제거된 텍스트
+// --------------------------------------------------
+function removeHtmlComments(text)
+{
+  return text.replace(/<!--[\s\S]*?-->/g, '');
+}
+
+
+// --------------------------------------------------
+///@param[in]   text    SUMMARY.md 텍스트
 ///@return      .md 상대경로 href 배열 (http/https 제외)
 // --------------------------------------------------
 function extractMdHrefsFromSummary(text)
 {
-  const tokens = new markdown_it().parse(text, {});
+  const tokens = new markdown_it().parse(removeHtmlComments(text), {});
   const hrefs = [];
 
   for (const token of tokens) {
