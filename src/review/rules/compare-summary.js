@@ -164,7 +164,7 @@ async function applyRule_CompareSummary(context, bookId, versions)
 // --------------------------------------------------
 function getKoBranchNames(versions)
 {
-  return versions.filter(v => v.startsWith('ko'));
+  return versions.filter(v => v.startsWith('ko') && !v.includes('tp600'));
 }
 
 
