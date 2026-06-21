@@ -9,18 +9,18 @@ exports.init = function()
 {
 	try {
 		// 이전 파일 있으면 삭제
-    if (fs.existsSync(pathnameLog)) {
-      fs.unlinkSync(pathnameLog);
-    }
+    	if (fs.existsSync(pathnameLog)) {
+      	fs.unlinkSync(pathnameLog);
+    	}
 
 		// 경로 없으면 생성
 		const dir = path.dirname(pathnameLog);
-  	if (!fs.existsSync(dir)) {
-    	fs.mkdirSync(dir, { recursive: true });
+		if (!fs.existsSync(dir)) {
+			fs.mkdirSync(dir, { recursive: true });
+		}
+  	} catch (err) {
+    	console.error(`초기화 중 에러 발생: ${pathnameLog}`, err);
   	}
-  } catch (err) {
-    console.error(`초기화 중 에러 발생: ${pathnameLog}`, err);
-  }
 }
 
 

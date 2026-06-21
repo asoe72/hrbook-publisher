@@ -299,6 +299,7 @@ function extractUniqueVersions(bookinfos, bookId)
 // --------------------------------------------------
 exports.getVersionsByBookId = async function(bookId)
 {
+  log_util.init();
   const bookinfos = await loadBookinfosWithCache(PATH_OUT_MD);
   return extractUniqueVersions(bookinfos, bookId);
 }
@@ -312,12 +313,18 @@ exports.getVersionsByBookId = async function(bookId)
 async function downloadBookinfos(destPath)
 {
   log_util.log(`\ndownloading bookinfos.json...`);
-  file_util.mkdir(destPath);
-  const response = await axios.get(BOOKINFOS_URL);
-  const filePath = path.join(destPath, 'bookinfos.json');
-  fs.writeFileSync(filePath, JSON.stringify(response.data, null, 2));
-  log_util.log(` : OK (${response.data.length} entries)`);
-  return response.data;
+  log_util.log(`     ${BOOKINFOS_URL}`);
+  
+  try {
+    file_util.mkdir(destPath);
+    const response = await axios.get(BOOKINFOS_URL);
+    const filePath = path.join(destPath, 'bookinfos.json');
+    fs.writeFileSync(filePath, JSON.stringify(response.data, null, 2));
+    log_util.log(` : OK (${response.data.length} entries)`);
+    return response.data;
+  } catch (e) {
+    return [];
+  }
 }
 
 
