@@ -11,8 +11,8 @@ const { reviewFile } = require('./review-file');
 const { applyRule_CompareSummary } = require('./rules/compare-summary');
 const markdown_it = require('markdown-it');
 
-const GITHUB_ORG_BASE = 'https://raw.githubusercontent.com/hyundai-robotics';
-const BOOKINFOS_URL = GITHUB_ORG_BASE + '/hrbookinfos/refs/heads/master/bookinfos.json';
+const PROXY = 'https://hrcontentsrelay-bmgae5hdbzapc4bc.koreacentral-01.azurewebsites.net/api/proxy?path=';
+const BOOKINFOS_URL = PROXY + 'hrbookinfos/refs/heads/master/bookinfos.json';
 const PATH_OUT_MD = 'public/out-md/';
 
 

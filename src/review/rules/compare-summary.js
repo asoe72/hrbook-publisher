@@ -3,7 +3,7 @@ const markdown_it = require('markdown-it');
 const chalk = require('chalk');
 const log_util = require('../../util/log_util');
 
-const GITHUB_ORG_BASE = 'https://raw.githubusercontent.com/hyundai-robotics';
+const PROXY = 'https://hrcontentsrelay-bmgae5hdbzapc4bc.koreacentral-01.azurewebsites.net/api/proxy?path=';
 
 
 // --------------------------------------------------
@@ -13,7 +13,7 @@ const GITHUB_ORG_BASE = 'https://raw.githubusercontent.com/hyundai-robotics';
 // --------------------------------------------------
 function buildSummaryRawUrl(bookId, branchName)
 {
-  return `${GITHUB_ORG_BASE}/${bookId}/refs/heads/${branchName}/SUMMARY.md`;
+  return `${PROXY}${bookId}/refs/heads/${branchName}/SUMMARY.md`;
 }
 
 
